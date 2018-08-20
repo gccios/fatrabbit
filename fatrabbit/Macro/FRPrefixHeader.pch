@@ -1,0 +1,49 @@
+//
+//  FRPrefixHeader.pch
+//  fatrabbit
+//
+//  Created by 郭春城 on 2018/8/19.
+//  Copyright © 2018年 郭春城. All rights reserved.
+//
+
+#ifndef FRPrefixHeader_pch
+#define FRPrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+/*
+ 服务器地址
+ */
+#define TEST_DEV_TYPE 1 //测试环境切换宏，1代表线上环境，0代表测试环境
+
+#if TEST_DEV_TYPE
+#define HOSTURL @"https://portal.deedao.com" //正式地址
+#define QNBucketName @"deedao-test"
+#define QNEndPoint @"http://ow57gfs34.bkt.clouddn.com"
+#define NSLog(...) {}
+
+#else
+#define HOSTURL @"http://10.93.20.171:8080"  //测试地址
+//#define HOSTURL @"https://portal.deedao.com"
+#define QNBucketName @"deedao-test"
+#define QNEndPoint @"http://ow57gfs34.bkt.clouddn.com"
+#define NSLog(...) NSLog(__VA_ARGS__)
+#endif
+
+/*
+ 颜色
+ */
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+/*
+ 机型和UI适配
+ */
+#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125.f, 2436.f), [[UIScreen mainScreen] currentMode].size) : NO)
+
+/*
+ 特殊定义
+ */
+#define keychainID @"FatrabbitKeychainID"
+
+#endif /* FRPrefixHeader_pch */

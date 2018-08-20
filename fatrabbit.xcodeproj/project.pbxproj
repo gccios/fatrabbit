@@ -7,14 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0658C7FC212A69A000800D7A /* FRNetWorkConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C7FB212A69A000800D7A /* FRNetWorkConfiguration.m */; };
+		0658C803212A797700800D7A /* FatrabbitConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C802212A797700800D7A /* FatrabbitConfig.m */; };
+		0658C807212A7A9100800D7A /* GCCKeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C806212A7A9100800D7A /* GCCKeyChain.m */; };
+		0658C80A212A7DA400800D7A /* FRHomeBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C809212A7DA400800D7A /* FRHomeBaseViewController.m */; };
+		0658C810212A7E6200800D7A /* FRTabbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C80F212A7E6200800D7A /* FRTabbar.m */; };
+		0658C816212A93D200800D7A /* FRTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C815212A93D200800D7A /* FRTabBarController.m */; };
+		0658C819212A94A300800D7A /* FRNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C818212A94A300800D7A /* FRNavigationController.m */; };
 		06C4037821298BEC001416B8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C4037721298BEC001416B8 /* AppDelegate.m */; };
-		06C4037B21298BEC001416B8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C4037A21298BEC001416B8 /* ViewController.m */; };
-		06C4037E21298BEC001416B8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 06C4037C21298BEC001416B8 /* Main.storyboard */; };
 		06C4038021298BEE001416B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06C4037F21298BEE001416B8 /* Assets.xcassets */; };
 		06C4038321298BEE001416B8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 06C4038121298BEE001416B8 /* LaunchScreen.storyboard */; };
 		06C4038621298BEE001416B8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C4038521298BEE001416B8 /* main.m */; };
 		06C4039021298BEE001416B8 /* fatrabbitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C4038F21298BEE001416B8 /* fatrabbitTests.m */; };
 		06C4039B21298BEE001416B8 /* fatrabbitUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C4039A21298BEE001416B8 /* fatrabbitUITests.m */; };
+		06C403AF21298D7F001416B8 /* FRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C403AE21298D7F001416B8 /* FRBaseViewController.m */; };
+		51536B75ABE124F4F10E7E31 /* libPods-fatrabbit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4755B89BDA1E07984C3AF1A9 /* libPods-fatrabbit.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,12 +42,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0658C7FA212A69A000800D7A /* FRNetWorkConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRNetWorkConfiguration.h; sourceTree = "<group>"; };
+		0658C7FB212A69A000800D7A /* FRNetWorkConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNetWorkConfiguration.m; sourceTree = "<group>"; };
+		0658C801212A797700800D7A /* FatrabbitConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FatrabbitConfig.h; sourceTree = "<group>"; };
+		0658C802212A797700800D7A /* FatrabbitConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FatrabbitConfig.m; sourceTree = "<group>"; };
+		0658C805212A7A9100800D7A /* GCCKeyChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCCKeyChain.h; sourceTree = "<group>"; };
+		0658C806212A7A9100800D7A /* GCCKeyChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCCKeyChain.m; sourceTree = "<group>"; };
+		0658C808212A7DA400800D7A /* FRHomeBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRHomeBaseViewController.h; sourceTree = "<group>"; };
+		0658C809212A7DA400800D7A /* FRHomeBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRHomeBaseViewController.m; sourceTree = "<group>"; };
+		0658C80E212A7E6200800D7A /* FRTabbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRTabbar.h; sourceTree = "<group>"; };
+		0658C80F212A7E6200800D7A /* FRTabbar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRTabbar.m; sourceTree = "<group>"; };
+		0658C814212A93D200800D7A /* FRTabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRTabBarController.h; sourceTree = "<group>"; };
+		0658C815212A93D200800D7A /* FRTabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRTabBarController.m; sourceTree = "<group>"; };
+		0658C817212A94A300800D7A /* FRNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRNavigationController.h; sourceTree = "<group>"; };
+		0658C818212A94A300800D7A /* FRNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNavigationController.m; sourceTree = "<group>"; };
 		06C4037321298BEC001416B8 /* fatrabbit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fatrabbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06C4037621298BEC001416B8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		06C4037721298BEC001416B8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		06C4037921298BEC001416B8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		06C4037A21298BEC001416B8 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		06C4037D21298BEC001416B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		06C4037F21298BEE001416B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		06C4038221298BEE001416B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		06C4038421298BEE001416B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -51,6 +69,12 @@
 		06C4039621298BEE001416B8 /* fatrabbitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fatrabbitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06C4039A21298BEE001416B8 /* fatrabbitUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = fatrabbitUITests.m; sourceTree = "<group>"; };
 		06C4039C21298BEE001416B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		06C403AD21298D7F001416B8 /* FRBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRBaseViewController.h; sourceTree = "<group>"; };
+		06C403AE21298D7F001416B8 /* FRBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRBaseViewController.m; sourceTree = "<group>"; };
+		06C403B221298F46001416B8 /* FRPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRPrefixHeader.pch; sourceTree = "<group>"; };
+		3F5CDBBC796399A99567E000 /* Pods-fatrabbit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fatrabbit.release.xcconfig"; path = "Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit.release.xcconfig"; sourceTree = "<group>"; };
+		4755B89BDA1E07984C3AF1A9 /* libPods-fatrabbit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-fatrabbit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA8F1224C3DF5DFF70631225 /* Pods-fatrabbit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fatrabbit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51536B75ABE124F4F10E7E31 /* libPods-fatrabbit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +103,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0658C7F9212A694F00800D7A /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				0658C7FA212A69A000800D7A /* FRNetWorkConfiguration.h */,
+				0658C7FB212A69A000800D7A /* FRNetWorkConfiguration.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		0658C800212A795900800D7A /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				0658C801212A797700800D7A /* FatrabbitConfig.h */,
+				0658C802212A797700800D7A /* FatrabbitConfig.m */,
+				0658C804212A7A9100800D7A /* GCCKeyChain */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		0658C804212A7A9100800D7A /* GCCKeyChain */ = {
+			isa = PBXGroup;
+			children = (
+				0658C805212A7A9100800D7A /* GCCKeyChain.h */,
+				0658C806212A7A9100800D7A /* GCCKeyChain.m */,
+			);
+			path = GCCKeyChain;
+			sourceTree = "<group>";
+		};
+		0658C80C212A7E2A00800D7A /* HomeViewController */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = HomeViewController;
+			sourceTree = "<group>";
+		};
+		0658C80D212A7E4E00800D7A /* FRTabbar */ = {
+			isa = PBXGroup;
+			children = (
+				0658C80E212A7E6200800D7A /* FRTabbar.h */,
+				0658C80F212A7E6200800D7A /* FRTabbar.m */,
+			);
+			path = FRTabbar;
+			sourceTree = "<group>";
+		};
 		06C4036A21298BEC001416B8 = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +154,8 @@
 				06C4038E21298BEE001416B8 /* fatrabbitTests */,
 				06C4039921298BEE001416B8 /* fatrabbitUITests */,
 				06C4037421298BEC001416B8 /* Products */,
+				DF148D84A595299508B12137 /* Pods */,
+				5F1EBE726EEF6BAA649A01AE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,11 +172,14 @@
 		06C4037521298BEC001416B8 /* fatrabbit */ = {
 			isa = PBXGroup;
 			children = (
+				06C403B021298E42001416B8 /* Macro */,
 				06C4037621298BEC001416B8 /* AppDelegate.h */,
 				06C4037721298BEC001416B8 /* AppDelegate.m */,
-				06C4037921298BEC001416B8 /* ViewController.h */,
-				06C4037A21298BEC001416B8 /* ViewController.m */,
-				06C4037C21298BEC001416B8 /* Main.storyboard */,
+				06C403AA21298C5C001416B8 /* Model */,
+				06C403A921298C4D001416B8 /* Controller */,
+				06C403AB21298C69001416B8 /* View */,
+				0658C7F9212A694F00800D7A /* Network */,
+				0658C800212A795900800D7A /* Support */,
 				06C4037F21298BEE001416B8 /* Assets.xcassets */,
 				06C4038121298BEE001416B8 /* LaunchScreen.storyboard */,
 				06C4038421298BEE001416B8 /* Info.plist */,
@@ -132,6 +206,70 @@
 			path = fatrabbitUITests;
 			sourceTree = "<group>";
 		};
+		06C403A921298C4D001416B8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				06C403AC21298D14001416B8 /* BaseViewController */,
+				0658C80C212A7E2A00800D7A /* HomeViewController */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		06C403AA21298C5C001416B8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		06C403AB21298C69001416B8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0658C80D212A7E4E00800D7A /* FRTabbar */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		06C403AC21298D14001416B8 /* BaseViewController */ = {
+			isa = PBXGroup;
+			children = (
+				06C403AD21298D7F001416B8 /* FRBaseViewController.h */,
+				06C403AE21298D7F001416B8 /* FRBaseViewController.m */,
+				0658C808212A7DA400800D7A /* FRHomeBaseViewController.h */,
+				0658C809212A7DA400800D7A /* FRHomeBaseViewController.m */,
+				0658C817212A94A300800D7A /* FRNavigationController.h */,
+				0658C818212A94A300800D7A /* FRNavigationController.m */,
+				0658C814212A93D200800D7A /* FRTabBarController.h */,
+				0658C815212A93D200800D7A /* FRTabBarController.m */,
+			);
+			path = BaseViewController;
+			sourceTree = "<group>";
+		};
+		06C403B021298E42001416B8 /* Macro */ = {
+			isa = PBXGroup;
+			children = (
+				06C403B221298F46001416B8 /* FRPrefixHeader.pch */,
+			);
+			path = Macro;
+			sourceTree = "<group>";
+		};
+		5F1EBE726EEF6BAA649A01AE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4755B89BDA1E07984C3AF1A9 /* libPods-fatrabbit.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DF148D84A595299508B12137 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AA8F1224C3DF5DFF70631225 /* Pods-fatrabbit.debug.xcconfig */,
+				3F5CDBBC796399A99567E000 /* Pods-fatrabbit.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -139,9 +277,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 06C4039F21298BEE001416B8 /* Build configuration list for PBXNativeTarget "fatrabbit" */;
 			buildPhases = (
+				1B75DE6BB77351AEFA3A9676 /* [CP] Check Pods Manifest.lock */,
 				06C4036F21298BEC001416B8 /* Sources */,
 				06C4037021298BEC001416B8 /* Frameworks */,
 				06C4037121298BEC001416B8 /* Resources */,
+				873BABA101747D4D211A9A60 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -237,7 +377,6 @@
 			files = (
 				06C4038321298BEE001416B8 /* LaunchScreen.storyboard in Resources */,
 				06C4038021298BEE001416B8 /* Assets.xcassets in Resources */,
-				06C4037E21298BEC001416B8 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,13 +396,63 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1B75DE6BB77351AEFA3A9676 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-fatrabbit-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		873BABA101747D4D211A9A60 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit-resources.sh",
+				"${PODS_ROOT}/IQKeyboardManager/IQKeyboardManager/Resources/IQKeyboardManager.bundle",
+				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
+				"${PODS_ROOT}/TZImagePickerController/TZImagePickerController/TZImagePickerController/TZImagePickerController.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IQKeyboardManager.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TZImagePickerController.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		06C4036F21298BEC001416B8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06C4037B21298BEC001416B8 /* ViewController.m in Sources */,
 				06C4038621298BEE001416B8 /* main.m in Sources */,
+				0658C810212A7E6200800D7A /* FRTabbar.m in Sources */,
+				0658C7FC212A69A000800D7A /* FRNetWorkConfiguration.m in Sources */,
+				0658C80A212A7DA400800D7A /* FRHomeBaseViewController.m in Sources */,
+				0658C803212A797700800D7A /* FatrabbitConfig.m in Sources */,
+				0658C807212A7A9100800D7A /* GCCKeyChain.m in Sources */,
+				0658C816212A93D200800D7A /* FRTabBarController.m in Sources */,
+				0658C819212A94A300800D7A /* FRNavigationController.m in Sources */,
+				06C403AF21298D7F001416B8 /* FRBaseViewController.m in Sources */,
 				06C4037821298BEC001416B8 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -300,14 +489,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		06C4037C21298BEC001416B8 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				06C4037D21298BEC001416B8 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		06C4038121298BEE001416B8 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -431,35 +612,43 @@
 		};
 		06C403A021298BEE001416B8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA8F1224C3DF5DFF70631225 /* Pods-fatrabbit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = R3XS58GX4T;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fatrabbit/Macro/FRPrefixHeader.pch;
 				INFOPLIST_FILE = fatrabbit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fatrabbit.appstore.fatrabbit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fatrabbit.appstore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		06C403A121298BEE001416B8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F5CDBBC796399A99567E000 /* Pods-fatrabbit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = R3XS58GX4T;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fatrabbit/Macro/FRPrefixHeader.pch;
 				INFOPLIST_FILE = fatrabbit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fatrabbit.appstore.fatrabbit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fatrabbit.appstore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

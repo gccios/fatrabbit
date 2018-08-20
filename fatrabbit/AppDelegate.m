@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "FRTabBarController.h"
+#import "FatrabbitConfig.h"
 
 @interface AppDelegate ()
 
@@ -17,9 +19,24 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = [UIColor whiteColor];
+    
+    [FatrabbitConfig configFatrabbitApplication];
+    
+    [self createRootViewController];
+    
     return YES;
 }
 
+- (void)createRootViewController
+{
+    FRTabBarController * tabBar = [[FRTabBarController alloc] init];
+    self.window.rootViewController = tabBar;
+    
+    [self.window makeKeyAndVisible];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
