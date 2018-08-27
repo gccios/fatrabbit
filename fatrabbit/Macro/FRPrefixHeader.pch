@@ -18,16 +18,11 @@
 #define TEST_DEV_TYPE 1 //测试环境切换宏，1代表线上环境，0代表测试环境
 
 #if TEST_DEV_TYPE
-#define HOSTURL @"https://portal.deedao.com" //正式地址
-#define QNBucketName @"deedao-test"
-#define QNEndPoint @"http://ow57gfs34.bkt.clouddn.com"
+#define HOSTURL @"http://47.105.82.190:8090" //正式地址
 #define NSLog(...) {}
 
 #else
-#define HOSTURL @"http://10.93.20.171:8080"  //测试地址
-//#define HOSTURL @"https://portal.deedao.com"
-#define QNBucketName @"deedao-test"
-#define QNEndPoint @"http://ow57gfs34.bkt.clouddn.com"
+#define HOSTURL @"http://47.105.82.190:8090"  //测试地址
 #define NSLog(...) NSLog(__VA_ARGS__)
 #endif
 
@@ -35,11 +30,31 @@
  颜色
  */
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+#define KThemeColor UIColorFromRGB(0xec623e)
 
 /*
- 机型和UI适配
+ UI和布局相关
  */
+#define kMainBoundsHeight   ([UIScreen mainScreen].bounds).size.height //屏幕的高度
+#define kMainBoundsWidth    ([UIScreen mainScreen].bounds).size.width //屏幕的宽度
+#define kNaviBarHeight      44.0f
+#define kStatusBarHeight    [UIApplication sharedApplication].statusBarFrame.size.height
+
+#define kPingFangRegular(x) ([UIFont fontWithName:@"PingFangSC-Regular" size:x] ? [UIFont fontWithName:@"PingFangSC-Regular" size:x] : [UIFont systemFontOfSize:x])
+#define kPingFangThin(x) ([UIFont fontWithName:@"PingFangSC-Thin" size:x] ? [UIFont fontWithName:@"PingFangSC-Thin" size:x] : [UIFont systemFontOfSize:x])
+#define kPingFangLight(x) ([UIFont fontWithName:@"PingFangSC-Light" size:x] ? [UIFont fontWithName:@"PingFangSC-Light" size:x] : [UIFont systemFontOfSize:x])
+#define kPingFangMedium(x) ([UIFont fontWithName:@"PingFangSC-Medium" size:x] ? [UIFont fontWithName:@"PingFangSC-Medium" size:x] : [UIFont systemFontOfSize:x])
+
 #define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125.f, 2436.f), [[UIScreen mainScreen] currentMode].size) : NO)
+
+/*
+ 异常判断
+ */
+#define isNull(x)             (!x || [x isKindOfClass:[NSNull class]])
+#define isEmptyString(x)      (isNull(x) || [x isEqual:@""] || [x isEqual:@"(null)"])
+
+#define KIsDictionary(x) (x && [x isKindOfClass:[NSDictionary class]])
+#define KIsArray(x) (x && [x isKindOfClass:[NSArray class]])
 
 /*
  特殊定义

@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		060C3147212DBDC6002F5919 /* FRCityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C3146212DBDC6002F5919 /* FRCityViewController.m */; };
+		060C314E212DC0A9002F5919 /* FRNavAutoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C314D212DC0A9002F5919 /* FRNavAutoView.m */; };
+		060C3152212DC2D9002F5919 /* FRCityListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C3151212DC2D9002F5919 /* FRCityListRequest.m */; };
+		060C3155212DC440002F5919 /* FRBaseNetworkRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C3154212DC440002F5919 /* FRBaseNetworkRequest.m */; };
+		060C315E212DC534002F5919 /* FRApplicatinInfoTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C315A212DC534002F5919 /* FRApplicatinInfoTool.m */; };
+		060C315F212DC534002F5919 /* FRCreateViewTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C315B212DC534002F5919 /* FRCreateViewTool.m */; };
+		060C3163212DCA0B002F5919 /* FRManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C3162212DCA0B002F5919 /* FRManager.m */; };
+		060C3167212DCA5F002F5919 /* FRUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C3166212DCA5F002F5919 /* FRUserModel.m */; };
+		0645126E2133998E0072138F /* FRServiceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0645126D2133998E0072138F /* FRServiceTableViewCell.m */; };
+		064512712133B3350072138F /* FRSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 064512702133B3350072138F /* FRSearchViewController.m */; };
+		064512742133CBE80072138F /* FROrderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 064512732133CBE80072138F /* FROrderViewController.m */; };
+		064512772133CE430072138F /* FROrderPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 064512762133CE430072138F /* FROrderPageViewController.m */; };
+		0645127A2133E7390072138F /* FROrderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 064512792133E7390072138F /* FROrderTableViewCell.m */; };
 		0658C7FC212A69A000800D7A /* FRNetWorkConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C7FB212A69A000800D7A /* FRNetWorkConfiguration.m */; };
 		0658C803212A797700800D7A /* FatrabbitConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C802212A797700800D7A /* FatrabbitConfig.m */; };
 		0658C807212A7A9100800D7A /* GCCKeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C806212A7A9100800D7A /* GCCKeyChain.m */; };
@@ -21,6 +34,20 @@
 		06C4039021298BEE001416B8 /* fatrabbitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C4038F21298BEE001416B8 /* fatrabbitTests.m */; };
 		06C4039B21298BEE001416B8 /* fatrabbitUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C4039A21298BEE001416B8 /* fatrabbitUITests.m */; };
 		06C403AF21298D7F001416B8 /* FRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C403AE21298D7F001416B8 /* FRBaseViewController.m */; };
+		06EA085A213281F80039491C /* FRTableTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA0859213281F80039491C /* FRTableTabView.m */; };
+		06EA085E213288310039491C /* FRCityCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA085D213288310039491C /* FRCityCollectionViewCell.m */; };
+		06EA0862213292820039491C /* FRCityFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA0861213292820039491C /* FRCityFooterView.m */; };
+		06EA08652132968E0039491C /* FRStorePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA08642132968E0039491C /* FRStorePageViewController.m */; };
+		06EA0868213299400039491C /* FRMessagePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA0867213299400039491C /* FRMessagePageViewController.m */; };
+		06EA086C21329AA60039491C /* FRMessageNeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA086B21329AA60039491C /* FRMessageNeedCell.m */; };
+		06EA087521329AE40039491C /* FRMessageSystemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA087421329AE40039491C /* FRMessageSystemCell.m */; };
+		06EA087C2132A25C0039491C /* FRMyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA087B2132A25C0039491C /* FRMyViewController.m */; };
+		06EA08832132A2D90039491C /* MyMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA08822132A2D90039491C /* MyMenuModel.m */; };
+		06EA08862132A7200039491C /* FRUserHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA08852132A7200039491C /* FRUserHeaderView.m */; };
+		06EA08892132AD2F0039491C /* FRMenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA08882132AD2F0039491C /* FRMenuTableViewCell.m */; };
+		06FE2CEB212C6E0500E850D8 /* UIView+Additional.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE2CE7212C6E0500E850D8 /* UIView+Additional.m */; };
+		06FE2CEC212C6E0600E850D8 /* UIImage+Additional.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE2CEA212C6E0500E850D8 /* UIImage+Additional.m */; };
+		06FE2CEF212C70B000E850D8 /* FRHomePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE2CEE212C70B000E850D8 /* FRHomePageViewController.m */; };
 		51536B75ABE124F4F10E7E31 /* libPods-fatrabbit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4755B89BDA1E07984C3AF1A9 /* libPods-fatrabbit.a */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +69,32 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		060C3145212DBDC6002F5919 /* FRCityViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRCityViewController.h; sourceTree = "<group>"; };
+		060C3146212DBDC6002F5919 /* FRCityViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRCityViewController.m; sourceTree = "<group>"; };
+		060C314C212DC0A9002F5919 /* FRNavAutoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRNavAutoView.h; sourceTree = "<group>"; };
+		060C314D212DC0A9002F5919 /* FRNavAutoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNavAutoView.m; sourceTree = "<group>"; };
+		060C3150212DC2D9002F5919 /* FRCityListRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRCityListRequest.h; sourceTree = "<group>"; };
+		060C3151212DC2D9002F5919 /* FRCityListRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRCityListRequest.m; sourceTree = "<group>"; };
+		060C3153212DC440002F5919 /* FRBaseNetworkRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRBaseNetworkRequest.h; sourceTree = "<group>"; };
+		060C3154212DC440002F5919 /* FRBaseNetworkRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRBaseNetworkRequest.m; sourceTree = "<group>"; };
+		060C315A212DC534002F5919 /* FRApplicatinInfoTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRApplicatinInfoTool.m; sourceTree = "<group>"; };
+		060C315B212DC534002F5919 /* FRCreateViewTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRCreateViewTool.m; sourceTree = "<group>"; };
+		060C315C212DC534002F5919 /* FRApplicatinInfoTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRApplicatinInfoTool.h; sourceTree = "<group>"; };
+		060C315D212DC534002F5919 /* FRCreateViewTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRCreateViewTool.h; sourceTree = "<group>"; };
+		060C3161212DCA0B002F5919 /* FRManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRManager.h; sourceTree = "<group>"; };
+		060C3162212DCA0B002F5919 /* FRManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRManager.m; sourceTree = "<group>"; };
+		060C3165212DCA5F002F5919 /* FRUserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRUserModel.h; sourceTree = "<group>"; };
+		060C3166212DCA5F002F5919 /* FRUserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRUserModel.m; sourceTree = "<group>"; };
+		0645126C2133998E0072138F /* FRServiceTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRServiceTableViewCell.h; sourceTree = "<group>"; };
+		0645126D2133998E0072138F /* FRServiceTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRServiceTableViewCell.m; sourceTree = "<group>"; };
+		0645126F2133B3350072138F /* FRSearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRSearchViewController.h; sourceTree = "<group>"; };
+		064512702133B3350072138F /* FRSearchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRSearchViewController.m; sourceTree = "<group>"; };
+		064512722133CBE80072138F /* FROrderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FROrderViewController.h; sourceTree = "<group>"; };
+		064512732133CBE80072138F /* FROrderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FROrderViewController.m; sourceTree = "<group>"; };
+		064512752133CE430072138F /* FROrderPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FROrderPageViewController.h; sourceTree = "<group>"; };
+		064512762133CE430072138F /* FROrderPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FROrderPageViewController.m; sourceTree = "<group>"; };
+		064512782133E7390072138F /* FROrderTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FROrderTableViewCell.h; sourceTree = "<group>"; };
+		064512792133E7390072138F /* FROrderTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FROrderTableViewCell.m; sourceTree = "<group>"; };
 		0658C7FA212A69A000800D7A /* FRNetWorkConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRNetWorkConfiguration.h; sourceTree = "<group>"; };
 		0658C7FB212A69A000800D7A /* FRNetWorkConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNetWorkConfiguration.m; sourceTree = "<group>"; };
 		0658C801212A797700800D7A /* FatrabbitConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FatrabbitConfig.h; sourceTree = "<group>"; };
@@ -72,6 +125,34 @@
 		06C403AD21298D7F001416B8 /* FRBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRBaseViewController.h; sourceTree = "<group>"; };
 		06C403AE21298D7F001416B8 /* FRBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRBaseViewController.m; sourceTree = "<group>"; };
 		06C403B221298F46001416B8 /* FRPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRPrefixHeader.pch; sourceTree = "<group>"; };
+		06EA0858213281F80039491C /* FRTableTabView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRTableTabView.h; sourceTree = "<group>"; };
+		06EA0859213281F80039491C /* FRTableTabView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRTableTabView.m; sourceTree = "<group>"; };
+		06EA085C213288310039491C /* FRCityCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRCityCollectionViewCell.h; sourceTree = "<group>"; };
+		06EA085D213288310039491C /* FRCityCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRCityCollectionViewCell.m; sourceTree = "<group>"; };
+		06EA0860213292820039491C /* FRCityFooterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRCityFooterView.h; sourceTree = "<group>"; };
+		06EA0861213292820039491C /* FRCityFooterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRCityFooterView.m; sourceTree = "<group>"; };
+		06EA08632132968E0039491C /* FRStorePageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStorePageViewController.h; sourceTree = "<group>"; };
+		06EA08642132968E0039491C /* FRStorePageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStorePageViewController.m; sourceTree = "<group>"; };
+		06EA0866213299400039491C /* FRMessagePageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMessagePageViewController.h; sourceTree = "<group>"; };
+		06EA0867213299400039491C /* FRMessagePageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMessagePageViewController.m; sourceTree = "<group>"; };
+		06EA086A21329AA60039491C /* FRMessageNeedCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMessageNeedCell.h; sourceTree = "<group>"; };
+		06EA086B21329AA60039491C /* FRMessageNeedCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMessageNeedCell.m; sourceTree = "<group>"; };
+		06EA087321329AE40039491C /* FRMessageSystemCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMessageSystemCell.h; sourceTree = "<group>"; };
+		06EA087421329AE40039491C /* FRMessageSystemCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMessageSystemCell.m; sourceTree = "<group>"; };
+		06EA087A2132A25C0039491C /* FRMyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyViewController.h; sourceTree = "<group>"; };
+		06EA087B2132A25C0039491C /* FRMyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyViewController.m; sourceTree = "<group>"; };
+		06EA08812132A2D90039491C /* MyMenuModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyMenuModel.h; sourceTree = "<group>"; };
+		06EA08822132A2D90039491C /* MyMenuModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyMenuModel.m; sourceTree = "<group>"; };
+		06EA08842132A7200039491C /* FRUserHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRUserHeaderView.h; sourceTree = "<group>"; };
+		06EA08852132A7200039491C /* FRUserHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRUserHeaderView.m; sourceTree = "<group>"; };
+		06EA08872132AD2F0039491C /* FRMenuTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMenuTableViewCell.h; sourceTree = "<group>"; };
+		06EA08882132AD2F0039491C /* FRMenuTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMenuTableViewCell.m; sourceTree = "<group>"; };
+		06FE2CE7212C6E0500E850D8 /* UIView+Additional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Additional.m"; sourceTree = "<group>"; };
+		06FE2CE8212C6E0500E850D8 /* UIImage+Additional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Additional.h"; sourceTree = "<group>"; };
+		06FE2CE9212C6E0500E850D8 /* UIView+Additional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Additional.h"; sourceTree = "<group>"; };
+		06FE2CEA212C6E0500E850D8 /* UIImage+Additional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Additional.m"; sourceTree = "<group>"; };
+		06FE2CED212C70B000E850D8 /* FRHomePageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRHomePageViewController.h; sourceTree = "<group>"; };
+		06FE2CEE212C70B000E850D8 /* FRHomePageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRHomePageViewController.m; sourceTree = "<group>"; };
 		3F5CDBBC796399A99567E000 /* Pods-fatrabbit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fatrabbit.release.xcconfig"; path = "Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit.release.xcconfig"; sourceTree = "<group>"; };
 		4755B89BDA1E07984C3AF1A9 /* libPods-fatrabbit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-fatrabbit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8F1224C3DF5DFF70631225 /* Pods-fatrabbit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fatrabbit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -103,11 +184,92 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		060C314B212DC093002F5919 /* Nav */ = {
+			isa = PBXGroup;
+			children = (
+				060C314C212DC0A9002F5919 /* FRNavAutoView.h */,
+				060C314D212DC0A9002F5919 /* FRNavAutoView.m */,
+			);
+			path = Nav;
+			sourceTree = "<group>";
+		};
+		060C314F212DC2C3002F5919 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				060C3150212DC2D9002F5919 /* FRCityListRequest.h */,
+				060C3151212DC2D9002F5919 /* FRCityListRequest.m */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		060C3159212DC534002F5919 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				060C315C212DC534002F5919 /* FRApplicatinInfoTool.h */,
+				060C315A212DC534002F5919 /* FRApplicatinInfoTool.m */,
+				060C315D212DC534002F5919 /* FRCreateViewTool.h */,
+				060C315B212DC534002F5919 /* FRCreateViewTool.m */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
+		};
+		060C3160212DCA00002F5919 /* FRManager */ = {
+			isa = PBXGroup;
+			children = (
+				060C3161212DCA0B002F5919 /* FRManager.h */,
+				060C3162212DCA0B002F5919 /* FRManager.m */,
+			);
+			path = FRManager;
+			sourceTree = "<group>";
+		};
+		060C3164212DCA52002F5919 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				060C3165212DCA5F002F5919 /* FRUserModel.h */,
+				060C3166212DCA5F002F5919 /* FRUserModel.m */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		06451269213399690072138F /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				06EA086A21329AA60039491C /* FRMessageNeedCell.h */,
+				06EA086B21329AA60039491C /* FRMessageNeedCell.m */,
+				06EA087321329AE40039491C /* FRMessageSystemCell.h */,
+				06EA087421329AE40039491C /* FRMessageSystemCell.m */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		0645126A213399710072138F /* My */ = {
+			isa = PBXGroup;
+			children = (
+				06EA08872132AD2F0039491C /* FRMenuTableViewCell.h */,
+				06EA08882132AD2F0039491C /* FRMenuTableViewCell.m */,
+				064512782133E7390072138F /* FROrderTableViewCell.h */,
+				064512792133E7390072138F /* FROrderTableViewCell.m */,
+			);
+			path = My;
+			sourceTree = "<group>";
+		};
+		0645126B213399820072138F /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				0645126C2133998E0072138F /* FRServiceTableViewCell.h */,
+				0645126D2133998E0072138F /* FRServiceTableViewCell.m */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		0658C7F9212A694F00800D7A /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				0658C7FA212A69A000800D7A /* FRNetWorkConfiguration.h */,
 				0658C7FB212A69A000800D7A /* FRNetWorkConfiguration.m */,
+				060C3153212DC440002F5919 /* FRBaseNetworkRequest.h */,
+				060C3154212DC440002F5919 /* FRBaseNetworkRequest.m */,
+				060C314F212DC2C3002F5919 /* Home */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -117,6 +279,8 @@
 			children = (
 				0658C801212A797700800D7A /* FatrabbitConfig.h */,
 				0658C802212A797700800D7A /* FatrabbitConfig.m */,
+				060C3160212DCA00002F5919 /* FRManager */,
+				060C3159212DC534002F5919 /* Tool */,
 				0658C804212A7A9100800D7A /* GCCKeyChain */,
 			);
 			path = Support;
@@ -134,6 +298,12 @@
 		0658C80C212A7E2A00800D7A /* HomeViewController */ = {
 			isa = PBXGroup;
 			children = (
+				06FE2CED212C70B000E850D8 /* FRHomePageViewController.h */,
+				06FE2CEE212C70B000E850D8 /* FRHomePageViewController.m */,
+				0645126F2133B3350072138F /* FRSearchViewController.h */,
+				064512702133B3350072138F /* FRSearchViewController.m */,
+				060C3145212DBDC6002F5919 /* FRCityViewController.h */,
+				060C3146212DBDC6002F5919 /* FRCityViewController.m */,
 			);
 			path = HomeViewController;
 			sourceTree = "<group>";
@@ -179,6 +349,7 @@
 				06C403A921298C4D001416B8 /* Controller */,
 				06C403AB21298C69001416B8 /* View */,
 				0658C7F9212A694F00800D7A /* Network */,
+				06FE2CE5212C6DFD00E850D8 /* Helper */,
 				0658C800212A795900800D7A /* Support */,
 				06C4037F21298BEE001416B8 /* Assets.xcassets */,
 				06C4038121298BEE001416B8 /* LaunchScreen.storyboard */,
@@ -211,6 +382,9 @@
 			children = (
 				06C403AC21298D14001416B8 /* BaseViewController */,
 				0658C80C212A7E2A00800D7A /* HomeViewController */,
+				06EA087621329E3F0039491C /* StoreViewController */,
+				06EA087721329E4D0039491C /* MessageViewController */,
+				06EA08792132A2390039491C /* MyViewController */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -218,6 +392,8 @@
 		06C403AA21298C5C001416B8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				060C3164212DCA52002F5919 /* User */,
+				06EA087D2132A2C00039491C /* MyModel */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -225,6 +401,11 @@
 		06C403AB21298C69001416B8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				06EA085B2132881C0039491C /* CollectionViewCell */,
+				06EA085F2132926B0039491C /* CollectionHeaderFooter */,
+				06EA086921329A6D0039491C /* TableViewCell */,
+				06EA0857213281B60039491C /* TableViewHeader */,
+				060C314B212DC093002F5919 /* Nav */,
 				0658C80D212A7E4E00800D7A /* FRTabbar */,
 			);
 			path = View;
@@ -251,6 +432,104 @@
 				06C403B221298F46001416B8 /* FRPrefixHeader.pch */,
 			);
 			path = Macro;
+			sourceTree = "<group>";
+		};
+		06EA0857213281B60039491C /* TableViewHeader */ = {
+			isa = PBXGroup;
+			children = (
+				06EA0858213281F80039491C /* FRTableTabView.h */,
+				06EA0859213281F80039491C /* FRTableTabView.m */,
+				06EA08842132A7200039491C /* FRUserHeaderView.h */,
+				06EA08852132A7200039491C /* FRUserHeaderView.m */,
+			);
+			path = TableViewHeader;
+			sourceTree = "<group>";
+		};
+		06EA085B2132881C0039491C /* CollectionViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				06EA085C213288310039491C /* FRCityCollectionViewCell.h */,
+				06EA085D213288310039491C /* FRCityCollectionViewCell.m */,
+			);
+			path = CollectionViewCell;
+			sourceTree = "<group>";
+		};
+		06EA085F2132926B0039491C /* CollectionHeaderFooter */ = {
+			isa = PBXGroup;
+			children = (
+				06EA0860213292820039491C /* FRCityFooterView.h */,
+				06EA0861213292820039491C /* FRCityFooterView.m */,
+			);
+			path = CollectionHeaderFooter;
+			sourceTree = "<group>";
+		};
+		06EA086921329A6D0039491C /* TableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				0645126B213399820072138F /* Home */,
+				06451269213399690072138F /* Message */,
+				0645126A213399710072138F /* My */,
+			);
+			path = TableViewCell;
+			sourceTree = "<group>";
+		};
+		06EA087621329E3F0039491C /* StoreViewController */ = {
+			isa = PBXGroup;
+			children = (
+				06EA08632132968E0039491C /* FRStorePageViewController.h */,
+				06EA08642132968E0039491C /* FRStorePageViewController.m */,
+			);
+			path = StoreViewController;
+			sourceTree = "<group>";
+		};
+		06EA087721329E4D0039491C /* MessageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				06EA0866213299400039491C /* FRMessagePageViewController.h */,
+				06EA0867213299400039491C /* FRMessagePageViewController.m */,
+			);
+			path = MessageViewController;
+			sourceTree = "<group>";
+		};
+		06EA08792132A2390039491C /* MyViewController */ = {
+			isa = PBXGroup;
+			children = (
+				06EA087A2132A25C0039491C /* FRMyViewController.h */,
+				06EA087B2132A25C0039491C /* FRMyViewController.m */,
+				064512752133CE430072138F /* FROrderPageViewController.h */,
+				064512762133CE430072138F /* FROrderPageViewController.m */,
+				064512722133CBE80072138F /* FROrderViewController.h */,
+				064512732133CBE80072138F /* FROrderViewController.m */,
+			);
+			path = MyViewController;
+			sourceTree = "<group>";
+		};
+		06EA087D2132A2C00039491C /* MyModel */ = {
+			isa = PBXGroup;
+			children = (
+				06EA08812132A2D90039491C /* MyMenuModel.h */,
+				06EA08822132A2D90039491C /* MyMenuModel.m */,
+			);
+			path = MyModel;
+			sourceTree = "<group>";
+		};
+		06FE2CE5212C6DFD00E850D8 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				06FE2CE6212C6E0500E850D8 /* Additional */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		06FE2CE6212C6E0500E850D8 /* Additional */ = {
+			isa = PBXGroup;
+			children = (
+				06FE2CE9212C6E0500E850D8 /* UIView+Additional.h */,
+				06FE2CE7212C6E0500E850D8 /* UIView+Additional.m */,
+				06FE2CE8212C6E0500E850D8 /* UIImage+Additional.h */,
+				06FE2CEA212C6E0500E850D8 /* UIImage+Additional.m */,
+			);
+			path = Additional;
 			sourceTree = "<group>";
 		};
 		5F1EBE726EEF6BAA649A01AE /* Frameworks */ = {
@@ -444,16 +723,43 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06EA08892132AD2F0039491C /* FRMenuTableViewCell.m in Sources */,
+				06EA0862213292820039491C /* FRCityFooterView.m in Sources */,
 				06C4038621298BEE001416B8 /* main.m in Sources */,
+				06EA087521329AE40039491C /* FRMessageSystemCell.m in Sources */,
+				060C3163212DCA0B002F5919 /* FRManager.m in Sources */,
+				06EA08832132A2D90039491C /* MyMenuModel.m in Sources */,
+				060C3147212DBDC6002F5919 /* FRCityViewController.m in Sources */,
 				0658C810212A7E6200800D7A /* FRTabbar.m in Sources */,
+				06EA08862132A7200039491C /* FRUserHeaderView.m in Sources */,
+				06FE2CEB212C6E0500E850D8 /* UIView+Additional.m in Sources */,
+				06EA08652132968E0039491C /* FRStorePageViewController.m in Sources */,
 				0658C7FC212A69A000800D7A /* FRNetWorkConfiguration.m in Sources */,
+				064512742133CBE80072138F /* FROrderViewController.m in Sources */,
+				06EA086C21329AA60039491C /* FRMessageNeedCell.m in Sources */,
 				0658C80A212A7DA400800D7A /* FRHomeBaseViewController.m in Sources */,
+				06EA0868213299400039491C /* FRMessagePageViewController.m in Sources */,
+				060C3167212DCA5F002F5919 /* FRUserModel.m in Sources */,
+				06EA085E213288310039491C /* FRCityCollectionViewCell.m in Sources */,
+				060C3155212DC440002F5919 /* FRBaseNetworkRequest.m in Sources */,
+				0645127A2133E7390072138F /* FROrderTableViewCell.m in Sources */,
+				0645126E2133998E0072138F /* FRServiceTableViewCell.m in Sources */,
 				0658C803212A797700800D7A /* FatrabbitConfig.m in Sources */,
+				06FE2CEF212C70B000E850D8 /* FRHomePageViewController.m in Sources */,
+				064512772133CE430072138F /* FROrderPageViewController.m in Sources */,
+				06EA085A213281F80039491C /* FRTableTabView.m in Sources */,
 				0658C807212A7A9100800D7A /* GCCKeyChain.m in Sources */,
+				060C315E212DC534002F5919 /* FRApplicatinInfoTool.m in Sources */,
+				064512712133B3350072138F /* FRSearchViewController.m in Sources */,
 				0658C816212A93D200800D7A /* FRTabBarController.m in Sources */,
+				060C314E212DC0A9002F5919 /* FRNavAutoView.m in Sources */,
+				06FE2CEC212C6E0600E850D8 /* UIImage+Additional.m in Sources */,
 				0658C819212A94A300800D7A /* FRNavigationController.m in Sources */,
 				06C403AF21298D7F001416B8 /* FRBaseViewController.m in Sources */,
+				06EA087C2132A25C0039491C /* FRMyViewController.m in Sources */,
 				06C4037821298BEC001416B8 /* AppDelegate.m in Sources */,
+				060C3152212DC2D9002F5919 /* FRCityListRequest.m in Sources */,
+				060C315F212DC534002F5919 /* FRCreateViewTool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -620,6 +926,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = fatrabbit/Macro/FRPrefixHeader.pch;
 				INFOPLIST_FILE = fatrabbit/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -641,6 +948,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = fatrabbit/Macro/FRPrefixHeader.pch;
 				INFOPLIST_FILE = fatrabbit/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

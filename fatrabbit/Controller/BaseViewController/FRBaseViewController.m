@@ -30,7 +30,17 @@
 
 - (void)createVCForFBViewController
 {
+    self.view.backgroundColor = UIColorFromRGB(0xEFEFF4);
     
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.exclusiveTouch = YES;
+    [button setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    button.frame = CGRectMake(0, 0, 40, 44);
+    [button setImageEdgeInsets:UIEdgeInsetsMake(0, -25, 0, 0)];
+    [button addTarget:self action:@selector(navBackButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    button.backgroundColor = [UIColor clearColor];
+    UIBarButtonItem* backItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.navigationItem.leftBarButtonItem = backItem;
 }
 
 - (void)createViews
@@ -38,9 +48,29 @@
     
 }
 
+- (void)navBackButtonClicked:(UIButton *)button
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleLightContent;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    //代理置空，否则会闪退
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.delegate = nil;
+    }
+}
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    //开启iOS7的滑动返回效果
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

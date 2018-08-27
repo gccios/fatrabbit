@@ -7,6 +7,7 @@
 //
 
 #import "FRNavigationController.h"
+#import "UIImage+Additional.h"
 
 @interface FRNavigationController ()
 
@@ -17,6 +18,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //设置标题颜色和字体
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : UIColorFromRGB(0xFFFFFF), NSFontAttributeName : [UIFont boldSystemFontOfSize:17]}];
+    
+    UIImage *image = [UIImage imageWithColor:KThemeColor size:CGSizeMake(kMainBoundsWidth, kNaviBarHeight + kStatusBarHeight)];
+    [[UINavigationBar appearanceWhenContainedIn:[UINavigationController class], nil] setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle

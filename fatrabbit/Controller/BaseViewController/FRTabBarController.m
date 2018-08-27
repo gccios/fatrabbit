@@ -8,6 +8,11 @@
 
 #import "FRTabBarController.h"
 #import "FRTabbar.h"
+#import "FRNavigationController.h"
+#import "FRHomePageViewController.h"
+#import "FRStorePageViewController.h"
+#import "FRMessagePageViewController.h"
+#import "FRMyViewController.h"
 
 @interface FRTabBarController ()
 
@@ -29,13 +34,30 @@
     
     NSMutableArray * vcArray = [[NSMutableArray alloc] init];
     
-    for (NSInteger i = 0; i < 4; i++) {
-        UIViewController * vc = [[UIViewController alloc] init];
-        UINavigationController * na = [[UINavigationController alloc] initWithRootViewController:vc];
-        [vcArray addObject:na];
-        UITabBarItem * item = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:i];
-        [na setTabBarItem:item];
-    }
+    FRHomePageViewController * home = [[FRHomePageViewController alloc] init];
+    FRNavigationController * homeNav = [[FRNavigationController alloc] initWithRootViewController:home];
+     UITabBarItem * homeItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:0];
+    [homeNav setTabBarItem:homeItem];
+    [vcArray addObject:homeNav];
+    
+    FRStorePageViewController * store = [[FRStorePageViewController alloc] init];
+    FRNavigationController * storeNav = [[FRNavigationController alloc] initWithRootViewController:store];
+    UITabBarItem * homeStore = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:1];
+    [storeNav setTabBarItem:homeStore];
+    [vcArray addObject:storeNav];
+    
+    FRMessagePageViewController * message = [[FRMessagePageViewController alloc] init];
+    FRNavigationController * messageNav = [[FRNavigationController alloc] initWithRootViewController:message];
+    UITabBarItem * messageItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:2];
+    [messageNav setTabBarItem:messageItem];
+    [vcArray addObject:messageNav];
+    
+    FRMyViewController * my = [[FRMyViewController alloc] init];
+    FRNavigationController * myNav = [[FRNavigationController alloc] initWithRootViewController:my];
+    UITabBarItem * myItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:3];
+    [myNav setTabBarItem:myItem];
+    [vcArray addObject:myNav];
+    
     [self setViewControllers:vcArray];
 }
 

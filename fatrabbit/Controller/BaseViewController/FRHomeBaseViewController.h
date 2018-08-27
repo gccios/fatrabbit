@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRCreateViewTool.h"
+#import <Masonry.h>
 
 @interface FRHomeBaseViewController : UIViewController
 

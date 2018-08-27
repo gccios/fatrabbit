@@ -1,0 +1,122 @@
+//
+//  FRCityViewController.m
+//  fatrabbit
+//
+//  Created by 郭春城 on 2018/8/22.
+//  Copyright © 2018年 郭春城. All rights reserved.
+//
+
+#import "FRCityViewController.h"
+#import "FRCityListRequest.h"
+#import "FRCityCollectionViewCell.h"
+#import "FRCityFooterView.h"
+
+@interface FRCityViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
+
+@property (nonatomic, strong) NSArray * cityArray;
+@property (nonatomic, strong) UICollectionView * cityCollectionView;
+
+@end
+
+@implementation FRCityViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    self.cityArray = @[@"北京", @"广州", @"上海", @"深圳"];
+    
+    [self createViews];
+    
+    [self requestCityList];
+}
+
+- (void)requestCityList
+{
+//    FRCityListRequest * request = [[FRCityListRequest alloc] init];
+//    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+//
+//    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+//
+//    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+//
+//    }];
+}
+
+- (void)createViews
+{
+    self.navigationItem.title = @"选择城市";
+    
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
+    UILabel * topTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    topTipLabel.text = @"已开通城市";
+    [self.view addSubview:topTipLabel];
+    [topTipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(20 * scale);
+        make.left.mas_equalTo(20 * scale);
+        make.height.mas_equalTo(20 * scale);
+    }];
+    
+    UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.itemSize = CGSizeMake(kMainBoundsWidth / 12.f * 3, 45 * scale);
+    layout.minimumLineSpacing = 10 * scale;
+    layout.minimumInteritemSpacing = kMainBoundsWidth / 20.f;
+    layout.footerReferenceSize = CGSizeMake(kMainBoundsWidth, 50 * scale);
+    
+    self.cityCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+    [self.cityCollectionView registerClass:[FRCityCollectionViewCell class] forCellWithReuseIdentifier:@"FRCityCollectionViewCell"];
+    [self.cityCollectionView registerClass:[FRCityFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FRCityFooterView"];
+    self.cityCollectionView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.cityCollectionView.delegate = self;
+    self.cityCollectionView.dataSource = self;
+    self.cityCollectionView.contentInset = UIEdgeInsetsMake(0, kMainBoundsWidth / 15.f, 0, kMainBoundsWidth / 15.f);
+    [self.view addSubview:self.cityCollectionView];
+    [self.cityCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(50 * scale);
+        make.left.bottom.right.mas_equalTo(0);
+    }];
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.cityArray.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    FRCityCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FRCityCollectionViewCell" forIndexPath:indexPath];
+    
+    NSString * title = [self.cityArray objectAtIndex:indexPath.row];
+    [cell congitWithTitle:title];
+    
+    return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        FRCityFooterView * view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FRCityFooterView" forIndexPath:indexPath];
+        
+        return view;
+    }
+    
+    return nil;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

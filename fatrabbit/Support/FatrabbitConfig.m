@@ -8,6 +8,8 @@
 
 #import "FatrabbitConfig.h"
 #import <IQKeyboardManager.h>
+#import <BGNetwork.h>
+#import "FRNetWorkConfiguration.h"
 #import "GCCKeyChain.h"
 
 @implementation FatrabbitConfig
@@ -15,6 +17,8 @@
 //配置fatrabbit基础项
 + (void)configFatrabbitApplication
 {
+    [[BGNetworkManager sharedManager] setNetworkConfiguration:[FRNetWorkConfiguration configuration]];
+    
     //利用keyChain存储，仿造设备唯一标识
     NSString* identifierNumber = [[UIDevice currentDevice].identifierForVendor UUIDString];
     if (![GCCKeyChain load:keychainID]) {
