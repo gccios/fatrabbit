@@ -46,11 +46,35 @@
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
         make.left.mas_equalTo(15 * scale);
-        make.width.height.mas_equalTo(90 * scale);
+        make.width.mas_equalTo(120 * scale);
+        make.height.mas_equalTo(90 * scale);
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-//    self.nameLabel
+    self.nameLabel.text = @"测试标题测试标题";
+    [self.contentView addSubview:self.nameLabel];
+    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.coverImageView.mas_right).offset(10 * scale);
+        make.top.mas_equalTo(self.coverImageView).offset(5 * scale);
+        make.width.mas_equalTo(150 * scale);
+    }];
+    
+    UILabel * totalTitleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    totalTitleLabel.text = @"合计：";
+    [self.contentView addSubview:totalTitleLabel];
+    [totalTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.nameLabel);
+        make.bottom.mas_equalTo(self.coverImageView).mas_equalTo(-5* scale);
+        make.height.mas_equalTo(20 * scale);
+    }];
+    
+    self.totalLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
+    self.totalLabel.text = @"测试金额";
+    [self.contentView addSubview:self.totalLabel];
+    [self.totalLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.totalLabel.mas_right).offset(5 * scale);
+        make.centerY.height.mas_equalTo(totalTitleLabel);
+    }];
 }
 
 - (void)awakeFromNib {
