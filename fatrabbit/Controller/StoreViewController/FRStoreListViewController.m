@@ -1,22 +1,21 @@
 //
-//  FROrderViewController.m
+//  FRStoreListViewController.m
 //  fatrabbit
 //
-//  Created by 郭春城 on 2018/8/27.
+//  Created by 郭春城 on 2018/8/30.
 //  Copyright © 2018年 郭春城. All rights reserved.
 //
 
-#import "FROrderViewController.h"
-#import "FROrderTableViewCell.h"
-#import "FROrderDetailViewController.h"
+#import "FRStoreListViewController.h"
+#import "FRStoreTableViewCell.h"
 
-@interface FROrderViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface FRStoreListViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView * tableView;
 
 @end
 
-@implementation FROrderViewController
+@implementation FRStoreListViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,7 +33,7 @@
     self.tableView.backgroundColor = UIColorFromRGB(0xEFEFF4);
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    [self.tableView registerClass:[FROrderTableViewCell class] forCellReuseIdentifier:@"FROrderTableViewCell"];
+    [self.tableView registerClass:[FRStoreTableViewCell class] forCellReuseIdentifier:@"FRStoreTableViewCell"];
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
@@ -43,12 +42,6 @@
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    FROrderDetailViewController * detail = [[FROrderDetailViewController alloc] init];
-    [self.navigationController pushViewController:detail animated:YES];
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 10;
@@ -56,13 +49,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FROrderTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FROrderTableViewCell" forIndexPath:indexPath];
+    FRStoreTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRStoreTableViewCell" forIndexPath:indexPath];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 120 * kMainBoundsWidth / 375.f;
+    return 110 * kMainBoundsWidth / 375.f;
 }
 
 - (void)didReceiveMemoryWarning {

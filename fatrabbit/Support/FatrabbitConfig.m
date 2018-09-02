@@ -11,6 +11,7 @@
 #import <BGNetwork.h>
 #import "FRNetWorkConfiguration.h"
 #import "GCCKeyChain.h"
+#import "UserManager.h"
 
 @implementation FatrabbitConfig
 
@@ -29,6 +30,14 @@
     IQKeyboardManager * keyboardManager = [IQKeyboardManager sharedManager];
     keyboardManager.enable = YES;
     keyboardManager.shouldResignOnTouchOutside = YES;
+    
+    NSFileManager * manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:FRUserInfoPath]) {
+        NSDictionary * data = [NSDictionary dictionaryWithContentsOfFile:FRUserInfoPath];
+        if ([data isKindOfClass:[NSDictionary class]]) {
+            [[UserManager shareManager] loginSuccesWithCache:data];
+        }
+    }
 }
 
 @end

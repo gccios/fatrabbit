@@ -7,6 +7,7 @@
 //
 
 #import "FRTabbar.h"
+#import "FRCateListViewController.h"
 
 @interface FRTabbar ()
 
@@ -39,6 +40,7 @@
     self.centerButton.layer.cornerRadius = self.centerButton.frame.size.width / 2.f;
     self.centerButton.layer.masksToBounds = YES;
     [self.centerButton setBackgroundImage:[UIImage imageNamed:@"tabAdd"] forState:UIControlStateNormal];
+    self.centerButton.backgroundColor = [UIColor redColor];
     [self.centerView addSubview:self.centerButton];
     [self.centerButton addTarget:self action:@selector(centerButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -47,8 +49,8 @@
 {
     UITabBarController * tab = (UITabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
     UINavigationController * na = (UINavigationController *)tab.selectedViewController;
-    UIViewController * vc = [[UIViewController alloc] init];
-    [na pushViewController:vc animated:YES];
+    FRCateListViewController * vc = [[FRCateListViewController alloc] init];
+    [na presentViewController:vc animated:YES completion:nil];
 }
 
 - (void)layoutSubviews

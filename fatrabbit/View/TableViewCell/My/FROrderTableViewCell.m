@@ -46,11 +46,11 @@
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
         make.left.mas_equalTo(15 * scale);
-        make.width.mas_equalTo(120 * scale);
+        make.width.mas_equalTo(110 * scale);
         make.height.mas_equalTo(90 * scale);
     }];
     
-    self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
     self.nameLabel.text = @"测试标题测试标题";
     [self.contentView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -59,7 +59,7 @@
         make.width.mas_equalTo(150 * scale);
     }];
     
-    UILabel * totalTitleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    UILabel * totalTitleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
     totalTitleLabel.text = @"合计：";
     [self.contentView addSubview:totalTitleLabel];
     [totalTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -68,13 +68,55 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
-    self.totalLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.totalLabel.text = @"测试金额";
+    self.totalLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
+    self.totalLabel.text = @"金额";
     [self.contentView addSubview:self.totalLabel];
     [self.totalLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.totalLabel.mas_right).offset(5 * scale);
+        make.left.mas_equalTo(totalTitleLabel.mas_right);
         make.centerY.height.mas_equalTo(totalTitleLabel);
     }];
+    
+    self.numberLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    self.numberLabel.text = @"测试数量";
+    [self.contentView addSubview:self.numberLabel];
+    [self.numberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(totalTitleLabel);
+        make.bottom.mas_equalTo(self.totalLabel.mas_top).offset(-5 * scale);
+        make.height.mas_equalTo(16 * scale);
+    }];
+    
+    self.statusLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentRight];
+    self.statusLabel.text = @"已完成";
+    [self.contentView addSubview:self.statusLabel];
+    [self.statusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(-15 * scale);
+        make.center.mas_equalTo(self.nameLabel);
+        make.height.mas_equalTo(15 * scale);
+    }];
+    
+    self.rightHandleButton = [FRCreateViewTool createButtonWithFrame: CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0x333333) title:@"再次购买"];
+    [self.contentView addSubview:self.rightHandleButton];
+    [self.rightHandleButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(-15 * scale);
+        make.centerY.mas_equalTo(self.totalLabel);
+        make.width.mas_equalTo(60 * scale);
+        make.height.mas_equalTo(20 * scale);
+    }];
+    [FRCreateViewTool cornerView:self.rightHandleButton radius:5 * scale];
+    self.rightHandleButton.layer.borderColor = UIColorFromRGB(0x999999).CGColor;
+    self.rightHandleButton.layer.borderWidth = .5f;
+    
+    self.leftHandleButton = [FRCreateViewTool createButtonWithFrame: CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0x999999) title:@"查看发票"];
+    [self.contentView addSubview:self.leftHandleButton];
+    [self.leftHandleButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.rightHandleButton.mas_left).offset(-10 * scale);
+        make.centerY.mas_equalTo(self.totalLabel);
+        make.width.mas_equalTo(60 * scale);
+        make.height.mas_equalTo(20 * scale);
+    }];
+    [FRCreateViewTool cornerView:self.leftHandleButton radius:5 * scale];
+    self.leftHandleButton.layer.borderColor = UIColorFromRGB(0x999999).CGColor;
+    self.leftHandleButton.layer.borderWidth = .5f;
 }
 
 - (void)awakeFromNib {

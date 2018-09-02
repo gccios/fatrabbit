@@ -46,7 +46,7 @@
     self.navigationItem.title = @"我的";
     
     self.myTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    self.myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//    self.myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.myTableView.delegate = self;
     self.myTableView.dataSource = self;
     [self.myTableView registerClass:[FRMenuTableViewCell class] forCellReuseIdentifier:@"FRMenuTableViewCell"];

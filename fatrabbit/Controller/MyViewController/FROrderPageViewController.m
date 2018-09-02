@@ -26,7 +26,7 @@
     NSArray * titleArray = @[@"全部", @"待收款", @"待收货", @"已完成", @"待评价", @"已取消"];
     
     if (self = [super initWithViewControllerClasses:vcArray andTheirTitles:titleArray]) {
-        self.navigationItem.title = @"我的订单";
+        self.navigationItem.title = @"商品订单";
         self.hidesBottomBarWhenPushed = YES;
         [self configSelf];
     }
@@ -44,6 +44,7 @@
     self.progressColor = KThemeColor;
     self.progressHeight = 1.5f;
     self.menuViewStyle = WMMenuViewStyleLine;
+    self.menuView.scrollView.backgroundColor = UIColorFromRGB(0xEFEFF4);
     self.progressViewBottomSpace = 1;
     self.preloadPolicy = WMPageControllerPreloadPolicyNeighbour;
     self.menuItemWidth = kMainBoundsWidth / 6.f;
@@ -59,7 +60,7 @@
 
 - (void)createViews
 {
-    self.view.backgroundColor = UIColorFromRGB(0xFFFFFF);
+    self.view.backgroundColor = UIColorFromRGB(0xEFEFF4);
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.exclusiveTouch = YES;
@@ -70,6 +71,11 @@
     button.backgroundColor = [UIColor clearColor];
     UIBarButtonItem* backItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.leftBarButtonItem = backItem;
+    
+    UIButton * rightButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14) titleColor:UIColorFromRGB(0xFFFFFF) title:@"服务订单"];
+    rightButton.exclusiveTouch = YES;
+    [rightButton setFrame:CGRectMake(0, 0, 60, 30)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
 }
 
 - (CGRect)pageController:(WMPageController *)pageController preferredFrameForMenuView:(WMMenuView *)menuView

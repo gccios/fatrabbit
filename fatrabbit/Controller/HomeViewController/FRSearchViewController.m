@@ -61,7 +61,6 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor = UIColorFromRGB(0xEFEFF4);
-    self.tableView.rowHeight = 60;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[FRServiceTableViewCell class] forCellReuseIdentifier:@"FRServiceTableViewCell"];

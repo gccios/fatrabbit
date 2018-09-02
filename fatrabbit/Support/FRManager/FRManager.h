@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FRUserModel.h"
+#import "FRCateModel.h"
 
 @interface FRManager : NSObject
 
-@property (nonatomic, strong) FRUserModel * user;
+@property (nonatomic, strong) NSMutableArray * cateList;
 
 + (instancetype)shareManager;
 
