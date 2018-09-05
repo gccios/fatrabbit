@@ -7,7 +7,6 @@
 //
 
 #import "FRCateListViewController.h"
-#import "FRManager.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
 #import "FRCateListCell.h"
@@ -54,7 +53,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
 //    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = 50;
-    self.tableView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[FRCateListCell class] forCellReuseIdentifier:@"FRCateListCell"];
@@ -65,6 +64,12 @@
         make.width.mas_equalTo(kMainBoundsWidth / 3.f);
     }];
     self.tableView.tableFooterView = [UIView new];
+    
+    if (self.dataSource.count > 0) {
+        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionTop];
+        FRCateModel * model = [self.dataSource objectAtIndex:0];
+        self.childSource = model.child;
+    }
     
     self.childTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     //    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -78,7 +83,8 @@
         make.top.mas_equalTo(self.titleView.mas_bottom);
         make.bottom.mas_equalTo(0);
         make.width.mas_equalTo(kMainBoundsWidth / 3.f * 2);
-        make.right.mas_equalTo(kMainBoundsWidth / 3.f * 2);
+//        make.right.mas_equalTo(kMainBoundsWidth / 3.f * 2);
+        make.right.mas_equalTo(0);
     }];
     self.childTableView.tableFooterView = [UIView new];
 }
@@ -118,13 +124,25 @@
         [self.childTableView reloadData];
         if (!self.isShowChild) {
             
-            [UIView animateWithDuration:.3f animations:^{
-                [self.childTableView mas_updateConstraints:^(MASConstraintMaker *make) {
-                    make.right.mas_equalTo(0);
-                }];
-                [self.view layoutIfNeeded];
-            }];
+//            [UIView animateWithDuration:.3f animations:^{
+//                [self.childTableView mas_updateConstraints:^(MASConstraintMaker *make) {
+//                    make.right.mas_equalTo(0);
+//                }];
+//                [self.view layoutIfNeeded];
+//            }];
             self.isShowChild = YES;
+        }
+    }else{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(FRcateListViewCongtrollerDidChoose:type:)]) {
+            FRCateModel * model = [self.childSource objectAtIndex:indexPath.row];
+            
+            if (self.type == FRCateListType_Publish) {
+                [self dismissViewControllerAnimated:NO completion:nil];
+            }else{
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
+            
+            [self.delegate FRcateListViewCongtrollerDidChoose:model type:self.type];
         }
     }
 }

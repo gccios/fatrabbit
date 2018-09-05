@@ -30,13 +30,13 @@
 
 - (void)createVCForFBViewController
 {
-    self.view.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.view.backgroundColor = UIColorFromRGB(0xf5f5f5);
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.exclusiveTouch = YES;
     [button setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 40, 44);
-    [button setImageEdgeInsets:UIEdgeInsetsMake(0, -25, 0, 0)];
+    [button setImageEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 0)];
     [button addTarget:self action:@selector(navBackButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     button.backgroundColor = [UIColor clearColor];
     UIBarButtonItem* backItem = [[UIBarButtonItem alloc] initWithCustomView:button];

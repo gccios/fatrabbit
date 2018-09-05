@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <SDImageCache.h>
 
 @interface FRApplicatinInfoTool : NSObject
 
@@ -15,5 +16,9 @@
 + (NSString *)getDeviceSystemVersion;
 
 + (NSString *)getDeviceModel;
+
++ (NSString *)getApplicationCache;
+
++ (void)clearApplicationCache:(nullable SDWebImageNoParamsBlock)completion;
 
 @end

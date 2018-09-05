@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRCityModel.h"
 
 @interface FRCityCollectionViewCell : UICollectionViewCell
 
-- (void)congitWithTitle:(NSString *)title;
+- (void)congitWithModel:(FRCityModel *)model;
 
 @end

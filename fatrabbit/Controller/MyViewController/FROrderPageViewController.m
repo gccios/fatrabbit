@@ -44,7 +44,7 @@
     self.progressColor = KThemeColor;
     self.progressHeight = 1.5f;
     self.menuViewStyle = WMMenuViewStyleLine;
-    self.menuView.scrollView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.menuView.scrollView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.progressViewBottomSpace = 1;
     self.preloadPolicy = WMPageControllerPreloadPolicyNeighbour;
     self.menuItemWidth = kMainBoundsWidth / 6.f;
@@ -60,7 +60,7 @@
 
 - (void)createViews
 {
-    self.view.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.view.backgroundColor = UIColorFromRGB(0xf5f5f5);
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.exclusiveTouch = YES;

@@ -13,7 +13,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        self.httpMethod = BGNetworkRequestHTTPGet;
+        self.httpMethod = BGNetworkRequestHTTPPost;
         self.methodName = @"catelist";
     }
     return self;

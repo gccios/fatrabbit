@@ -55,7 +55,7 @@
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.bottomView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.bottomView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.bottomView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [self.view addSubview:self.bottomView];
     [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.mas_equalTo(0);
@@ -116,7 +116,7 @@
     }];
     
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
-    lineView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    lineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [headerView addSubview:lineView];
     [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(statusButton.mas_bottom).offset(25 * scale);
@@ -244,7 +244,7 @@
     }];
     
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
-    lineView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    lineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [footerView addSubview:lineView];
     [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(commentDetailLabel.mas_bottom).offset(10 * scale);

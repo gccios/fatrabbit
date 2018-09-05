@@ -20,4 +20,20 @@
     return instance;
 }
 
+- (NSMutableArray *)cateList
+{
+    if (!_cateList) {
+        _cateList = [[NSMutableArray alloc] init];
+    }
+    return _cateList;
+}
+
+- (NSMutableArray *)cityList
+{
+    if (!_cityList) {
+        _cityList = [[NSMutableArray alloc] init];
+    }
+    return _cityList;
+}
+
 @end

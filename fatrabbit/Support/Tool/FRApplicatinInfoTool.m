@@ -8,6 +8,7 @@
 
 #import "FRApplicatinInfoTool.h"
 #import <sys/utsname.h>
+#import "MBProgressHUD+FRHUD.h"
 
 @implementation FRApplicatinInfoTool
 
@@ -118,6 +119,33 @@
     }
     
     return deviceName;
+}
+
+#pragma mark -- 获取当前系统的缓存大小
++ (NSString *)getApplicationCache
+{
+    long long folderSize = 0;
+    
+    folderSize += [[SDImageCache sharedImageCache] getSize];
+    
+    if (folderSize > 1024 * 100) {
+        return [NSString stringWithFormat:@"%.2lf M", folderSize/(1024.0*1024.0)];
+    }else if(folderSize > 1024){
+        return [NSString stringWithFormat:@"%.2lf KB", folderSize/1024.0];
+    }else if (folderSize < 10){
+        return [NSString stringWithFormat:@"%lld B", folderSize];
+    }
+    return [NSString stringWithFormat:@"%.2lld B", folderSize];
+}
+
++ (void)clearApplicationCache:(SDWebImageNoParamsBlock)completion
+{
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在清理..." inView:[UIApplication sharedApplication].keyWindow];
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"清理完成"];
+        completion();
+    }];
 }
 
 @end

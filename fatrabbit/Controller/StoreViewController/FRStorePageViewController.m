@@ -14,6 +14,7 @@
 #import "FRTagCollectionHeaderView.h"
 #import "FRStoreSearchViewController.h"
 #import "FRStoreCartViewController.h"
+#import "FRStoreDetailViewController.h"
 
 @interface FRStorePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -89,7 +90,7 @@
     [self.collectionView registerClass:[FRStoreCollectionViewCell class] forCellWithReuseIdentifier:@"FRStoreCollectionViewCell"];
     [self.collectionView registerClass:[FRStoreBannerHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"FRStoreBannerHeaderView"];
     [self.collectionView registerClass:[FRTagCollectionHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"FRTagCollectionHeaderView"];
-    self.collectionView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.collectionView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
     self.collectionView.contentInset = UIEdgeInsetsMake(0, 0, 10, 0);
@@ -97,6 +98,12 @@
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    FRStoreDetailViewController * detail = [[FRStoreDetailViewController alloc] init];
+    [self.navigationController pushViewController:detail animated:YES];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView

@@ -10,4 +10,7 @@
 
 @interface FRTableTabView : UIView
 
+@property (nonatomic, copy) void (^leftButtonClickedHandle)(void);
+@property (nonatomic, copy) void (^rightButtonClickedHandle)(void);
+
 @end

@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) UIImageView * menuImageView;
 @property (nonatomic, strong) UILabel * menuLabel;
+@property (nonatomic, strong) UILabel * infoLabel;
 
 @property (nonatomic, strong) MyMenuModel * model;
 
@@ -58,6 +59,15 @@
         make.centerY.mas_equalTo(0);
         make.left.mas_equalTo(self.menuImageView.mas_right).offset(20 * scale);
         make.right.mas_equalTo(-40 * scale);
+    }];
+    
+    self.infoLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentRight];
+    self.infoLabel.text = @"测试副标题";
+    [self.contentView addSubview:self.infoLabel];
+    [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.menuLabel);
+        make.right.mas_equalTo(-40 * scale);
+        make.height.mas_equalTo(20 * scale);
     }];
 }
 

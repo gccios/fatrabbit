@@ -10,8 +10,6 @@
 
 @interface MyMenuModel ()
 
-@property (nonatomic, assign) MyMenuType type;
-
 @end
 
 @implementation MyMenuModel

@@ -18,6 +18,7 @@
 @property (nonatomic, copy) NSString * avatar;
 @property (nonatomic, copy) NSString * mobile;
 @property (nonatomic, copy) NSString * username;
-@property (nonatomic, assign) NSInteger is_supplier;
+@property (nonatomic, assign) NSInteger is_provider;
+@property (nonatomic, assign) NSInteger city_id;
 
 @end

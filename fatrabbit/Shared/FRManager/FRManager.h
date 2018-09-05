@@ -8,10 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "FRCateModel.h"
+#import "FRCityModel.h"
 
 @interface FRManager : NSObject
 
 @property (nonatomic, strong) NSMutableArray * cateList;
+@property (nonatomic, strong) NSMutableArray * cityList;
 
 + (instancetype)shareManager;
 

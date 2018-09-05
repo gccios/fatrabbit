@@ -15,12 +15,15 @@
 #import "FRSearchViewController.h"
 #import "FRServiceDetailViewController.h"
 #import "FRMenuCollectionViewCell.h"
-#import "FRCateListRequest.h"
-#import "FRTelLogInRequest.h"
 #import "UserManager.h"
 #import "FRManager.h"
+#import "FRCateListRequest.h"
+#import "FRTelLogInRequest.h"
+#import "FRUserInfoRequest.h"
+#import "FRCityListRequest.h"
+#import "MBProgressHUD+FRHUD.h"
 
-@interface FRHomePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource>
+@interface FRHomePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, FRCityViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton * locationButton;
 @property (nonatomic, strong) UITableView * tableView;
@@ -52,7 +55,8 @@
                 NSString * telNumber = @"18811129211";
 
                 [[UserManager shareManager] loginSuccessWithUid:uid token:token telNumber:telNumber];
-                [self requestCateList];
+                [self requestUserInfo];
+                [self configBaseInfo];
             }
         }
 
@@ -63,7 +67,35 @@
     }];
 }
 
-- (void)requestCateList
+- (void)requestUserInfo
+{
+    FRUserInfoRequest * info = [[FRUserInfoRequest alloc] initWithUserID:[UserManager shareManager].uid];
+    
+    [info sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                [[UserManager shareManager] mj_setKeyValues:data];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
+//配置APP基本信息
+- (void)configBaseInfo
+{
+    [self requestFatrabbitCateInfo];
+    [self requestFatrabbitCityInfo];
+}
+
+//获取分类列表
+- (void)requestFatrabbitCateInfo
 {
     FRCateListRequest * request = [[FRCateListRequest alloc] init];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
@@ -82,11 +114,55 @@
     }];
 }
 
+//获取城市列表
+- (void)requestFatrabbitCityInfo
+{
+    FRCityListRequest * cityRequest = [[FRCityListRequest alloc] init];
+    [cityRequest sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                NSMutableArray * cityList = [[NSMutableArray alloc] init];
+                
+                for (NSDictionary * dict in data) {
+                    FRCityModel * model = [FRCityModel mj_objectWithKeyValues:dict];
+                    [cityList addObject:model];
+                    if (model.isdefault == 1) {
+                        [self.locationButton setTitle:model.name forState:UIControlStateNormal];
+                        [UserManager shareManager].city = model;
+                    }
+                }
+                
+                [FRManager shareManager].cityList = cityList;
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
 //选择城市
 - (void)locationButtonDicClicked
 {
+    if (![FRManager shareManager].cityList) {
+        [MBProgressHUD showTextHUDWithText:@"正在获取城市信息"];
+        [self requestFatrabbitCityInfo];
+        return;
+    }
+    
     FRCityViewController * city = [[FRCityViewController alloc] init];
+    city.delegate = self;
     [self.navigationController pushViewController:city animated:YES];
+}
+
+- (void)FRCityViewControllerDidChoose:(FRCityModel *)model
+{
+    [self.locationButton setTitle:model.name forState:UIControlStateNormal];
+    [UserManager shareManager].city = model;
 }
 
 - (void)searchButtonDidClicked
@@ -131,7 +207,7 @@
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[FRServiceTableViewCell class] forCellReuseIdentifier:@"FRServiceTableViewCell"];
@@ -147,7 +223,7 @@
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
-    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 400 * scale)];
+    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 410 * scale)];
     
     self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:@[@"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg"]];
     self.bannerView.autoScrollTimeInterval = 3.f;
@@ -164,7 +240,7 @@
     
     self.menuCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
     [self.menuCollectionView registerClass:[FRMenuCollectionViewCell class] forCellWithReuseIdentifier:@"FRMenuCollectionViewCell"];
-    self.menuCollectionView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.menuCollectionView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.menuCollectionView.delegate = self;
     self.menuCollectionView.dataSource = self;
     self.menuCollectionView.scrollEnabled = NO;
@@ -202,7 +278,8 @@
     self.tableTabView = [[FRTableTabView alloc] initWithFrame:CGRectZero];
     [headerView addSubview:self.tableTabView];
     [self.tableTabView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.bottom.right.mas_equalTo(0);
+        make.left.right.mas_equalTo(0);
+        make.bottom.mas_equalTo(-10 * scale);
         make.top.mas_equalTo(buttonView.mas_bottom).offset(10 * scale);
     }];
     

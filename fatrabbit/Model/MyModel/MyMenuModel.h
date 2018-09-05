@@ -20,6 +20,8 @@ typedef enum : NSUInteger {
 
 - (instancetype)initWithType:(MyMenuType)type;
 
+@property (nonatomic, assign) MyMenuType type;
+
 @property (nonatomic, copy) NSString * title;
 @property (nonatomic, copy) NSString * imageName;
 

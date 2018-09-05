@@ -31,7 +31,7 @@
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
 //    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[FROrderTableViewCell class] forCellReuseIdentifier:@"FROrderTableViewCell"];

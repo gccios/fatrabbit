@@ -7,7 +7,16 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRManager.h"
+
+@protocol FRCityViewControllerDelegate <NSObject>
+
+- (void)FRCityViewControllerDidChoose:(FRCityModel *)model;
+
+@end
 
 @interface FRCityViewController : FRBaseViewController
+
+@property (nonatomic, weak) id<FRCityViewControllerDelegate> delegate;
 
 @end

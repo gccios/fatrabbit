@@ -10,6 +10,9 @@
 #import "FRUserHeaderView.h"
 #import "FRMenuTableViewCell.h"
 #import "FROrderPageViewController.h"
+#import "FRAddressViewController.h"
+#import "FRUserAdviceViewController.h"
+#import "FRSettingViewController.h"
 
 @interface FRMyViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -70,8 +73,22 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
-    [self.navigationController pushViewController:order animated:YES];
+    NSArray * data = [self.dataSource objectAtIndex:indexPath.section];
+    MyMenuModel * model = [data objectAtIndex:indexPath.row];
+    
+    if (model.type == MyMenuType_MyAddress) {
+        FRAddressViewController * address = [[FRAddressViewController alloc] init];
+        [self.navigationController pushViewController:address animated:YES];
+    }else if (model.type == MyMenuType_Advice) {
+        FRUserAdviceViewController * advice = [[FRUserAdviceViewController alloc] init];
+        [self.navigationController pushViewController:advice animated:YES];
+    }else if (model.type == MyMenuType_Setting) {
+        FRSettingViewController * setting = [[FRSettingViewController alloc] init];
+        [self.navigationController pushViewController:setting animated:YES];
+    }else{
+        FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
+        [self.navigationController pushViewController:order animated:YES];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

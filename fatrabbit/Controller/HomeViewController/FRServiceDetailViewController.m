@@ -40,7 +40,7 @@
 {
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[FRServiceTableViewCell class] forCellReuseIdentifier:@"FRServiceTableViewCell"];
@@ -98,7 +98,7 @@
     }];
     
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
-    lineView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    lineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [headerView addSubview:lineView];
     [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.titleLabel.mas_bottom).offset(70 * scale);
@@ -145,7 +145,7 @@
     }];
     
     UIView * bottomView = [[UIView alloc] initWithFrame:CGRectZero];
-    bottomView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    bottomView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [headerView addSubview:bottomView];
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.logoImageView.mas_bottom).offset(15 * scale);

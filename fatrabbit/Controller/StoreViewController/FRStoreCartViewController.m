@@ -66,7 +66,7 @@
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.bottomPayView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.bottomPayView.backgroundColor = UIColorFromRGB(0xEFEFF4);
+    self.bottomPayView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [self.view addSubview:self.bottomPayView];
     [self.bottomPayView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.mas_equalTo(0);

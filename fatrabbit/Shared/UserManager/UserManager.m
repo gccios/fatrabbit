@@ -8,6 +8,8 @@
 
 #import "UserManager.h"
 
+NSString * const DDUserLoginStatusDidChange = @"DDUserLoginStatusDidChange";
+
 @implementation UserManager
 
 + (instancetype)shareManager
@@ -25,6 +27,8 @@
     [UserManager shareManager].uid = [[data objectForKey:@"uid"] integerValue];
     [UserManager shareManager].token = [data objectForKey:@"token"];
     [UserManager shareManager].telNumber = [data objectForKey:@"telNumber"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DDUserLoginStatusDidChange object:nil];
 }
 
 - (void)loginSuccessWithUid:(NSInteger)uid token:(NSString *)token telNumber:(NSString *)telNumber
@@ -39,6 +43,16 @@
                             };
     
     [dict writeToFile:FRUserInfoPath atomically:YES];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DDUserLoginStatusDidChange object:nil];
+}
+
+- (NSMutableArray *)addressList
+{
+    if (!_addressList) {
+        _addressList = [[NSMutableArray alloc] init];
+    }
+    return _addressList;
 }
 
 @end

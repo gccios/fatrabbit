@@ -8,8 +8,9 @@
 
 #import "FRTabbar.h"
 #import "FRCateListViewController.h"
+#import "FRPublishNeedController.h"
 
-@interface FRTabbar ()
+@interface FRTabbar () <FRCateListViewControllerDelegate>
 
 @property (nonatomic, strong) UIView * centerView;
 @property (nonatomic, strong) UIButton * centerButton;
@@ -29,7 +30,7 @@
 - (void)createTabBar
 {
     self.translucent = NO;
-    self.backgroundColor = UIColorFromRGB(0xF5F5F5);
+    self.backgroundColor = UIColorFromRGB(0xf5f5f5);
     
     self.centerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
     [self addSubview:self.centerView];
@@ -49,8 +50,19 @@
 {
     UITabBarController * tab = (UITabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
     UINavigationController * na = (UINavigationController *)tab.selectedViewController;
-    FRCateListViewController * vc = [[FRCateListViewController alloc] init];
+    FRCateListViewController * vc = [[FRCateListViewController alloc] initWithType:FRCateListType_Publish];
+    vc.delegate = self;
     [na presentViewController:vc animated:YES completion:nil];
+}
+
+#pragma mark - FRCateListViewControllerDelegate
+- (void)FRcateListViewCongtrollerDidChoose:(FRCateModel *)model type:(FRCateListType)type
+{
+    UITabBarController * tab = (UITabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    UINavigationController * na = (UINavigationController *)tab.selectedViewController;
+    
+    FRPublishNeedController * need = [[FRPublishNeedController alloc] initWithFRCateModel:model];
+    [na pushViewController:need animated:YES];
 }
 
 - (void)layoutSubviews

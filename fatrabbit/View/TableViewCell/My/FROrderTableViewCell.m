@@ -36,7 +36,7 @@
 - (void)createFROrderTableViewCell
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.backgroundColor = UIColorFromRGB(0XEFEFF4);
+    self.backgroundColor = UIColorFromRGB(0Xf5f5f5);
     
     CGFloat scale = kMainBoundsWidth / 375.f;
     

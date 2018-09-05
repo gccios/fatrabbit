@@ -13,6 +13,7 @@
 @interface FRCityCollectionViewCell ()
 
 @property (nonatomic, strong) UILabel * cityNameLabel;
+@property (nonatomic, strong) FRCityModel * model;
 
 @end
 
@@ -52,9 +53,11 @@
     [FRCreateViewTool cornerView:self.cityNameLabel radius:5 * scale];
 }
 
-- (void)congitWithTitle:(NSString *)title
+- (void)congitWithModel:(FRCityModel *)model
 {
-    self.cityNameLabel.text = title;
+    self.model = model;
+    
+    self.cityNameLabel.text = model.name;
 }
 
 @end
