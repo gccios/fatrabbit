@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) UIView * centerView;
 @property (nonatomic, strong) UIButton * centerButton;
+@property (nonatomic, strong) UILabel * titleLabel;
 
 @end
 
@@ -32,7 +33,7 @@
     self.translucent = NO;
     self.backgroundColor = UIColorFromRGB(0xf5f5f5);
     
-    self.centerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
+    self.centerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
     [self addSubview:self.centerView];
     
     self.centerButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -40,10 +41,16 @@
     [self.centerView addSubview:self.centerButton];
     self.centerButton.layer.cornerRadius = self.centerButton.frame.size.width / 2.f;
     self.centerButton.layer.masksToBounds = YES;
-    [self.centerButton setBackgroundImage:[UIImage imageNamed:@"tabAdd"] forState:UIControlStateNormal];
-    self.centerButton.backgroundColor = [UIColor redColor];
+    [self.centerButton setBackgroundImage:[UIImage imageNamed:@"homeAdd"] forState:UIControlStateNormal];
     [self.centerView addSubview:self.centerButton];
     [self.centerButton addTarget:self action:@selector(centerButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 15)];
+    self.titleLabel.textColor = UIColorFromRGB(0x333333);
+    self.titleLabel.font = kPingFangRegular(9);
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.text = @"发布";
+    [self addSubview:self.titleLabel];
 }
 
 - (void)centerButtonDidClicked
@@ -93,6 +100,7 @@
     }
     
     self.centerView.center = CGPointMake((self.frame.size.width / 2.f), 0);
+    self.titleLabel.center = CGPointMake((self.frame.size.width / 2.f), self.frame.size.height - 10);
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event

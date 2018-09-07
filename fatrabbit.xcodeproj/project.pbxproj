@@ -36,8 +36,12 @@
 		0658C816212A93D200800D7A /* FRTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C815212A93D200800D7A /* FRTabBarController.m */; };
 		0658C819212A94A300800D7A /* FRNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0658C818212A94A300800D7A /* FRNavigationController.m */; };
 		065FE62221355347005DAB06 /* FRServiceDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 065FE62121355347005DAB06 /* FRServiceDetailViewController.m */; };
+		0673EB4921427DD7001C5769 /* FRStoreHomeRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0673EB4821427DD7001C5769 /* FRStoreHomeRequest.m */; };
+		0673EB4D2142863D001C5769 /* FRBannerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0673EB4C2142863D001C5769 /* FRBannerModel.m */; };
+		0673EB502142878A001C5769 /* FRStoreBlockModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0673EB4F2142878A001C5769 /* FRStoreBlockModel.m */; };
+		0673EB53214287D2001C5769 /* FRStoreModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0673EB52214287D2001C5769 /* FRStoreModel.m */; };
+		06842DF02141005B00F96A7C /* FRLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06842DEF2141005B00F96A7C /* FRLoginViewController.m */; };
 		0690B6F72138EC1D0059B857 /* FRStoreCartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0690B6F62138EC1D0059B857 /* FRStoreCartViewController.m */; };
-		0690B6FA2138F2B70059B857 /* FRGoodsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0690B6F92138F2B70059B857 /* FRGoodsModel.m */; };
 		0690B6FD2138F38B0059B857 /* FRStoreCartTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0690B6FC2138F38B0059B857 /* FRStoreCartTableViewCell.m */; };
 		0690B70121391CF90059B857 /* FRTelLogInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0690B70021391CF90059B857 /* FRTelLogInRequest.m */; };
 		0690B707213938280059B857 /* FROrderDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0690B706213938280059B857 /* FROrderDetailViewController.m */; };
@@ -164,10 +168,18 @@
 		0658C818212A94A300800D7A /* FRNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNavigationController.m; sourceTree = "<group>"; };
 		065FE62021355347005DAB06 /* FRServiceDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRServiceDetailViewController.h; sourceTree = "<group>"; };
 		065FE62121355347005DAB06 /* FRServiceDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRServiceDetailViewController.m; sourceTree = "<group>"; };
+		0673EB4721427DD7001C5769 /* FRStoreHomeRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreHomeRequest.h; sourceTree = "<group>"; };
+		0673EB4821427DD7001C5769 /* FRStoreHomeRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreHomeRequest.m; sourceTree = "<group>"; };
+		0673EB4B2142863D001C5769 /* FRBannerModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRBannerModel.h; sourceTree = "<group>"; };
+		0673EB4C2142863D001C5769 /* FRBannerModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRBannerModel.m; sourceTree = "<group>"; };
+		0673EB4E2142878A001C5769 /* FRStoreBlockModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreBlockModel.h; sourceTree = "<group>"; };
+		0673EB4F2142878A001C5769 /* FRStoreBlockModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreBlockModel.m; sourceTree = "<group>"; };
+		0673EB51214287D2001C5769 /* FRStoreModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreModel.h; sourceTree = "<group>"; };
+		0673EB52214287D2001C5769 /* FRStoreModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreModel.m; sourceTree = "<group>"; };
+		06842DEE2141005B00F96A7C /* FRLoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRLoginViewController.h; sourceTree = "<group>"; };
+		06842DEF2141005B00F96A7C /* FRLoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRLoginViewController.m; sourceTree = "<group>"; };
 		0690B6F52138EC1D0059B857 /* FRStoreCartViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreCartViewController.h; sourceTree = "<group>"; };
 		0690B6F62138EC1D0059B857 /* FRStoreCartViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreCartViewController.m; sourceTree = "<group>"; };
-		0690B6F82138F2B70059B857 /* FRGoodsModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRGoodsModel.h; sourceTree = "<group>"; };
-		0690B6F92138F2B70059B857 /* FRGoodsModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRGoodsModel.m; sourceTree = "<group>"; };
 		0690B6FB2138F38B0059B857 /* FRStoreCartTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreCartTableViewCell.h; sourceTree = "<group>"; };
 		0690B6FC2138F38B0059B857 /* FRStoreCartTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreCartTableViewCell.m; sourceTree = "<group>"; };
 		0690B6FF21391CF90059B857 /* FRTelLogInRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRTelLogInRequest.h; sourceTree = "<group>"; };
@@ -410,8 +422,9 @@
 				0658C7FB212A69A000800D7A /* FRNetWorkConfiguration.m */,
 				060C3153212DC440002F5919 /* FRBaseNetworkRequest.h */,
 				060C3154212DC440002F5919 /* FRBaseNetworkRequest.m */,
-				0690B6FE21391CAC0059B857 /* User */,
 				060C314F212DC2C3002F5919 /* Home */,
+				0673EB4621427D9F001C5769 /* Store */,
+				0690B6FE21391CAC0059B857 /* User */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -464,6 +477,28 @@
 				0658C80F212A7E6200800D7A /* FRTabbar.m */,
 			);
 			path = FRTabbar;
+			sourceTree = "<group>";
+		};
+		0673EB4621427D9F001C5769 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				0673EB4721427DD7001C5769 /* FRStoreHomeRequest.h */,
+				0673EB4821427DD7001C5769 /* FRStoreHomeRequest.m */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		0673EB4A21428625001C5769 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				0673EB4B2142863D001C5769 /* FRBannerModel.h */,
+				0673EB4C2142863D001C5769 /* FRBannerModel.m */,
+				0673EB4E2142878A001C5769 /* FRStoreBlockModel.h */,
+				0673EB4F2142878A001C5769 /* FRStoreBlockModel.m */,
+				0673EB51214287D2001C5769 /* FRStoreModel.h */,
+				0673EB52214287D2001C5769 /* FRStoreModel.m */,
+			);
+			path = Store;
 			sourceTree = "<group>";
 		};
 		0690B6FE21391CAC0059B857 /* User */ = {
@@ -589,6 +624,7 @@
 			isa = PBXGroup;
 			children = (
 				0690B70821393AAD0059B857 /* Home */,
+				0673EB4A21428625001C5769 /* Store */,
 				060C3164212DCA52002F5919 /* User */,
 				06EA087D2132A2C00039491C /* MyModel */,
 			);
@@ -730,6 +766,8 @@
 			children = (
 				06EA087A2132A25C0039491C /* FRMyViewController.h */,
 				06EA087B2132A25C0039491C /* FRMyViewController.m */,
+				06842DEE2141005B00F96A7C /* FRLoginViewController.h */,
+				06842DEF2141005B00F96A7C /* FRLoginViewController.m */,
 				064512752133CE430072138F /* FROrderPageViewController.h */,
 				064512762133CE430072138F /* FROrderPageViewController.m */,
 				064512722133CBE80072138F /* FROrderViewController.h */,
@@ -755,8 +793,6 @@
 				06EA08822132A2D90039491C /* MyMenuModel.m */,
 				06E864BE213FE70B007B1B4E /* FRSettingModel.h */,
 				06E864BF213FE70B007B1B4E /* FRSettingModel.m */,
-				0690B6F82138F2B70059B857 /* FRGoodsModel.h */,
-				0690B6F92138F2B70059B857 /* FRGoodsModel.m */,
 			);
 			path = MyModel;
 			sourceTree = "<group>";
@@ -982,6 +1018,7 @@
 			files = (
 				06E864C6213FEDDC007B1B4E /* FRSettingTableViewCell.m in Sources */,
 				0690E1992137D1D800F732E0 /* FRStoreListViewController.m in Sources */,
+				0673EB4D2142863D001C5769 /* FRBannerModel.m in Sources */,
 				064CA6E521365C680084E30D /* FRStoreBannerHeaderView.m in Sources */,
 				06EA08892132AD2F0039491C /* FRMenuTableViewCell.m in Sources */,
 				06EA0862213292820039491C /* FRCityFooterView.m in Sources */,
@@ -994,6 +1031,7 @@
 				060C3163212DCA0B002F5919 /* FRManager.m in Sources */,
 				06F60A3C213ED4FE00E5E31A /* FRCityModel.m in Sources */,
 				0690B6FD2138F38B0059B857 /* FRStoreCartTableViewCell.m in Sources */,
+				0673EB502142878A001C5769 /* FRStoreBlockModel.m in Sources */,
 				06EA08832132A2D90039491C /* MyMenuModel.m in Sources */,
 				060C3147212DBDC6002F5919 /* FRCityViewController.m in Sources */,
 				0620E344213D514B000E19BB /* RDTextView.m in Sources */,
@@ -1015,7 +1053,6 @@
 				06EA0868213299400039491C /* FRMessagePageViewController.m in Sources */,
 				060C3167212DCA5F002F5919 /* FRUserModel.m in Sources */,
 				06EA085E213288310039491C /* FRCityCollectionViewCell.m in Sources */,
-				0690B6FA2138F2B70059B857 /* FRGoodsModel.m in Sources */,
 				060C3155212DC440002F5919 /* FRBaseNetworkRequest.m in Sources */,
 				0690B6F72138EC1D0059B857 /* FRStoreCartViewController.m in Sources */,
 				065FE62221355347005DAB06 /* FRServiceDetailViewController.m in Sources */,
@@ -1025,6 +1062,7 @@
 				0658C803212A797700800D7A /* FatrabbitConfig.m in Sources */,
 				06FE2CEF212C70B000E850D8 /* FRHomePageViewController.m in Sources */,
 				064512772133CE430072138F /* FROrderPageViewController.m in Sources */,
+				06842DF02141005B00F96A7C /* FRLoginViewController.m in Sources */,
 				064CA6E821367AFC0084E30D /* FRStoreCollectionViewCell.m in Sources */,
 				0690E19D2137F11000F732E0 /* FRStoreTableViewCell.m in Sources */,
 				06A8CDE7213C2EC6002A03BD /* UserManager.m in Sources */,
@@ -1033,6 +1071,7 @@
 				06E864A4213F8AF1007B1B4E /* FRAddressViewController.m in Sources */,
 				0658C807212A7A9100800D7A /* GCCKeyChain.m in Sources */,
 				060C315E212DC534002F5919 /* FRApplicatinInfoTool.m in Sources */,
+				0673EB4921427DD7001C5769 /* FRStoreHomeRequest.m in Sources */,
 				064512712133B3350072138F /* FRSearchViewController.m in Sources */,
 				06A8CDF0213C4DC5002A03BD /* FRCateListViewController.m in Sources */,
 				0658C816212A93D200800D7A /* FRTabBarController.m in Sources */,
@@ -1049,6 +1088,7 @@
 				0690E1A02138014600F732E0 /* FRMenuCollectionViewCell.m in Sources */,
 				06EA087C2132A25C0039491C /* FRMyViewController.m in Sources */,
 				0620E340213D2FDD000E19BB /* FRPublishNeedController.m in Sources */,
+				0673EB53214287D2001C5769 /* FRStoreModel.m in Sources */,
 				06A8CDEA213C4693002A03BD /* FRCateListRequest.m in Sources */,
 				06C4037821298BEC001416B8 /* AppDelegate.m in Sources */,
 				060C3152212DC2D9002F5919 /* FRCityListRequest.m in Sources */,

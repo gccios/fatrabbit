@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRCateModel.h"
 
 @interface FRMenuCollectionViewCell : UICollectionViewCell
+
+- (void)configLastCate;
+
+- (void)configWithCateModel:(FRCateModel *)model;
 
 @end

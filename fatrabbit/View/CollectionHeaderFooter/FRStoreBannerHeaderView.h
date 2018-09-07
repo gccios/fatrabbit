@@ -10,4 +10,8 @@
 
 @interface FRStoreBannerHeaderView : UICollectionReusableView
 
+- (void)configWithBannerSource:(NSMutableArray *)bannerSource;
+
+- (void)configCateSource:(NSMutableArray *)cateSource;
+
 @end

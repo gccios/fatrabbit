@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <SDImageCache.h>
 
+/**
+ 获取APP相关信息以及操作缓存类
+ */
 @interface FRApplicatinInfoTool : NSObject
 
 + (NSString *)getApplicationVersion;

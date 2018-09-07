@@ -11,11 +11,13 @@
 #import "FRCityModel.h"
 #import "FRAddressModel.h"
 
-extern NSString * const DDUserLoginStatusDidChange; //用户退出通知
+extern NSString * const FRUserLoginStatusDidChange; //用户退出通知
 
 @interface UserManager : NSObject
 
 + (instancetype)shareManager;
+
+@property (nonatomic, assign) BOOL isLogin;
 
 @property (nonatomic, assign) NSInteger uid;
 @property (nonatomic, copy) NSString * telNumber;

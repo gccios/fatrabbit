@@ -15,12 +15,20 @@
 #import "FRStoreSearchViewController.h"
 #import "FRStoreCartViewController.h"
 #import "FRStoreDetailViewController.h"
+#import "FRStoreHomeRequest.h"
+#import "FRBannerModel.h"
+#import "FRStoreBlockModel.h"
+#import "FRCateModel.h"
 
 @interface FRStorePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView * collectionView;
 
 @property (nonatomic, strong) SDCycleScrollView * bannerView;
+
+@property (nonatomic, strong) NSMutableArray * advs;
+@property (nonatomic, strong) NSMutableArray * cateList;
+@property (nonatomic, strong) NSMutableArray * dataSource;
 
 @end
 
@@ -30,7 +38,51 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    [self requestStoreInfo];
+}
+
+- (void)reloadPage
+{
     [self createViews];
+}
+
+- (void)requestStoreInfo
+{
+    FRStoreHomeRequest * request = [[FRStoreHomeRequest alloc] init];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                
+                NSArray * advs = [data objectForKey:@"adv"];
+                if (KIsArray(advs)) {
+                    [self.advs removeAllObjects];
+                    [self.advs addObjectsFromArray:[FRBannerModel mj_objectArrayWithKeyValuesArray:advs]];
+                }
+                
+                NSArray * cate = [data objectForKey:@"cate"];
+                if (KIsArray(cate)) {
+                    [self.cateList removeAllObjects];
+                    [self.cateList addObjectsFromArray:[FRCateModel mj_objectArrayWithKeyValuesArray:cate]];
+                }
+                
+                NSArray * product = [data objectForKey:@"product"];
+                if (KIsArray(product)) {
+                    [self.dataSource removeAllObjects];
+                    [self.dataSource addObjectsFromArray:[FRStoreBlockModel mj_objectArrayWithKeyValuesArray:product]];
+                }
+                
+            }
+            
+            [self reloadPage];
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
 }
 
 - (void)searchButtonDidClicked
@@ -102,23 +154,32 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    FRStoreDetailViewController * detail = [[FRStoreDetailViewController alloc] init];
+    FRStoreBlockModel * block = [self.dataSource objectAtIndex:indexPath.section];
+    FRStoreModel * model = [block.list objectAtIndex:indexPath.item];
+    
+    FRStoreDetailViewController * detail = [[FRStoreDetailViewController alloc] initWithModel:model];
     [self.navigationController pushViewController:detail animated:YES];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return 4;
+    return self.dataSource.count;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 4;
+    FRStoreBlockModel * model = [self.dataSource objectAtIndex:section];
+    
+    return model.list.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     FRStoreCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FRStoreCollectionViewCell" forIndexPath:indexPath];
+    
+    FRStoreBlockModel * block = [self.dataSource objectAtIndex:indexPath.section];
+    FRStoreModel * model = [block.list objectAtIndex:indexPath.item];
+    [cell configWithModel:model];
     
     return cell;
 }
@@ -128,10 +189,16 @@
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         
         if (indexPath.section == 0) {
+            
             FRStoreBannerHeaderView * view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"FRStoreBannerHeaderView" forIndexPath:indexPath];
+            [view configWithBannerSource:self.advs];
+            [view configCateSource:self.cateList];
+            
             return view;
         }else{
+            
             FRTagCollectionHeaderView * view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"FRTagCollectionHeaderView" forIndexPath:indexPath];
+            
             return view;
         }
         
@@ -147,6 +214,30 @@
         return CGSizeMake(kMainBoundsWidth, 310 * scale);
     }
     return CGSizeMake(kMainBoundsWidth, 60 * scale);
+}
+
+- (NSMutableArray *)advs
+{
+    if (!_advs) {
+        _advs = [[NSMutableArray alloc] init];
+    }
+    return _advs;
+}
+
+- (NSMutableArray *)cateList
+{
+    if (!_cateList) {
+        _cateList = [[NSMutableArray alloc] init];
+    }
+    return _cateList;
+}
+
+- (NSMutableArray *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource = [[NSMutableArray alloc] init];
+    }
+    return _dataSource;
 }
 
 - (void)didReceiveMemoryWarning {

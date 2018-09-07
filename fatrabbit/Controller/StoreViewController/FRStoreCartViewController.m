@@ -31,7 +31,7 @@
     // Do any additional setup after loading the view.
     
     for (NSInteger i = 0; i < 20; i++) {
-        FRGoodsModel * model = [[FRGoodsModel alloc] init];
+        FRStoreModel * model = [[FRStoreModel alloc] init];
         model.number = 1;
         model.price = arc4random()%100 + 1;
         [self.dataSource addObject:model];
@@ -144,7 +144,7 @@
 {
     FRStoreCartTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRStoreCartTableViewCell" forIndexPath:indexPath];
     
-    FRGoodsModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    FRStoreModel * model = [self.dataSource objectAtIndex:indexPath.row];
     [cell configWithGoodsModel:model];
     
     return cell;

@@ -32,33 +32,52 @@
 {
     [self setValue:[[FRTabbar alloc] init] forKey:@"tabBar"];
     
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : KThemeColor, NSFontAttributeName: kPingFangRegular(9)} forState:UIControlStateSelected];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : UIColorFromRGB(0x333333), NSFontAttributeName: kPingFangRegular(9)} forState:UIControlStateNormal];
+    
     NSMutableArray * vcArray = [[NSMutableArray alloc] init];
     
     FRHomePageViewController * home = [[FRHomePageViewController alloc] init];
     FRNavigationController * homeNav = [[FRNavigationController alloc] initWithRootViewController:home];
-     UITabBarItem * homeItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:0];
+    UITabBarItem * homeItem = [self tabBarItemWithImageName:@"home" selectName:@"homeSelect" title:@"首页"];
     [homeNav setTabBarItem:homeItem];
     [vcArray addObject:homeNav];
     
     FRStorePageViewController * store = [[FRStorePageViewController alloc] init];
     FRNavigationController * storeNav = [[FRNavigationController alloc] initWithRootViewController:store];
-    UITabBarItem * homeStore = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:1];
+    UITabBarItem * homeStore = [self tabBarItemWithImageName:@"store" selectName:@"storeSelect" title:@"商城"];
     [storeNav setTabBarItem:homeStore];
     [vcArray addObject:storeNav];
     
     FRMessagePageViewController * message = [[FRMessagePageViewController alloc] init];
     FRNavigationController * messageNav = [[FRNavigationController alloc] initWithRootViewController:message];
-    UITabBarItem * messageItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:2];
+    UITabBarItem * messageItem = [self tabBarItemWithImageName:@"message" selectName:@"messageSelect" title:@"消息"];
     [messageNav setTabBarItem:messageItem];
     [vcArray addObject:messageNav];
     
     FRMyViewController * my = [[FRMyViewController alloc] init];
     FRNavigationController * myNav = [[FRNavigationController alloc] initWithRootViewController:my];
-    UITabBarItem * myItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemHistory tag:3];
+    UITabBarItem * myItem = [self tabBarItemWithImageName:@"homeMy" selectName:@"homeMy" title:@"我的"];
     [myNav setTabBarItem:myItem];
     [vcArray addObject:myNav];
     
     [self setViewControllers:vcArray];
+}
+
+- (UITabBarItem *)tabBarItemWithImageName:(NSString *)name selectName:(NSString *)selectName title:(NSString *)title
+{
+    UIImage * image = [[UIImage imageNamed:name] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    
+    UIImage * selectImage = [[UIImage imageNamed:selectName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    
+    UITabBarItem * item = [[UITabBarItem alloc] initWithTitle:title image:image selectedImage:selectImage];
+    if (KIsiPhoneX) {
+        item.titlePositionAdjustment = UIOffsetMake(0, 2);
+    }else{
+        item.titlePositionAdjustment = UIOffsetMake(0, -2);
+    }
+    
+    return item;
 }
 
 - (void)viewDidLoad {

@@ -11,10 +11,15 @@
 #import <Masonry.h>
 #import <SDCycleScrollView.h>
 #import "FRMenuCollectionViewCell.h"
+#import "FRBannerModel.h"
+#import "FRCateModel.h"
 
 @interface FRStoreBannerHeaderView () <UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, strong) SDCycleScrollView * bannerView;
+@property (nonatomic, weak) NSMutableArray * bannerSource;
+@property (nonatomic, weak) NSMutableArray * cateSource;
+
 @property (nonatomic, strong) UICollectionView * menuCollectionView;
 @property (nonatomic, strong) UILabel * tagLabel;
 
@@ -30,13 +35,50 @@
     return self;
 }
 
+- (void)configWithBannerSource:(NSMutableArray *)bannerSource
+{
+    if (bannerSource.count == 0) {
+        return;
+    }
+    
+    if (self.bannerView) {
+        [self.bannerView removeFromSuperview];
+    }
+    
+    self.bannerSource = bannerSource;
+    NSMutableArray * imageURLList = [[NSMutableArray alloc] init];
+    for (FRBannerModel * model in self.bannerSource) {
+        [imageURLList addObject:model.img];
+    }
+    
+    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:imageURLList];
+    self.bannerView.backgroundColor = self.backgroundColor;
+    self.bannerView.autoScrollTimeInterval = 3.f;
+    [self addSubview:self.bannerView];
+    [self.bannerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.mas_equalTo(0);
+        make.height.mas_equalTo(kMainBoundsWidth / 7.f * 3);
+    }];
+}
+
+- (void)configCateSource:(NSMutableArray *)cateSource
+{
+    if (cateSource.count == 0) {
+        return;
+    }
+    
+    self.cateSource = cateSource;
+    [self.menuCollectionView reloadData];
+}
+
 - (void)createStoreBannerHeaderView
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.backgroundColor = UIColorFromRGB(0xf5f5f5);
     
-    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:@[@"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg"]];
+    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:@[]];
+    self.bannerView.backgroundColor = self.backgroundColor;
     self.bannerView.autoScrollTimeInterval = 3.f;
     [self addSubview:self.bannerView];
     [self.bannerView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -58,7 +100,7 @@
     self.menuCollectionView.contentInset = UIEdgeInsetsMake(10 * scale, (kMainBoundsWidth - 60 * scale * 5) / 6.f - 1, 0, (kMainBoundsWidth - 60 * scale * 5) / 6.f - 1);
     [self addSubview:self.menuCollectionView];
     [self.menuCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.bannerView.mas_bottom);
+        make.top.mas_equalTo(kMainBoundsWidth / 7.f * 3);
         make.left.right.mas_equalTo(0);
         make.height.mas_equalTo(100 * scale);
     }];
@@ -85,12 +127,19 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 5;
+    return self.cateSource.count + 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     FRMenuCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FRMenuCollectionViewCell" forIndexPath:indexPath];
+    
+    if (indexPath.item == self.cateSource.count) {
+        [cell configLastCate];
+    }else{
+        FRCateModel * model = [self.cateSource objectAtIndex:indexPath.item];
+        [cell configWithCateModel:model];
+    }
     
     return cell;
 }

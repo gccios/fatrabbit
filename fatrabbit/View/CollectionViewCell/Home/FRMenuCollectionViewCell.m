@@ -8,7 +8,9 @@
 
 #import "FRMenuCollectionViewCell.h"
 #import "FRCreateViewTool.h"
+#import "FRCateModel.h"
 #import <Masonry.h>
+#import <UIImageView+WebCache.h>
 
 @interface FRMenuCollectionViewCell ()
 
@@ -27,12 +29,23 @@
     return self;
 }
 
+- (void)configLastCate
+{
+    [self.menuImageView setImage:[UIImage imageNamed:@"levelChange"]];
+    self.titleLabel.text = @"积分兑换";
+}
+
+- (void)configWithCateModel:(FRCateModel *)model
+{
+    [self.menuImageView sd_setImageWithURL:[NSURL URLWithString:model.icon]];
+    self.titleLabel.text = model.name;
+}
+
 - (void)createMenuCollectionViewCell
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.menuImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
-    self.menuImageView.backgroundColor = [UIColor greenColor];
     [self.contentView addSubview:self.menuImageView];
     [self.menuImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(5 * scale);
@@ -42,7 +55,6 @@
     [FRCreateViewTool cornerView:self.menuImageView radius:25 * scale];
     
     self.titleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentCenter];
-    self.titleLabel.text = @"分类";
     [self.contentView addSubview:self.titleLabel];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);

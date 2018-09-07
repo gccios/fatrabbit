@@ -12,7 +12,7 @@
 
 @interface FRStoreCartTableViewCell ()
 
-@property (nonatomic, strong) FRGoodsModel * model;
+@property (nonatomic, strong) FRStoreModel * model;
 
 @property (nonatomic, strong) UIButton * selectButton;
 @property (nonatomic, strong) UIImageView * coverImageView;
@@ -59,7 +59,7 @@
     self.priceLabel.text = priceStr;
 }
 
-- (void)configWithGoodsModel:(FRGoodsModel *)model
+- (void)configWithGoodsModel:(FRStoreModel *)model
 {
     self.model = model;
     [self reloadGoodsModel];

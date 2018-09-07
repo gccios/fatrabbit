@@ -7,7 +7,10 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRStoreModel.h"
 
 @interface FRStoreDetailViewController : FRBaseViewController
+
+- (instancetype)initWithModel:(FRStoreModel *)model;
 
 @end

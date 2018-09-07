@@ -13,6 +13,8 @@
 #import "FRAddressViewController.h"
 #import "FRUserAdviceViewController.h"
 #import "FRSettingViewController.h"
+#import "FRLoginViewController.h"
+#import "UserManager.h"
 
 @interface FRMyViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -35,13 +37,19 @@
 
 - (void)createDataSource
 {
-    self.dataSource = [[NSMutableArray alloc] init];
+    [self.dataSource removeAllObjects];
     
     [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyAccount],
                                  [[MyMenuModel alloc] initWithType:MyMenuType_MyAddress]]];
     [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_ApplyRegister]]];
     [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_Advice],
                                  [[MyMenuModel alloc] initWithType:MyMenuType_Setting]]];
+}
+
+- (void)userInfoDidClicked
+{
+    FRLoginViewController * login = [[FRLoginViewController alloc] init];
+    [self.navigationController pushViewController:login animated:YES];
 }
 
 - (void)createViews
@@ -67,6 +75,11 @@
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.userHeaderView = [[FRUserHeaderView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 200 * scale)];
+    
+    __weak typeof(self) weakSelf = self;
+    self.userHeaderView.userInfoDidClickedHandle = ^{
+        [weakSelf userInfoDidClicked];
+    };
     
     self.myTableView.tableHeaderView = self.userHeaderView;
 }
@@ -129,6 +142,14 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return .1f;//把高度设置很小，效果可以看成footer的高度等于0
+}
+
+- (NSMutableArray *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource = [[NSMutableArray alloc] init];
+    }
+    return _dataSource;
 }
 
 - (void)didReceiveMemoryWarning {

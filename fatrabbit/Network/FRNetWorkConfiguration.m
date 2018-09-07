@@ -93,7 +93,13 @@
 }
 
 - (BOOL)shouldBusinessSuccessWithResponseData:(NSDictionary *)responseData task:(NSURLSessionDataTask *)task request:(BGNetworkRequest *)request {
-    return YES;
+    
+    NSInteger code = [[responseData objectForKey:@"code"] integerValue];
+    
+    if (code == 1) {
+        return YES;
+    }
+    return NO;
 }
 
 @end

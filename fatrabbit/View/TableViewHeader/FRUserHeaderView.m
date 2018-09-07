@@ -8,6 +8,7 @@
 
 #import "FRUserHeaderView.h"
 #import "FRCreateViewTool.h"
+#import "UserManager.h"
 #import <Masonry.h>
 
 @interface FRUserHeaderView () <UICollectionViewDelegate, UICollectionViewDataSource>
@@ -16,6 +17,13 @@
 @property (nonatomic, strong) UILabel * notLoginLabel;
 
 @property (nonatomic, strong) UIView * userView;
+
+@property (nonatomic, strong) UIView * infoView;
+@property (nonatomic, strong) UILabel * nameLabel;
+@property (nonatomic, strong) UILabel * levelLabel;
+@property (nonatomic, strong) UIProgressView * levelProgressView;
+@property (nonatomic, strong) UILabel * vipLabel;
+
 @property (nonatomic, strong) UICollectionView * collectionView;
 
 @end
@@ -30,6 +38,20 @@
     return self;
 }
 
+- (void)userInfoDidClicked
+{
+    if (![UserManager shareManager].isLogin) {
+        if (self.userInfoDidClickedHandle) {
+            self.userInfoDidClickedHandle();
+        }
+    }
+}
+
+- (void)userLoginStatusChange
+{
+    
+}
+
 - (void)createUserHeaderView
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
@@ -42,6 +64,8 @@
         make.top.left.right.mas_equalTo(0);
         make.height.mas_equalTo(110 * scale);
     }];
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userInfoDidClicked)];
+    [self.userView addGestureRecognizer:tap];
     
     self.logoImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
     self.logoImageView.backgroundColor = [UIColor greenColor];
@@ -60,6 +84,63 @@
         make.left.mas_equalTo(self.logoImageView.mas_right).offset(10 * scale);
         make.centerY.mas_equalTo(0);
         make.height.mas_equalTo(30 * scale);
+    }];
+    
+    self.infoView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.infoView.backgroundColor = self.backgroundColor;
+    [self.userView addSubview:self.infoView];
+    [self.infoView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth - 80 * scale);
+    }];
+    
+    self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    self.nameLabel.text = @"测试名称";
+    [self.infoView addSubview:self.nameLabel];
+    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(25 * scale);
+        make.left.mas_equalTo(25 * scale);
+        make.height.mas_equalTo(20 * scale);
+    }];
+    
+    UILabel * levelTip = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    levelTip.text = @"积分";
+    [self.infoView addSubview:levelTip];
+    [levelTip mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(10 * scale);
+        make.left.mas_equalTo(self.nameLabel);
+        make.height.mas_equalTo(15 * scale);
+    }];
+    
+    self.levelLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    self.levelLabel.text = @"测试积分";
+    [self.infoView addSubview:self.levelLabel];
+    [self.levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(levelTip);
+        make.left.mas_equalTo(levelTip.mas_right);
+        make.height.mas_equalTo(levelTip);
+    }];
+    
+    self.levelProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+    self.levelProgressView.progressTintColor = UIColorFromRGB(0xf1e632);
+    self.levelProgressView.tintColor = UIColorFromRGB(0xeeeeee);
+    self.levelProgressView.progress = .5f;
+    [self.infoView addSubview:self.levelProgressView];
+    [self.levelProgressView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(levelTip.mas_bottom).offset(5 * scale);
+        make.height.mas_equalTo(10 * scale);
+        make.left.mas_equalTo(levelTip);
+        make.width.mas_equalTo(180 * scale);
+    }];
+    [FRCreateViewTool cornerView:self.levelProgressView radius:5 * scale];
+    
+    self.vipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentLeft];
+    self.vipLabel.text = @"测试vip等级";
+    [self.infoView addSubview:self.vipLabel];
+    [self.vipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.levelProgressView.mas_right).offset(5 * scale);
+        make.centerY.mas_equalTo(self.levelProgressView);
+        make.height.mas_equalTo(15 * scale);
     }];
     
     [self createHandleView];
@@ -97,6 +178,8 @@
         make.height.mas_equalTo(.5);
         make.width.mas_equalTo(kMainBoundsWidth - 40 * scale);
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoginStatusChange) name:FRUserLoginStatusDidChange object:nil];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRStoreModel.h"
 
 @interface FRStoreCollectionViewCell : UICollectionViewCell
+
+- (void)configWithModel:(FRStoreModel *)model;
 
 @end

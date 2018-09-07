@@ -10,4 +10,6 @@
 
 @interface FRUserHeaderView : UIView
 
+@property (nonatomic, copy) void (^userInfoDidClickedHandle)(void);
+
 @end

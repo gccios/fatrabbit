@@ -17,9 +17,19 @@
 @property (nonatomic, strong) UIView * headerContentView;
 @property (nonatomic, strong) WKWebView * webView;
 
+@property (nonatomic, strong) FRStoreModel * model;
+
 @end
 
 @implementation FRStoreDetailViewController
+
+- (instancetype)initWithModel:(FRStoreModel *)model
+{
+    if (self = [super init]) {
+        self.model = model;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -106,6 +116,7 @@
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    self.tableView.tableFooterView = [UIView new];
 }
 
 - (void)createTableHeaderView

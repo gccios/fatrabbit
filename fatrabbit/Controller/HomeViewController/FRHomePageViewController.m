@@ -17,10 +17,7 @@
 #import "FRMenuCollectionViewCell.h"
 #import "UserManager.h"
 #import "FRManager.h"
-#import "FRCateListRequest.h"
-#import "FRTelLogInRequest.h"
-#import "FRUserInfoRequest.h"
-#import "FRCityListRequest.h"
+#import "FatrabbitConfig.h"
 #import "MBProgressHUD+FRHUD.h"
 
 @interface FRHomePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, FRCityViewControllerDelegate>
@@ -42,107 +39,6 @@
     // Do any additional setup after loading the view.
     
     [self createViews];
-    
-    FRTelLogInRequest * request = [[FRTelLogInRequest alloc] initWithTel:@"18811129211" code:@"999999"];
-    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-
-        if (KIsDictionary(response)) {
-            NSDictionary * data = [response objectForKey:@"data"];
-            if (KIsDictionary(data)) {
-
-                NSInteger uid = [[data objectForKey:@"uid"] integerValue];
-                NSString * token = [data objectForKey:@"token"];
-                NSString * telNumber = @"18811129211";
-
-                [[UserManager shareManager] loginSuccessWithUid:uid token:token telNumber:telNumber];
-                [self requestUserInfo];
-                [self configBaseInfo];
-            }
-        }
-
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-
-    }];
-}
-
-- (void)requestUserInfo
-{
-    FRUserInfoRequest * info = [[FRUserInfoRequest alloc] initWithUserID:[UserManager shareManager].uid];
-    
-    [info sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-        if (KIsDictionary(response)) {
-            NSDictionary * data = [response objectForKey:@"data"];
-            if (KIsDictionary(data)) {
-                [[UserManager shareManager] mj_setKeyValues:data];
-            }
-        }
-        
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-        
-    }];
-}
-
-//配置APP基本信息
-- (void)configBaseInfo
-{
-    [self requestFatrabbitCateInfo];
-    [self requestFatrabbitCityInfo];
-}
-
-//获取分类列表
-- (void)requestFatrabbitCateInfo
-{
-    FRCateListRequest * request = [[FRCateListRequest alloc] init];
-    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-        if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
-            if (KIsArray(data)) {
-                [FRManager shareManager].cateList = [FRCateModel mj_objectArrayWithKeyValuesArray:data];
-            }
-        }
-        
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-        
-    }];
-}
-
-//获取城市列表
-- (void)requestFatrabbitCityInfo
-{
-    FRCityListRequest * cityRequest = [[FRCityListRequest alloc] init];
-    [cityRequest sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-        if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
-            if (KIsArray(data)) {
-                NSMutableArray * cityList = [[NSMutableArray alloc] init];
-                
-                for (NSDictionary * dict in data) {
-                    FRCityModel * model = [FRCityModel mj_objectWithKeyValues:dict];
-                    [cityList addObject:model];
-                    if (model.isdefault == 1) {
-                        [self.locationButton setTitle:model.name forState:UIControlStateNormal];
-                        [UserManager shareManager].city = model;
-                    }
-                }
-                
-                [FRManager shareManager].cityList = cityList;
-            }
-        }
-        
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-        
-    }];
 }
 
 //选择城市
@@ -150,7 +46,7 @@
 {
     if (![FRManager shareManager].cityList) {
         [MBProgressHUD showTextHUDWithText:@"正在获取城市信息"];
-        [self requestFatrabbitCityInfo];
+        [FatrabbitConfig configFatrabbitApplicationWithNetworkData];
         return;
     }
     
