@@ -135,7 +135,7 @@
     FRMenuCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FRMenuCollectionViewCell" forIndexPath:indexPath];
     
     if (indexPath.item == self.cateSource.count) {
-        [cell configLastCate];
+        [cell configLastStoreCate];
     }else{
         FRCateModel * model = [self.cateSource objectAtIndex:indexPath.item];
         [cell configWithCateModel:model];

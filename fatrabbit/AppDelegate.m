@@ -24,7 +24,6 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     [FatrabbitConfig configFatrabbitApplication];
-    [FatrabbitConfig configFatrabbitApplicationWithNetworkData];
     
     [self createRootViewController];
     

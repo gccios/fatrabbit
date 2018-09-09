@@ -17,15 +17,20 @@
 #import "FRMenuCollectionViewCell.h"
 #import "UserManager.h"
 #import "FRManager.h"
-#import "FatrabbitConfig.h"
+#import "FRCateListRequest.h"
+#import "FRCityListRequest.h"
 #import "MBProgressHUD+FRHUD.h"
+#import "FRNeedListRequest.h"
+#import "FRNeedModel.h"
 
 @interface FRHomePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, FRCityViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton * locationButton;
 @property (nonatomic, strong) UITableView * tableView;
+@property (nonatomic, strong) NSMutableArray * needSource;
 
 @property (nonatomic, strong) SDCycleScrollView * bannerView;
+@property (nonatomic, strong) NSMutableArray * cateMenuList;
 @property (nonatomic, strong) UICollectionView * menuCollectionView;
 
 @property (nonatomic, strong) FRTableTabView * tableTabView;
@@ -39,6 +44,93 @@
     // Do any additional setup after loading the view.
     
     [self createViews];
+    [self requestFatrabbitCateInfo];
+    [self requestFatrabbitCityInfo];
+    [self requestNeedSource];
+}
+
+//获取分类列表
+- (void)requestFatrabbitCateInfo
+{
+    FRCateListRequest * request = [[FRCateListRequest alloc] init];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                [FRManager shareManager].cateList = [FRCateModel mj_objectArrayWithKeyValuesArray:data];
+                [self.cateMenuList removeAllObjects];
+                if ([FRManager shareManager].cateList.count > 8) {
+                    
+                    for (NSInteger i = 0; i < 7; i++) {
+                        FRCateModel * model = [[FRManager shareManager].cateList objectAtIndex:i];
+                        [self.cateMenuList addObject:model];
+                    }
+                    
+                }else{
+                    [self.cateMenuList addObjectsFromArray:[FRManager shareManager].cateList];
+                }
+                
+                [self.menuCollectionView reloadData];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
+//获取城市列表
+- (void)requestFatrabbitCityInfo
+{
+    FRCityListRequest * cityRequest = [[FRCityListRequest alloc] init];
+    [cityRequest sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                NSMutableArray * cityList = [[NSMutableArray alloc] init];
+                
+                for (NSDictionary * dict in data) {
+                    FRCityModel * model = [FRCityModel mj_objectWithKeyValues:dict];
+                    [cityList addObject:model];
+                    if (model.isdefault == 1) {
+                        [UserManager shareManager].city = model;
+                        [self.locationButton setTitle:model.name forState:UIControlStateNormal];
+                    }
+                }
+                
+                [FRManager shareManager].cityList = cityList;
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
+//获取需求列表
+- (void)requestNeedSource
+{
+    FRNeedListRequest * request = [[FRNeedListRequest alloc] init];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSData * data = [response objectForKey:@"data"];
+            [self.needSource removeAllObjects];
+            [self.needSource addObjectsFromArray:[FRNeedModel mj_objectArrayWithKeyValuesArray:data]];
+            [self.tableView reloadData];
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
 }
 
 //选择城市
@@ -46,7 +138,7 @@
 {
     if (![FRManager shareManager].cityList) {
         [MBProgressHUD showTextHUDWithText:@"正在获取城市信息"];
-        [FatrabbitConfig configFatrabbitApplicationWithNetworkData];
+        [self requestFatrabbitCityInfo];
         return;
     }
     
@@ -184,12 +276,16 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.needSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FRServiceTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRServiceTableViewCell" forIndexPath:indexPath];
+    
+    FRNeedModel * model = [self.needSource objectAtIndex:indexPath.row];
+    [cell configWithModel:model];
+    
     return cell;
 }
 
@@ -206,12 +302,19 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 8;
+    return self.cateMenuList.count + 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     FRMenuCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FRMenuCollectionViewCell" forIndexPath:indexPath];
+    
+    if (indexPath.item == self.cateMenuList.count) {
+        [cell configLastHomeCate];
+    }else{
+        FRCateModel * model = [self.cateMenuList objectAtIndex:indexPath.item];
+        [cell configWithCateModel:model];
+    }
     
     return cell;
 }
@@ -220,6 +323,22 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:animated];
+}
+
+- (NSMutableArray *)needSource
+{
+    if (!_needSource) {
+        _needSource = [[NSMutableArray alloc] init];
+    }
+    return _needSource;
+}
+
+- (NSMutableArray *)cateMenuList
+{
+    if (!_cateMenuList) {
+        _cateMenuList = [[NSMutableArray alloc] init];
+    }
+    return _cateMenuList;
 }
 
 - (void)didReceiveMemoryWarning {

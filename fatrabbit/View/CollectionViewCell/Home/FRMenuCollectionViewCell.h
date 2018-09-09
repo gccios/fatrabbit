@@ -11,7 +11,9 @@
 
 @interface FRMenuCollectionViewCell : UICollectionViewCell
 
-- (void)configLastCate;
+- (void)configLastHomeCate;
+
+- (void)configLastStoreCate;
 
 - (void)configWithCateModel:(FRCateModel *)model;
 

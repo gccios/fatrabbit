@@ -48,6 +48,7 @@
 
 - (void)requestStoreInfo
 {
+    [FRStoreHomeRequest cancelRequest];
     FRStoreHomeRequest * request = [[FRStoreHomeRequest alloc] init];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
@@ -238,6 +239,14 @@
         _dataSource = [[NSMutableArray alloc] init];
     }
     return _dataSource;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (self.dataSource.count == 0) {
+        [self requestStoreInfo];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

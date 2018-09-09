@@ -1,19 +1,14 @@
 //
-//  FRStoreModel.m
+//  FRNeedModel.m
 //  fatrabbit
 //
-//  Created by 郭春城 on 2018/9/7.
+//  Created by 郭春城 on 2018/9/9.
 //  Copyright © 2018年 郭春城. All rights reserved.
 //
 
-#import "FRStoreModel.h"
+#import "FRNeedModel.h"
 
-@implementation FRStoreModel
-
-+ (NSDictionary *)mj_objectClassInArray
-{
-    return @{@"spec": @"FRStoreSpecModel"};
-}
+@implementation FRNeedModel
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName
 {

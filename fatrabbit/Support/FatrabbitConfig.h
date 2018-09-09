@@ -16,11 +16,4 @@
 //本地配置基本信息
 + (void)configFatrabbitApplication;
 
-//网络请求获取基础配置信息
-+ (void)configFatrabbitApplicationWithNetworkData;
-
-+ (void)requestFatrabbitCateInfo;
-
-+ (void)requestFatrabbitCityInfo;
-
 @end

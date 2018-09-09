@@ -9,8 +9,11 @@
 #import "FRServiceTableViewCell.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
+#import <UIImageView+WebCache.h>
 
 @interface FRServiceTableViewCell ()
+
+@property (nonatomic, strong) FRNeedModel * model;
 
 @property (nonatomic, strong) UIImageView * coverImageView;
 @property (nonatomic, strong) UILabel * nameLabel;
@@ -28,6 +31,16 @@
         [self createFRSeriveceCell];
     }
     return self;
+}
+
+- (void)configWithModel:(FRNeedModel *)model
+{
+    self.model = model;
+    [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
+    self.nameLabel.text = model.title;
+    self.detailLabel.text = model.remark;
+    self.browseLabel.text = model.pvtip;
+    self.timeLabel.text = model.timetip;
 }
 
 - (void)createFRSeriveceCell
@@ -54,7 +67,6 @@
     baseView.layer.shadowOffset = CGSizeMake(0, 2 * scale);
     
     self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
-    self.coverImageView.backgroundColor = [UIColor greenColor];
     [baseView addSubview:self.coverImageView];
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
@@ -63,7 +75,6 @@
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(13 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.nameLabel.text = @"测试标题测试标题测试标题测试标题测试标题测试标题";
     [baseView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.coverImageView.mas_right).offset(10 * scale);
@@ -72,7 +83,6 @@
     }];
     
     self.timeLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentRight];
-    self.timeLabel.text = @"测试时间测试时间";
     [baseView addSubview:self.timeLabel];
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.nameLabel.mas_right);
@@ -80,18 +90,16 @@
         make.centerY.mas_equalTo(self.nameLabel);
     }];
     
-    self.detailLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    self.detailLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentLeft];
     self.detailLabel.numberOfLines = 3;
-    self.detailLabel.text = @"测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容";
     [baseView addSubview:self.detailLabel];
     [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(0);
+        make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(10 * scale);
         make.left.mas_equalTo(self.nameLabel);
         make.right.mas_equalTo(self.timeLabel);
     }];
     
     self.browseLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.browseLabel.text = @"测试浏览数据测试浏览数据";
     [baseView addSubview:self.browseLabel];
     [self.browseLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(-10 * scale);

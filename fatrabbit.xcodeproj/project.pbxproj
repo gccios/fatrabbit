@@ -89,6 +89,12 @@
 		06FE2CEB212C6E0500E850D8 /* UIView+Additional.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE2CE7212C6E0500E850D8 /* UIView+Additional.m */; };
 		06FE2CEC212C6E0600E850D8 /* UIImage+Additional.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE2CEA212C6E0500E850D8 /* UIImage+Additional.m */; };
 		06FE2CEF212C70B000E850D8 /* FRHomePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE2CEE212C70B000E850D8 /* FRHomePageViewController.m */; };
+		06FFCBB221455D210001BF46 /* FRStoreSpecModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FFCBB121455D210001BF46 /* FRStoreSpecModel.m */; };
+		06FFCBB521455DC60001BF46 /* FRStoreDetailRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FFCBB421455DC60001BF46 /* FRStoreDetailRequest.m */; };
+		06FFCBC1214563AE0001BF46 /* FRStorePriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FFCBC0214563AE0001BF46 /* FRStorePriceView.m */; };
+		06FFCBC421457A840001BF46 /* FRNeedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FFCBC321457A840001BF46 /* FRNeedModel.m */; };
+		06FFCBC721457B520001BF46 /* FRNeedListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FFCBC621457B520001BF46 /* FRNeedListRequest.m */; };
+		06FFCBCD214588B60001BF46 /* FRPulishNeedRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FFCBCC214588B60001BF46 /* FRPulishNeedRequest.m */; };
 		51536B75ABE124F4F10E7E31 /* libPods-fatrabbit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4755B89BDA1E07984C3AF1A9 /* libPods-fatrabbit.a */; };
 /* End PBXBuildFile section */
 
@@ -276,6 +282,18 @@
 		06FE2CEA212C6E0500E850D8 /* UIImage+Additional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Additional.m"; sourceTree = "<group>"; };
 		06FE2CED212C70B000E850D8 /* FRHomePageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRHomePageViewController.h; sourceTree = "<group>"; };
 		06FE2CEE212C70B000E850D8 /* FRHomePageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRHomePageViewController.m; sourceTree = "<group>"; };
+		06FFCBB021455D210001BF46 /* FRStoreSpecModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreSpecModel.h; sourceTree = "<group>"; };
+		06FFCBB121455D210001BF46 /* FRStoreSpecModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreSpecModel.m; sourceTree = "<group>"; };
+		06FFCBB321455DC60001BF46 /* FRStoreDetailRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreDetailRequest.h; sourceTree = "<group>"; };
+		06FFCBB421455DC60001BF46 /* FRStoreDetailRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreDetailRequest.m; sourceTree = "<group>"; };
+		06FFCBBF214563AE0001BF46 /* FRStorePriceView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStorePriceView.h; sourceTree = "<group>"; };
+		06FFCBC0214563AE0001BF46 /* FRStorePriceView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStorePriceView.m; sourceTree = "<group>"; };
+		06FFCBC221457A840001BF46 /* FRNeedModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRNeedModel.h; sourceTree = "<group>"; };
+		06FFCBC321457A840001BF46 /* FRNeedModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNeedModel.m; sourceTree = "<group>"; };
+		06FFCBC521457B520001BF46 /* FRNeedListRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRNeedListRequest.h; sourceTree = "<group>"; };
+		06FFCBC621457B520001BF46 /* FRNeedListRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNeedListRequest.m; sourceTree = "<group>"; };
+		06FFCBCB214588B60001BF46 /* FRPulishNeedRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRPulishNeedRequest.h; sourceTree = "<group>"; };
+		06FFCBCC214588B60001BF46 /* FRPulishNeedRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRPulishNeedRequest.m; sourceTree = "<group>"; };
 		3F5CDBBC796399A99567E000 /* Pods-fatrabbit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fatrabbit.release.xcconfig"; path = "Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit.release.xcconfig"; sourceTree = "<group>"; };
 		4755B89BDA1E07984C3AF1A9 /* libPods-fatrabbit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-fatrabbit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8F1224C3DF5DFF70631225 /* Pods-fatrabbit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fatrabbit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fatrabbit/Pods-fatrabbit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -323,6 +341,10 @@
 				060C3151212DC2D9002F5919 /* FRCityListRequest.m */,
 				06A8CDE8213C4693002A03BD /* FRCateListRequest.h */,
 				06A8CDE9213C4693002A03BD /* FRCateListRequest.m */,
+				06FFCBC521457B520001BF46 /* FRNeedListRequest.h */,
+				06FFCBC621457B520001BF46 /* FRNeedListRequest.m */,
+				06FFCBCB214588B60001BF46 /* FRPulishNeedRequest.h */,
+				06FFCBCC214588B60001BF46 /* FRPulishNeedRequest.m */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -484,6 +506,8 @@
 			children = (
 				0673EB4721427DD7001C5769 /* FRStoreHomeRequest.h */,
 				0673EB4821427DD7001C5769 /* FRStoreHomeRequest.m */,
+				06FFCBB321455DC60001BF46 /* FRStoreDetailRequest.h */,
+				06FFCBB421455DC60001BF46 /* FRStoreDetailRequest.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -497,6 +521,8 @@
 				0673EB4F2142878A001C5769 /* FRStoreBlockModel.m */,
 				0673EB51214287D2001C5769 /* FRStoreModel.h */,
 				0673EB52214287D2001C5769 /* FRStoreModel.m */,
+				06FFCBB021455D210001BF46 /* FRStoreSpecModel.h */,
+				06FFCBB121455D210001BF46 /* FRStoreSpecModel.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -523,6 +549,8 @@
 				06A8CDEC213C4BAD002A03BD /* FRCateModel.m */,
 				06F60A3A213ED4FE00E5E31A /* FRCityModel.h */,
 				06F60A3B213ED4FE00E5E31A /* FRCityModel.m */,
+				06FFCBC221457A840001BF46 /* FRNeedModel.h */,
+				06FFCBC321457A840001BF46 /* FRNeedModel.m */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -634,6 +662,7 @@
 		06C403AB21298C69001416B8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				06FFCBBB2145637E0001BF46 /* FRPriceView */,
 				06EA085B2132881C0039491C /* CollectionViewCell */,
 				06EA085F2132926B0039491C /* CollectionHeaderFooter */,
 				06EA086921329A6D0039491C /* TableViewCell */,
@@ -694,10 +723,8 @@
 		06EA0857213281B60039491C /* TableViewHeader */ = {
 			isa = PBXGroup;
 			children = (
-				06EA0858213281F80039491C /* FRTableTabView.h */,
-				06EA0859213281F80039491C /* FRTableTabView.m */,
-				06EA08842132A7200039491C /* FRUserHeaderView.h */,
-				06EA08852132A7200039491C /* FRUserHeaderView.m */,
+				06FFCBB9214563500001BF46 /* Home */,
+				06FFCBBA214563590001BF46 /* My */,
 			);
 			path = TableViewHeader;
 			sourceTree = "<group>";
@@ -714,12 +741,8 @@
 		06EA085F2132926B0039491C /* CollectionHeaderFooter */ = {
 			isa = PBXGroup;
 			children = (
-				064CA6E321365C680084E30D /* FRStoreBannerHeaderView.h */,
-				064CA6E421365C680084E30D /* FRStoreBannerHeaderView.m */,
-				06DB90342137037400A44DBC /* FRTagCollectionHeaderView.h */,
-				06DB90352137037400A44DBC /* FRTagCollectionHeaderView.m */,
-				06EA0860213292820039491C /* FRCityFooterView.h */,
-				06EA0861213292820039491C /* FRCityFooterView.m */,
+				06FFCBB8214563400001BF46 /* Home */,
+				06FFCBB7214563350001BF46 /* Store */,
 			);
 			path = CollectionHeaderFooter;
 			sourceTree = "<group>";
@@ -823,6 +846,53 @@
 				06FE2CEA212C6E0500E850D8 /* UIImage+Additional.m */,
 			);
 			path = Additional;
+			sourceTree = "<group>";
+		};
+		06FFCBB7214563350001BF46 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				064CA6E321365C680084E30D /* FRStoreBannerHeaderView.h */,
+				064CA6E421365C680084E30D /* FRStoreBannerHeaderView.m */,
+				06DB90342137037400A44DBC /* FRTagCollectionHeaderView.h */,
+				06DB90352137037400A44DBC /* FRTagCollectionHeaderView.m */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		06FFCBB8214563400001BF46 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				06EA0860213292820039491C /* FRCityFooterView.h */,
+				06EA0861213292820039491C /* FRCityFooterView.m */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		06FFCBB9214563500001BF46 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				06EA0858213281F80039491C /* FRTableTabView.h */,
+				06EA0859213281F80039491C /* FRTableTabView.m */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		06FFCBBA214563590001BF46 /* My */ = {
+			isa = PBXGroup;
+			children = (
+				06EA08842132A7200039491C /* FRUserHeaderView.h */,
+				06EA08852132A7200039491C /* FRUserHeaderView.m */,
+			);
+			path = My;
+			sourceTree = "<group>";
+		};
+		06FFCBBB2145637E0001BF46 /* FRPriceView */ = {
+			isa = PBXGroup;
+			children = (
+				06FFCBBF214563AE0001BF46 /* FRStorePriceView.h */,
+				06FFCBC0214563AE0001BF46 /* FRStorePriceView.m */,
+			);
+			path = FRPriceView;
 			sourceTree = "<group>";
 		};
 		5F1EBE726EEF6BAA649A01AE /* Frameworks */ = {
@@ -1030,10 +1100,12 @@
 				06E864BD213FE2F7007B1B4E /* FRSettingViewController.m in Sources */,
 				060C3163212DCA0B002F5919 /* FRManager.m in Sources */,
 				06F60A3C213ED4FE00E5E31A /* FRCityModel.m in Sources */,
+				06FFCBCD214588B60001BF46 /* FRPulishNeedRequest.m in Sources */,
 				0690B6FD2138F38B0059B857 /* FRStoreCartTableViewCell.m in Sources */,
 				0673EB502142878A001C5769 /* FRStoreBlockModel.m in Sources */,
 				06EA08832132A2D90039491C /* MyMenuModel.m in Sources */,
 				060C3147212DBDC6002F5919 /* FRCityViewController.m in Sources */,
+				06FFCBB521455DC60001BF46 /* FRStoreDetailRequest.m in Sources */,
 				0620E344213D514B000E19BB /* RDTextView.m in Sources */,
 				0658C810212A7E6200800D7A /* FRTabbar.m in Sources */,
 				06E864B4213F9A03007B1B4E /* FRAddNewAddressViewController.m in Sources */,
@@ -1051,6 +1123,8 @@
 				0658C80A212A7DA400800D7A /* FRHomeBaseViewController.m in Sources */,
 				06E864AA213F8EE3007B1B4E /* FRAddressModel.m in Sources */,
 				06EA0868213299400039491C /* FRMessagePageViewController.m in Sources */,
+				06FFCBB221455D210001BF46 /* FRStoreSpecModel.m in Sources */,
+				06FFCBC421457A840001BF46 /* FRNeedModel.m in Sources */,
 				060C3167212DCA5F002F5919 /* FRUserModel.m in Sources */,
 				06EA085E213288310039491C /* FRCityCollectionViewCell.m in Sources */,
 				060C3155212DC440002F5919 /* FRBaseNetworkRequest.m in Sources */,
@@ -1060,6 +1134,7 @@
 				0645126E2133998E0072138F /* FRServiceTableViewCell.m in Sources */,
 				06E864BA213FD82C007B1B4E /* FRUserAdviceViewController.m in Sources */,
 				0658C803212A797700800D7A /* FatrabbitConfig.m in Sources */,
+				06FFCBC721457B520001BF46 /* FRNeedListRequest.m in Sources */,
 				06FE2CEF212C70B000E850D8 /* FRHomePageViewController.m in Sources */,
 				064512772133CE430072138F /* FROrderPageViewController.m in Sources */,
 				06842DF02141005B00F96A7C /* FRLoginViewController.m in Sources */,
@@ -1071,6 +1146,7 @@
 				06E864A4213F8AF1007B1B4E /* FRAddressViewController.m in Sources */,
 				0658C807212A7A9100800D7A /* GCCKeyChain.m in Sources */,
 				060C315E212DC534002F5919 /* FRApplicatinInfoTool.m in Sources */,
+				06FFCBC1214563AE0001BF46 /* FRStorePriceView.m in Sources */,
 				0673EB4921427DD7001C5769 /* FRStoreHomeRequest.m in Sources */,
 				064512712133B3350072138F /* FRSearchViewController.m in Sources */,
 				06A8CDF0213C4DC5002A03BD /* FRCateListViewController.m in Sources */,

@@ -29,7 +29,13 @@
     return self;
 }
 
-- (void)configLastCate
+- (void)configLastHomeCate
+{
+    [self.menuImageView setImage:[UIImage imageNamed:@"allCate"]];
+    self.titleLabel.text = @"全部分类";
+}
+
+- (void)configLastStoreCate
 {
     [self.menuImageView setImage:[UIImage imageNamed:@"levelChange"]];
     self.titleLabel.text = @"积分兑换";

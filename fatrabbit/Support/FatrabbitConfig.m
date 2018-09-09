@@ -12,9 +12,6 @@
 #import "FRNetWorkConfiguration.h"
 #import "GCCKeyChain.h"
 #import "UserManager.h"
-#import "FRManager.h"
-#import "FRCateListRequest.h"
-#import "FRCityListRequest.h"
 
 @implementation FatrabbitConfig
 
@@ -41,62 +38,6 @@
             [[UserManager shareManager] loginSuccesWithCache:data];
         }
     }
-}
-
-+ (void)configFatrabbitApplicationWithNetworkData
-{
-    [self requestFatrabbitCateInfo];
-    [self requestFatrabbitCityInfo];
-}
-
-//获取分类列表
-+ (void)requestFatrabbitCateInfo
-{
-    FRCateListRequest * request = [[FRCateListRequest alloc] init];
-    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-        if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
-            if (KIsArray(data)) {
-                [FRManager shareManager].cateList = [FRCateModel mj_objectArrayWithKeyValuesArray:data];
-            }
-        }
-        
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-        
-    }];
-}
-
-//获取城市列表
-+ (void)requestFatrabbitCityInfo
-{
-    FRCityListRequest * cityRequest = [[FRCityListRequest alloc] init];
-    [cityRequest sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-        if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
-            if (KIsArray(data)) {
-                NSMutableArray * cityList = [[NSMutableArray alloc] init];
-                
-                for (NSDictionary * dict in data) {
-                    FRCityModel * model = [FRCityModel mj_objectWithKeyValues:dict];
-                    [cityList addObject:model];
-                    if (model.isdefault == 1) {
-                        [UserManager shareManager].city = model;
-                    }
-                }
-                
-                [FRManager shareManager].cityList = cityList;
-            }
-        }
-        
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-        
-    }];
 }
 
 @end

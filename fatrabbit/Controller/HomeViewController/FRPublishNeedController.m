@@ -13,6 +13,8 @@
 #import "LookImageViewController.h"
 #import "FRCateListViewController.h"
 #import <TZImagePickerController.h>
+#import "MBProgressHUD+FRHUD.h"
+#import "FRPulishNeedRequest.h"
 
 @interface FRPublishNeedController () <UICollectionViewDelegate, UICollectionViewDataSource, TZImagePickerControllerDelegate, FRCateListViewControllerDelegate>
 
@@ -56,6 +58,43 @@
 
 - (void)handleButtonDidClicked
 {
+    NSString * title = self.needTitleField.text;
+    if (isEmptyString(title)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入标题"];
+        return;
+    }
+    NSString * price = self.needPriceField.text;
+    if (isEmptyString(price)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入价格"];
+        return;
+    }
+    NSString * remark = self.textView.text;
+    if (isEmptyString(remark)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入相关描述信息"];
+        return;
+    }
+    
+    float priceFloat = [price floatValue];
+    
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在发布需求" inView:self.view];
+    FRPulishNeedRequest * request =  [[FRPulishNeedRequest alloc] initWithPrice:priceFloat title:title remark:remark img:nil cateID:self.model.cid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"发布成功"];
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"发布失败"];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"发布失败"];
+        
+    }];
     
 }
 
@@ -134,6 +173,7 @@
     
     self.needPriceField = [[UITextField alloc] initWithFrame:CGRectZero];
     self.needPriceField.borderStyle = UITextBorderStyleRoundedRect;
+    self.needPriceField.keyboardType = UIKeyboardTypeDecimalPad;
     [self.contentView addSubview:self.needPriceField];
     [self.needPriceField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(priceLabel);
