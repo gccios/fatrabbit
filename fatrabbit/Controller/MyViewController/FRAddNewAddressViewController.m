@@ -44,23 +44,23 @@
 - (void)addButtonDidClicked
 {
     NSString * name = self.nameField.text;
-    NSString * telNumber = self.telField.text;
+    NSString * mobile = self.telField.text;
     NSString * address = self.addressField.text;
     if (isEmptyString(name)) {
         [MBProgressHUD showTextHUDWithText:@"请输入收货人信息"];
         return;
     }
-    if (isEmptyString(telNumber)) {
+    if (isEmptyString(mobile)) {
         [MBProgressHUD showTextHUDWithText:@"请输入手机号码"];
     }
     if (isEmptyString(address)) {
         [MBProgressHUD showTextHUDWithText:@"请输入收货地址"];
     }
     
-    FRUserAddressRequest * request = [[FRUserAddressRequest alloc] initAddWith:name tel:telNumber address:address];
+    FRUserAddressRequest * request = [[FRUserAddressRequest alloc] initAddWith:name tel:mobile address:address];
     
     if (self.model) {
-        request = [[FRUserAddressRequest alloc] initEditWith:name tel:telNumber address:address addressID:self.model.cid];
+        request = [[FRUserAddressRequest alloc] initEditWith:name tel:mobile address:address addressID:self.model.cid];
     }
     
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {

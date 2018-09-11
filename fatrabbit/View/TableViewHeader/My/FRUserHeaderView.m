@@ -25,6 +25,7 @@
 @property (nonatomic, strong) UILabel * vipLabel;
 
 @property (nonatomic, strong) UICollectionView * collectionView;
+@property (nonatomic, strong) NSMutableArray * dataSource;
 
 @end
 
@@ -40,16 +41,20 @@
 
 - (void)userInfoDidClicked
 {
-    if (![UserManager shareManager].isLogin) {
-        if (self.userInfoDidClickedHandle) {
-            self.userInfoDidClickedHandle();
-        }
+    if (self.userInfoDidClickedHandle) {
+        self.userInfoDidClickedHandle();
     }
 }
 
 - (void)userLoginStatusChange
 {
-    
+    if ([UserManager shareManager].isLogin) {
+        self.infoView.hidden = NO;
+        
+        self.nameLabel.text = [UserManager shareManager].nickname;
+    }else{
+        self.infoView.hidden = YES;
+    }
 }
 
 - (void)createUserHeaderView
@@ -68,7 +73,7 @@
     [self.userView addGestureRecognizer:tap];
     
     self.logoImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
-    self.logoImageView.backgroundColor = [UIColor greenColor];
+    self.logoImageView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [self.userView addSubview:self.logoImageView];
     [self.logoImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(20 * scale);
@@ -95,7 +100,6 @@
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.nameLabel.text = @"测试名称";
     [self.infoView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(25 * scale);
@@ -150,13 +154,19 @@
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
+    self.dataSource = [[NSMutableArray alloc] init];
+    [self.dataSource addObject:[[FRUserHeaderMenuModel alloc] initWithType:FRUserHeaderMenuType_Order]];
+    [self.dataSource addObject:[[FRUserHeaderMenuModel alloc] initWithType:FRUserHeaderMenuType_Collect]];
+    [self.dataSource addObject:[[FRUserHeaderMenuModel alloc] initWithType:FRUserHeaderMenuType_Need]];
+    [self.dataSource addObject:[[FRUserHeaderMenuModel alloc] initWithType:FRUserHeaderMenuType_VIP]];
+    
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize = CGSizeMake((kMainBoundsWidth - kMainBoundsWidth / 16.f * 5) / 4.f, kMainBoundsWidth / 8.f + 25 * scale);
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = kMainBoundsWidth / 16.f;
     
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"UICollectionViewCell"];
+    [self.collectionView registerClass:[FRMyMenuCollectionViewCell class] forCellWithReuseIdentifier:@"FRMyMenuCollectionViewCell"];
     self.collectionView.backgroundColor = UIColorFromRGB(0xFFFFFF);
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
@@ -180,20 +190,30 @@
     }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoginStatusChange) name:FRUserLoginStatusDidChange object:nil];
+    [self userLoginStatusChange];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 4;
+    return self.dataSource.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UICollectionViewCell" forIndexPath:indexPath];
+    FRMyMenuCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FRMyMenuCollectionViewCell" forIndexPath:indexPath];
     
-    cell.backgroundColor = [UIColor greenColor];
+    FRUserHeaderMenuModel * model = [self.dataSource objectAtIndex:indexPath.item];
+    [cell configWithModel:model];
     
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    FRUserHeaderMenuModel * model = [self.dataSource objectAtIndex:indexPath.item];
+    if (self.userHeaderMenuDidClickedHandle) {
+        self.userHeaderMenuDidClickedHandle(model);
+    }
 }
 
 

@@ -200,6 +200,9 @@
             
             FRTagCollectionHeaderView * view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"FRTagCollectionHeaderView" forIndexPath:indexPath];
             
+            FRStoreBlockModel * block = [self.dataSource objectAtIndex:indexPath.section];
+            [view configWithTitle:block.label_title];
+            
             return view;
         }
         

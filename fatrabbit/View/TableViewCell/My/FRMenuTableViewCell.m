@@ -34,6 +34,8 @@
 {
     self.model = model;
     self.menuLabel.text = model.title;
+    [self.menuImageView setImage:[UIImage imageNamed:model.imageName]];
+    self.infoLabel.text = model.detail;
 }
 
 - (void)createMenuTableViewCell
@@ -44,13 +46,12 @@
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.menuImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleToFill image:[UIImage new]];
-    self.menuImageView.backgroundColor = [UIColor greenColor];
     [self.contentView addSubview:self.menuImageView];
     [self.menuImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(20 * scale);
         make.centerY.mas_equalTo(0);
-        make.width.mas_equalTo(30 * scale);
-        make.height.mas_equalTo(30 * scale);
+        make.width.mas_equalTo(25 * scale);
+        make.height.mas_equalTo(25 * scale);
     }];
     
     self.menuLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
@@ -62,12 +63,20 @@
     }];
     
     self.infoLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentRight];
-    self.infoLabel.text = @"测试副标题";
     [self.contentView addSubview:self.infoLabel];
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.menuLabel);
         make.right.mas_equalTo(-40 * scale);
         make.height.mas_equalTo(20 * scale);
+    }];
+    
+    UIImageView * moreImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage imageNamed:@"more"]];
+    [self.contentView addSubview:moreImageView];
+    [moreImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(0);
+        make.right.mas_equalTo(-15 * scale);
+        make.width.mas_equalTo(7 * scale);
+        make.height.mas_equalTo(13 * scale);
     }];
 }
 

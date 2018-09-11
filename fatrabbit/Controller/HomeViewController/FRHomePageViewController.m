@@ -22,8 +22,10 @@
 #import "MBProgressHUD+FRHUD.h"
 #import "FRNeedListRequest.h"
 #import "FRNeedModel.h"
+#import "FRAllCateListViewController.h"
+#import "FRCatePageViewController.h"
 
-@interface FRHomePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, FRCityViewControllerDelegate>
+@interface FRHomePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, FRCityViewControllerDelegate, FRAllCateListViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton * locationButton;
 @property (nonatomic, strong) UITableView * tableView;
@@ -47,6 +49,7 @@
     [self requestFatrabbitCateInfo];
     [self requestFatrabbitCityInfo];
     [self requestNeedSource];
+    NSLog(@"%@", FRUserInfoPath);
 }
 
 //获取分类列表
@@ -131,6 +134,13 @@
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
     }];
+}
+
+#pragma mark - FRAllCateListViewControllerDelegate
+- (void)FRAllCateListViewControllerDidChoose:(FRCateModel *)model
+{
+    FRCatePageViewController * catePage = [[FRCatePageViewController alloc] initWithModel:model];
+    [self.navigationController pushViewController:catePage animated:YES];
 }
 
 //选择城市
@@ -317,6 +327,15 @@
     }
     
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.item == self.cateMenuList.count) {
+        FRAllCateListViewController * allCate = [[FRAllCateListViewController alloc] init];
+        allCate.delegate = self;
+        [self presentViewController:allCate animated:YES completion:nil];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -10,13 +10,13 @@
 
 @implementation FRTelLogInRequest
 
-- (instancetype)initWithTel:(NSString *)telNumber code:(NSString *)code
+- (instancetype)initWithTel:(NSString *)mobile code:(NSString *)code
 {
     if (self = [super init]) {
         self.httpMethod = BGNetworkRequestHTTPPost;
         self.methodName = @"mobilelogin";
         
-        [self setValue:telNumber forParamKey:@"mobile"];
+        [self setValue:mobile forParamKey:@"mobile"];
         [self setValue:code forParamKey:@"code"];
     }
     return self;

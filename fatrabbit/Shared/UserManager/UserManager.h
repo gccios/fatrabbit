@@ -6,7 +6,7 @@
 //  Copyright © 2018年 郭春城. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <MJExtension.h>
 #import "FRCityModel.h"
 #import "FRAddressModel.h"
@@ -20,15 +20,16 @@ extern NSString * const FRUserLoginStatusDidChange; //用户退出通知
 @property (nonatomic, assign) BOOL isLogin;
 
 @property (nonatomic, assign) NSInteger uid;
-@property (nonatomic, copy) NSString * telNumber;
 @property (nonatomic, copy) NSString * token;
 
-@property (nonatomic, copy) NSString * nickname;
-@property (nonatomic, copy) NSString * avatar;
-@property (nonatomic, copy) NSString * mobile;
-@property (nonatomic, copy) NSString * username;
-@property (nonatomic, assign) NSInteger is_provider;
-@property (nonatomic, assign) NSInteger city_id;
+@property (nonatomic, copy) NSString * nickname;//用户昵称
+@property (nonatomic, copy) NSString * avatar;//用户头像
+@property (nonatomic, copy) NSString * mobile;//用户手机
+@property (nonatomic, copy) NSString * username;//用户名字
+@property (nonatomic, assign) NSInteger is_provider;//是否是服务商
+@property (nonatomic, assign) NSInteger city_id;//城市ID
+@property (nonatomic, assign) CGFloat balance;//账户余额
+@property (nonatomic, assign) NSInteger points;//可用积分
 
 @property (nonatomic, strong) FRCityModel * city;
 
@@ -37,6 +38,8 @@ extern NSString * const FRUserLoginStatusDidChange; //用户退出通知
 
 - (void)loginSuccesWithCache:(NSDictionary *)data;
 
-- (void)loginSuccessWithUid:(NSInteger)uid token:(NSString *)token telNumber:(NSString *)telNumber;
+- (void)loginSuccessWithUid:(NSInteger)uid token:(NSString *)token mobile:(NSString *)mobile;
+
+- (void)needUpdateLocalUserInfo;
 
 @end

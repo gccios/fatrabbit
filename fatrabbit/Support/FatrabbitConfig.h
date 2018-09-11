@@ -16,4 +16,6 @@
 //本地配置基本信息
 + (void)configFatrabbitApplication;
 
++ (void)requestAliyunSTS;
+
 @end

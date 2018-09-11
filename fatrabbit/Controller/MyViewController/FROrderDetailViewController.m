@@ -7,12 +7,14 @@
 //
 
 #import "FROrderDetailViewController.h"
+#import "FRCommentLevelView.h"
 
 @interface FROrderDetailViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView * tableView;
 
 @property (nonatomic, strong) UIView * bottomView;
+@property (nonatomic, strong) FRCommentLevelView * commentLevelView;
 
 @end
 
@@ -23,6 +25,12 @@
     // Do any additional setup after loading the view.
     
     [self createViews];
+}
+
+//前去评价
+- (void)goToComment
+{
+    
 }
 
 - (void)createViews
@@ -206,7 +214,7 @@
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
-    CGFloat height = 180 * scale;
+    CGFloat height = 200 * scale;
     
     NSString * comment = @"暂无评价内容";
     CGSize size = [comment boundingRectWithSize:CGSizeMake(kMainBoundsWidth - 30 * scale, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:kPingFangRegular(12 * scale)} context:nil].size;
@@ -253,31 +261,13 @@
         make.height.mas_equalTo(10 * scale);
     }];
     
-    UILabel * serviceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    serviceLabel.text = @"服务评分：";
-    [footerView addSubview:serviceLabel];
-    [serviceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(lineView.mas_bottom).offset(15 * scale);
-        make.left.mas_equalTo(15 * scale);
-        make.height.mas_equalTo(20 * scale);
-    }];
-    
-    UILabel * companyLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    companyLabel.text = @"公司评分：";
-    [footerView addSubview:companyLabel];
-    [companyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(serviceLabel.mas_bottom).offset(10 * scale);
-        make.left.mas_equalTo(15 * scale);
-        make.height.mas_equalTo(20 * scale);
-    }];
-    
-    UILabel * workLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    workLabel.text = @"业务评分：";
-    [footerView addSubview:workLabel];
-    [workLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(companyLabel.mas_bottom).offset(10 * scale);
-        make.left.mas_equalTo(15 * scale);
-        make.height.mas_equalTo(20 * scale);
+    self.commentLevelView = [[FRCommentLevelView alloc] initWithCommentNormal];
+    [self.commentLevelView showWithServiceLevel:2 companyLevel:4 businessLevel:3];
+    [footerView addSubview:self.commentLevelView];
+    [self.commentLevelView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(lineView.mas_bottom);
+        make.left.right.mas_equalTo(0);
+        make.height.mas_equalTo(125 * scale);
     }];
     
     self.tableView.tableFooterView = footerView;

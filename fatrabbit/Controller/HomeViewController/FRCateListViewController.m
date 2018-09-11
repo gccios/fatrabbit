@@ -51,7 +51,6 @@
 - (void)createTableListView
 {
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-//    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = 50;
     self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.delegate = self;
@@ -72,7 +71,6 @@
     }
     
     self.childTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    //    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.childTableView.rowHeight = 50;
     self.childTableView.backgroundColor = [UIColor whiteColor];
     self.childTableView.delegate = self;
@@ -83,10 +81,10 @@
         make.top.mas_equalTo(self.titleView.mas_bottom);
         make.bottom.mas_equalTo(0);
         make.width.mas_equalTo(kMainBoundsWidth / 3.f * 2);
-//        make.right.mas_equalTo(kMainBoundsWidth / 3.f * 2);
         make.right.mas_equalTo(0);
     }];
     self.childTableView.tableFooterView = [UIView new];
+    self.childTableView.contentInset = UIEdgeInsetsMake(0, 0, 70 * kMainBoundsWidth / 375.f, 0);
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -149,6 +147,8 @@
 
 - (void)createTitleView
 {
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
     self.titleView = [[UIView alloc] initWithFrame:CGRectZero];
     self.titleView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.titleView];
@@ -176,12 +176,15 @@
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.exclusiveTouch = YES;
-    [button setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
-    button.frame = CGRectMake(20, 20, 40, 40);
-    [button setImageEdgeInsets:UIEdgeInsetsMake(0, -25, 0, 0)];
+    [button setImage:[UIImage imageNamed:@"cateClose"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(navBackButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     button.backgroundColor = [UIColor clearColor];
-    [self.titleView addSubview:button];
+    [self.view addSubview:button];
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(0);
+        make.bottom.mas_equalTo(-15 * scale);
+        make.width.height.mas_equalTo(60 * scale);
+    }];
 }
 
 - (void)navBackButtonClicked

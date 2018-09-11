@@ -12,6 +12,10 @@ typedef enum : NSUInteger {
     MyMenuType_MyAccount,
     MyMenuType_MyAddress,
     MyMenuType_ApplyRegister,
+    MyMenuType_MyIntel,
+    MyMenuType_MyExample,
+    MyMenuType_MyService,
+    MyMenuType_MyGetOrder,
     MyMenuType_Advice,
     MyMenuType_Setting
 } MyMenuType;
@@ -24,5 +28,6 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, copy) NSString * title;
 @property (nonatomic, copy) NSString * imageName;
+@property (nonatomic, copy) NSString * detail;
 
 @end

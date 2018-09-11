@@ -10,4 +10,6 @@
 
 @interface FRTagCollectionHeaderView : UICollectionReusableView
 
+- (void)configWithTitle:(NSString *)title;
+
 @end

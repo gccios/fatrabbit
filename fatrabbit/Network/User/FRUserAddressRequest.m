@@ -19,27 +19,27 @@
     return self;
 }
 
-- (instancetype)initAddWith:(NSString *)name tel:(NSString *)telNumber address:(NSString *)address
+- (instancetype)initAddWith:(NSString *)name tel:(NSString *)mobile address:(NSString *)address
 {
     if (self = [super init]) {
         self.httpMethod = BGNetworkRequestHTTPPost;
         self.methodName = @"addressadd";
         
         [self setValue:name forParamKey:@"consignee"];
-        [self setValue:telNumber forParamKey:@"mobile"];
+        [self setValue:mobile forParamKey:@"mobile"];
         [self setValue:address forParamKey:@"address"];
     }
     return self;
 }
 
-- (instancetype)initEditWith:(NSString *)name tel:(NSString *)telNumber address:(NSString *)address addressID:(NSInteger)uid
+- (instancetype)initEditWith:(NSString *)name tel:(NSString *)mobile address:(NSString *)address addressID:(NSInteger)uid
 {
     if (self = [super init]) {
         self.httpMethod = BGNetworkRequestHTTPPost;
         self.methodName = @"addressedit";
         
         [self setValue:name forParamKey:@"consignee"];
-        [self setValue:telNumber forParamKey:@"mobile"];
+        [self setValue:mobile forParamKey:@"mobile"];
         [self setValue:address forParamKey:@"address"];
         [self setIntegerValue:uid forParamKey:@"id"];
     }

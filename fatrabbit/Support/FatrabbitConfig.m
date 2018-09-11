@@ -12,6 +12,9 @@
 #import "FRNetWorkConfiguration.h"
 #import "GCCKeyChain.h"
 #import "UserManager.h"
+#import "FRManager.h"
+#import "FRUserInfoRequest.h"
+#import "FRAliyunSTSRequest.h"
 
 @implementation FatrabbitConfig
 
@@ -36,8 +39,44 @@
         NSDictionary * data = [NSDictionary dictionaryWithContentsOfFile:FRUserInfoPath];
         if ([data isKindOfClass:[NSDictionary class]]) {
             [[UserManager shareManager] loginSuccesWithCache:data];
+            [self requestUserInfo];
         }
     }
+    
+    [self requestAliyunSTS];
+}
+
++ (void)requestUserInfo
+{
+    FRUserInfoRequest * info = [[FRUserInfoRequest alloc] initWithUserID:[UserManager shareManager].uid];
+    
+    [info sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                [[UserManager shareManager] mj_setKeyValues:data];
+                [[UserManager shareManager] needUpdateLocalUserInfo];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
++ (void)requestAliyunSTS
+{
+    FRAliyunSTSRequest * request = [[FRAliyunSTSRequest alloc] init];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
 }
 
 @end

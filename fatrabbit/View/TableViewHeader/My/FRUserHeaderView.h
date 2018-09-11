@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRMyMenuCollectionViewCell.h"
 
 @interface FRUserHeaderView : UIView
 
 @property (nonatomic, copy) void (^userInfoDidClickedHandle)(void);
+
+@property (nonatomic, copy) void (^userHeaderMenuDidClickedHandle)(FRUserHeaderMenuModel *model);
 
 @end

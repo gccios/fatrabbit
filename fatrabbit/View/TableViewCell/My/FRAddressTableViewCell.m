@@ -13,7 +13,7 @@
 @interface FRAddressTableViewCell ()
 
 @property (nonatomic, strong) UILabel * nameLabel;
-@property (nonatomic, strong) UILabel * telNumber;
+@property (nonatomic, strong) UILabel * mobile;
 @property (nonatomic, strong) UILabel * addressLabel;
 @property (nonatomic, strong) UIButton * editButton;
 
@@ -35,7 +35,7 @@
 {
     self.model = model;
     self.nameLabel.text = model.consignee;
-    self.telNumber.text = model.mobile;
+    self.mobile.text = model.mobile;
     self.addressLabel.text = model.address;
 }
 
@@ -53,9 +53,9 @@
         make.height.mas_equalTo(15 * scale);
     }];
     
-    self.telNumber = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    [self.contentView addSubview:self.telNumber];
-    [self.telNumber mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.mobile = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    [self.contentView addSubview:self.mobile];
+    [self.mobile mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.nameLabel);
         make.left.mas_equalTo(self.nameLabel.mas_right).offset(40 * scale);
         make.height.mas_equalTo(15 * scale);

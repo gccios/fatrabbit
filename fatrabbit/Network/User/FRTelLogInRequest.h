@@ -10,6 +10,6 @@
 
 @interface FRTelLogInRequest : FRBaseNetworkRequest
 
-- (instancetype)initWithTel:(NSString *)telNumber code:(NSString *)code;
+- (instancetype)initWithTel:(NSString *)mobile code:(NSString *)code;
 
 @end

@@ -14,7 +14,9 @@
 #import "FRUserAdviceViewController.h"
 #import "FRSettingViewController.h"
 #import "FRLoginViewController.h"
+#import "FRMyInfoViewController.h"
 #import "UserManager.h"
+#import "FRMyAccountViewController.h"
 
 @interface FRMyViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -33,23 +35,59 @@
     
     [self createDataSource];
     [self createViews];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePageWithUserLoginStatus) name:FRUserLoginStatusDidChange object:nil];
 }
+
+- (void)updatePageWithUserLoginStatus
+{
+    [self createDataSource];
+    [self.myTableView reloadData];
+}
+
 
 - (void)createDataSource
 {
     [self.dataSource removeAllObjects];
     
-    [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyAccount],
-                                 [[MyMenuModel alloc] initWithType:MyMenuType_MyAddress]]];
-    [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_ApplyRegister]]];
-    [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_Advice],
-                                 [[MyMenuModel alloc] initWithType:MyMenuType_Setting]]];
+    if ([UserManager shareManager].isLogin && [UserManager shareManager].is_provider == 1) {
+        
+        [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyAccount],
+                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyAddress]]];
+        [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyIntel],
+                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyExample],
+                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyService],
+                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyGetOrder]]];
+        [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_Advice],
+                                     [[MyMenuModel alloc] initWithType:MyMenuType_Setting]]];
+        
+    }else{
+        
+        [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyAccount],
+                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyAddress]]];
+        [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_ApplyRegister]]];
+        [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_Advice],
+                                     [[MyMenuModel alloc] initWithType:MyMenuType_Setting]]];
+        
+    }
 }
 
 - (void)userInfoDidClicked
 {
-    FRLoginViewController * login = [[FRLoginViewController alloc] init];
-    [self.navigationController pushViewController:login animated:YES];
+    if ([UserManager shareManager].isLogin) {
+        FRMyInfoViewController * info = [[FRMyInfoViewController alloc] init];
+        [self.navigationController pushViewController:info animated:YES];
+    }else{
+        FRLoginViewController * login = [[FRLoginViewController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+    }
+}
+
+- (void)headerMenuDidSelect:(FRUserHeaderMenuModel *)model
+{
+    if (model.type == FRUserHeaderMenuType_Order) {
+        FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
+        [self.navigationController pushViewController:order animated:YES];
+    }
 }
 
 - (void)createViews
@@ -60,12 +98,14 @@
 //    self.myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.myTableView.delegate = self;
     self.myTableView.dataSource = self;
+    self.myTableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [self.myTableView registerClass:[FRMenuTableViewCell class] forCellReuseIdentifier:@"FRMenuTableViewCell"];
     [self.myTableView registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:@"UITableViewHeaderFooterView"];
     [self.view addSubview:self.myTableView];
     [self.myTableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    self.myTableView.contentInset = UIEdgeInsetsMake(0, 0, 30 * kMainBoundsWidth / 375.f, 0);
     
     [self createMyTableHeader];
 }
@@ -80,6 +120,9 @@
     self.userHeaderView.userInfoDidClickedHandle = ^{
         [weakSelf userInfoDidClicked];
     };
+    self.userHeaderView.userHeaderMenuDidClickedHandle = ^(FRUserHeaderMenuModel *model) {
+        [weakSelf headerMenuDidSelect:model];
+    };
     
     self.myTableView.tableHeaderView = self.userHeaderView;
 }
@@ -88,6 +131,16 @@
 {
     NSArray * data = [self.dataSource objectAtIndex:indexPath.section];
     MyMenuModel * model = [data objectAtIndex:indexPath.row];
+    
+    if (![UserManager shareManager].isLogin) {
+        if (model.type == MyMenuType_Setting) {
+            FRSettingViewController * setting = [[FRSettingViewController alloc] init];
+            [self.navigationController pushViewController:setting animated:YES];
+        }else{
+            FRLoginViewController * login = [[FRLoginViewController alloc] init];
+            [self.navigationController pushViewController:login animated:YES];
+        }
+    }
     
     if (model.type == MyMenuType_MyAddress) {
         FRAddressViewController * address = [[FRAddressViewController alloc] init];
@@ -98,9 +151,9 @@
     }else if (model.type == MyMenuType_Setting) {
         FRSettingViewController * setting = [[FRSettingViewController alloc] init];
         [self.navigationController pushViewController:setting animated:YES];
-    }else{
-        FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
-        [self.navigationController pushViewController:order animated:YES];
+    }else if (model.type == MyMenuType_MyAccount) {
+        FRMyAccountViewController * account = [[FRMyAccountViewController alloc] init];
+        [self.navigationController pushViewController:account animated:YES];
     }
 }
 
@@ -139,9 +192,21 @@
     return view;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView * view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"UITableViewHeaderFooterView"];
+    
+    return view;
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return .1f;//把高度设置很小，效果可以看成footer的高度等于0
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 10.f;//把高度设置很小，效果可以看成footer的高度等于0
 }
 
 - (NSMutableArray *)dataSource

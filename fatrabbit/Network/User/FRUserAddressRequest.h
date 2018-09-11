@@ -10,9 +10,9 @@
 
 @interface FRUserAddressRequest : FRBaseNetworkRequest
 
-- (instancetype)initAddWith:(NSString *)name tel:(NSString *)telNumber address:(NSString *)address;
+- (instancetype)initAddWith:(NSString *)name tel:(NSString *)mobile address:(NSString *)address;
 
-- (instancetype)initEditWith:(NSString *)name tel:(NSString *)telNumber address:(NSString *)address addressID:(NSInteger)uid;
+- (instancetype)initEditWith:(NSString *)name tel:(NSString *)mobile address:(NSString *)address addressID:(NSInteger)uid;
 
 - (instancetype)initDeleteWith:(NSInteger)cid;
 

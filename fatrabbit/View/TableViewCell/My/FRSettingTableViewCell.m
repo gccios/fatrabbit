@@ -32,12 +32,9 @@
 - (void)configWithModel:(FRSettingModel *)model
 {
     self.model = model;
-    if (!isEmptyString(model.title)) {
-        self.nameLbel.text = model.title;
-    }
-    if (!isEmptyString(model.detail)) {
-        self.infoLabel.text = model.detail;
-    }
+    
+    self.nameLbel.text = model.title;
+    self.infoLabel.text = model.detail;
 }
 
 - (void)createSettingCell
@@ -60,6 +57,15 @@
         make.centerY.mas_equalTo(0);
         make.right.mas_equalTo(-50 * scale);
         make.height.mas_equalTo(20 * scale);
+    }];
+    
+    UIImageView * moreImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage imageNamed:@"more"]];
+    [self.contentView addSubview:moreImageView];
+    [moreImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(0);
+        make.right.mas_equalTo(-15 * scale);
+        make.width.mas_equalTo(7 * scale);
+        make.height.mas_equalTo(13 * scale);
     }];
 }
 

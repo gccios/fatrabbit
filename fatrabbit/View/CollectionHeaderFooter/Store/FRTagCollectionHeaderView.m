@@ -26,6 +26,11 @@
     return self;
 }
 
+- (void)configWithTitle:(NSString *)title
+{
+    self.tagLabel.text = title;
+}
+
 - (void)createTagCollectionHeaderView
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
@@ -41,7 +46,6 @@
     }];
     
     self.tagLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(17 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.tagLabel.text = @"热卖推荐";
     [self addSubview:self.tagLabel];
     [self.tagLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(lineView);

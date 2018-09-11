@@ -59,9 +59,9 @@
 
 - (void)loginWithTel
 {
-    NSString * telNumber = self.telField.text;
+    NSString * mobile = self.telField.text;
     NSString * code = self.codeField.text;
-    if (isEmptyString(telNumber)) {
+    if (isEmptyString(mobile)) {
         [MBProgressHUD showTextHUDWithText:@"请输入手机号码"];
         return;
     }
@@ -71,7 +71,7 @@
     }
     
     MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在登录" inView:self.view];
-    FRTelLogInRequest * request = [[FRTelLogInRequest alloc] initWithTel:telNumber code:code];
+    FRTelLogInRequest * request = [[FRTelLogInRequest alloc] initWithTel:mobile code:code];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         [hud hideAnimated:YES];
@@ -81,9 +81,9 @@
                 
                 NSInteger uid = [[data objectForKey:@"uid"] integerValue];
                 NSString * token = [data objectForKey:@"token"];
-                NSString * telNumber = @"18811129211";
+                NSString * mobile = @"18811129211";
                 
-                [[UserManager shareManager] loginSuccessWithUid:uid token:token telNumber:telNumber];
+                [[UserManager shareManager] loginSuccessWithUid:uid token:token mobile:mobile];
                 [self requestUserInfo];
                 [self.navigationController popViewControllerAnimated:YES];
             }
@@ -126,6 +126,7 @@
             NSDictionary * data = [response objectForKey:@"data"];
             if (KIsDictionary(data)) {
                 [[UserManager shareManager] mj_setKeyValues:data];
+                [[UserManager shareManager] needUpdateLocalUserInfo];
             }
         }
         
