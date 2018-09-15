@@ -94,7 +94,8 @@
         make.height.mas_equalTo(15 * scale);
     }];
     
-    self.rightHandleButton = [FRCreateViewTool createButtonWithFrame: CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0x333333) title:@"再次购买"];
+    self.rightHandleButton = [FRCreateViewTool createButtonWithFrame: CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"再次购买"];
+    self.rightHandleButton.backgroundColor = UIColorFromRGB(0xf6d365);
     [self.contentView addSubview:self.rightHandleButton];
     [self.rightHandleButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-15 * scale);
@@ -103,8 +104,6 @@
         make.height.mas_equalTo(20 * scale);
     }];
     [FRCreateViewTool cornerView:self.rightHandleButton radius:5 * scale];
-    self.rightHandleButton.layer.borderColor = UIColorFromRGB(0x999999).CGColor;
-    self.rightHandleButton.layer.borderWidth = .5f;
     
     self.leftHandleButton = [FRCreateViewTool createButtonWithFrame: CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0x999999) title:@"查看发票"];
     [self.contentView addSubview:self.leftHandleButton];

@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRCateModel.h"
 
 @interface FRStoreBannerHeaderView : UICollectionReusableView
+
+@property (nonatomic, copy) void (^menuDidClickedHandle)(FRCateModel *model);
 
 - (void)configWithBannerSource:(NSMutableArray *)bannerSource;
 

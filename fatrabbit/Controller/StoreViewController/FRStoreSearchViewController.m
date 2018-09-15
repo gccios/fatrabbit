@@ -12,8 +12,13 @@
 #import "FRNavAutoView.h"
 #import <IQKeyboardManager.h>
 #import "FRStoreListViewController.h"
+#import "FRStoreSearchRequest.h"
 
 @interface FRStoreSearchViewController () <UITextFieldDelegate>
+
+@property (nonatomic, strong) NSArray * titleArray;
+@property (nonatomic, strong) NSArray * vcArray;
+@property (nonatomic, strong) FRCateModel * cateModel;
 
 @property (nonatomic, strong) UITextField * searchTextField;
 
@@ -21,16 +26,26 @@
 
 @implementation FRStoreSearchViewController
 
+- (instancetype)initWithCateModel:(FRCateModel *)model
+{
+    if (self = [super init]) {
+        self.titleArray = @[@"全部商品", @"销量", @"价格"];
+        self.vcArray = @[[[FRStoreListViewController alloc] init],
+                         [[FRStoreListViewController alloc] init],
+                         [[FRStoreListViewController alloc] init]];
+        self.cateModel = model;
+        [self configSelf];
+    }
+    return self;
+}
+
 - (instancetype)init
 {
-    NSArray * vcArray = @[[FRStoreListViewController class],
-                          [FRStoreListViewController class],
-                          [FRStoreListViewController class]];
-    NSArray * titleArray = @[@"全部商品", @"销量", @"价格"];
-    
-    if (self = [super initWithViewControllerClasses:vcArray andTheirTitles:titleArray]) {
-        self.navigationItem.title = @"商品订单";
-        self.hidesBottomBarWhenPushed = YES;
+    if (self = [super init]) {
+        self.titleArray = @[@"全部商品", @"销量", @"价格"];
+        self.vcArray = @[[[FRStoreListViewController alloc] init],
+                         [[FRStoreListViewController alloc] init],
+                         [[FRStoreListViewController alloc] init]];
         [self configSelf];
     }
     return self;
@@ -38,6 +53,9 @@
 
 - (void)configSelf
 {
+    self.navigationItem.title = @"商品订单";
+    self.hidesBottomBarWhenPushed = YES;
+    
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.titleSizeNormal = 13.f * scale;
@@ -65,6 +83,26 @@
     self.navigationItem.leftBarButtonItem = backItem;
 }
 
+- (NSInteger)numbersOfTitlesInMenuView:(WMMenuView *)menu
+{
+    return self.titleArray.count;
+}
+
+- (NSString *)menuView:(WMMenuView *)menu titleAtIndex:(NSInteger)index
+{
+    return [self.titleArray objectAtIndex:index];
+}
+
+- (NSInteger)numbersOfChildControllersInPageController:(WMPageController *)pageController
+{
+    return self.vcArray.count;
+}
+
+- (UIViewController *)pageController:(WMPageController *)pageController viewControllerAtIndex:(NSInteger)index
+{
+    return [self.vcArray objectAtIndex:index];
+}
+
 - (CGRect)pageController:(WMPageController *)pageController preferredFrameForMenuView:(WMMenuView *)menuView
 {
     return CGRectMake(0, 0, kMainBoundsWidth, 40);
@@ -75,12 +113,31 @@
     return CGRectMake(0, 40, kMainBoundsWidth, kMainBoundsHeight - kNaviBarHeight - kStatusBarHeight - 40);
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     [self createViews];
+    
+    if (self.cateModel) {
+        self.searchTextField.text = self.cateModel.name;
+        [self searchRequest];
+    }
+}
+
+- (void)searchRequest
+{
+    FRStoreSearchRequest * request = [[FRStoreSearchRequest alloc] init];
+    if (self.cateModel) {
+        [request configWithKeyWord:self.cateModel.name];
+    }
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
 }
 
 - (void)createViews
@@ -112,12 +169,6 @@
     [FRCreateViewTool cornerView:self.searchTextField radius:15 * scale];
     
     self.searchTextField.placeholder = @"搜索企业/服务/案例/分类等，专业团队";
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([self.searchTextField canBecomeFirstResponder]) {
-            [self.searchTextField becomeFirstResponder];
-        }
-    });
 }
 
 #pragma mark - UITextFieldDelegate

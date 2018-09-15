@@ -12,7 +12,6 @@
 #import <SDCycleScrollView.h>
 #import "FRMenuCollectionViewCell.h"
 #import "FRBannerModel.h"
-#import "FRCateModel.h"
 
 @interface FRStoreBannerHeaderView () <UICollectionViewDelegate, UICollectionViewDataSource>
 
@@ -142,6 +141,18 @@
     }
     
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.menuDidClickedHandle) {
+        if (indexPath.item == self.cateSource.count) {
+            self.menuDidClickedHandle(nil);
+        }else{
+            FRCateModel * model = [self.cateSource objectAtIndex:indexPath.item];
+            self.menuDidClickedHandle(model);
+        }
+    }
 }
 
 @end

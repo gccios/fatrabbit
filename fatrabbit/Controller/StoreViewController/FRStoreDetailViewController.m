@@ -14,6 +14,8 @@
 #import "FRStoreModel.h"
 #import "FRStorePriceView.h"
 #import "LookImageViewController.h"
+#import "FRChooseSpecView.h"
+#import "UIButton+Badge.h"
 
 @interface FRStoreDetailViewController () <WKNavigationDelegate, SDCycleScrollViewDelegate>
 
@@ -31,6 +33,8 @@
 
 @property (nonatomic, strong) FRStoreModel * model;
 @property (nonatomic, strong) FRStoreSpecModel * specModel;
+
+@property (nonatomic, strong) UIButton * storeCartButton;
 
 @end
 
@@ -55,7 +59,7 @@
 
 - (void)requestStoreDetails
 {
-    FRStoreDetailRequest * request = [[FRStoreDetailRequest alloc] initWithID:self.model.cid];
+    FRStoreDetailRequest * request = [[FRStoreDetailRequest alloc] initWithID:self.model.pid];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         if (KIsDictionary(response)) {
@@ -74,6 +78,28 @@
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
     }];
+}
+
+/**
+ 选择规格
+ */
+- (void)stockButtonDidClicked
+{
+    FRChooseSpecView * choose = [[FRChooseSpecView alloc] initWithSpecList:self.model.spec chooseModel:self.specModel];
+    
+    __weak typeof(self) weakSelf = self;
+    choose.chooseDidCompletetHandle = ^(FRStoreSpecModel *model) {
+        self.specModel = model;
+        [weakSelf refreshSpec];
+    };
+    
+    [choose show];
+}
+
+- (void)refreshSpec
+{
+    self.specLabel.text = self.specModel.name;
+    [self.priceView configWithSpecModel:self.specModel];
 }
 
 #pragma mark - WKNavigationDelegate
@@ -152,6 +178,43 @@
         make.edges.mas_equalTo(0);
     }];
     self.tableView.tableFooterView = [UIView new];
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50, 0);
+    
+    UIView * bottomHandleView = [[UIView alloc] initWithFrame:CGRectZero];
+    bottomHandleView.backgroundColor = UIColorFromRGB(0xffffff);
+    [self.view addSubview:bottomHandleView];
+    [bottomHandleView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.right.mas_equalTo(0);
+        make.height.mas_equalTo(50);
+    }];
+    
+    UIView * storeCartView = [[UIView alloc] initWithFrame:CGRectZero];
+    [bottomHandleView addSubview:storeCartView];
+    [storeCartView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 4.f);
+    }];
+    
+    self.storeCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [storeCartView addSubview:self.storeCartButton];
+    [self.storeCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.mas_equalTo(0);
+        make.height.mas_equalTo(40);
+        make.width.mas_equalTo(50);
+    }];
+    
+    UIImageView * imageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFit image:[UIImage imageNamed:@"storeCart"]];
+    [self.storeCartButton addSubview:imageView];
+    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.mas_equalTo(0);
+        make.width.height.mas_equalTo(25);
+    }];
+    
+    [self.storeCartButton setBadgeBGColor:KPriceColor];
+    [self.storeCartButton setBadgeTextColor:UIColorFromRGB(0xffffff)];
+    [self.storeCartButton setBadgeFont:kPingFangRegular(10)];
+    [self.storeCartButton setBadgeValue:@"1"];
+    [self.storeCartButton setBadgeOriginX:30];
 }
 
 - (void)createTableHeaderView
@@ -212,6 +275,7 @@
         make.top.mas_equalTo(self.priceView.mas_bottom);
         make.left.bottom.right.mas_equalTo(0);
     }];
+    [stockButton addTarget:self action:@selector(stockButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UILabel * specTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
     specTipLabel.text = @"已选择";
@@ -231,6 +295,15 @@
         make.bottom.mas_equalTo(contentLineView.mas_top);
     }];
     
+    UIImageView * moreImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage imageNamed:@"more"]];
+    [stockButton addSubview:moreImageView];
+    [moreImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.specLabel);
+        make.right.mas_equalTo(-15);
+        make.width.mas_equalTo(7);
+        make.height.mas_equalTo(13);
+    }];
+    
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc] init];
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 0) configuration:configuration];
     self.webView.navigationDelegate = self;
@@ -242,7 +315,7 @@
         make.height.mas_equalTo(0);
     }];
     
-    NSString * storeURL = [NSString stringWithFormat:@"%@/product/detai/%ld", HOSTURL, self.model.cid];
+    NSString * storeURL = [NSString stringWithFormat:@"%@/product/detai/%ld", HOSTURL, self.model.pid];
     NSURLRequest * request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:storeURL]];
     [self.webView loadRequest:request];
     

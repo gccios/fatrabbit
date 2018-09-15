@@ -47,7 +47,6 @@
 		06686CBA214674F3002130B1 /* FRMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06686CB9214674F3002130B1 /* FRMyAccountViewController.m */; };
 		06686CBD214675BE002130B1 /* FRMyAccountModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06686CBC214675BE002130B1 /* FRMyAccountModel.m */; };
 		06686CC021467772002130B1 /* FRMyAccountTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06686CBF21467772002130B1 /* FRMyAccountTableViewCell.m */; };
-		06686CC321467AEB002130B1 /* FRMyInvoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06686CC221467AEB002130B1 /* FRMyInvoiceViewController.m */; };
 		06686CC621467B76002130B1 /* FRAliyunSTSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06686CC521467B76002130B1 /* FRAliyunSTSRequest.m */; };
 		06686CC921467D71002130B1 /* FRCommentLevelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06686CC821467D71002130B1 /* FRCommentLevelView.m */; };
 		0673EB4921427DD7001C5769 /* FRStoreHomeRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0673EB4821427DD7001C5769 /* FRStoreHomeRequest.m */; };
@@ -63,6 +62,10 @@
 		06744A482147C6E600F38318 /* FRAllCateListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06744A472147C6E600F38318 /* FRAllCateListViewController.m */; };
 		06744A4B2147C76700F38318 /* FRAllCateListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06744A4A2147C76700F38318 /* FRAllCateListTableViewCell.m */; };
 		06744A4E2147D4CE00F38318 /* FRNavAutoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 06744A4D2147D4CE00F38318 /* FRNavAutoButton.m */; };
+		0679C07F21493C3300ABB4D1 /* FRStoreSearchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0679C07E21493C3300ABB4D1 /* FRStoreSearchRequest.m */; };
+		0679C0822149460900ABB4D1 /* FRMyServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0679C0812149460900ABB4D1 /* FRMyServiceViewController.m */; };
+		0679C0852149462D00ABB4D1 /* FRMyServiceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0679C0842149462D00ABB4D1 /* FRMyServiceTableViewCell.m */; };
+		0679C08C21494ABC00ABB4D1 /* FRPublishServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0679C08B21494ABC00ABB4D1 /* FRPublishServiceViewController.m */; };
 		06842DF02141005B00F96A7C /* FRLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06842DEF2141005B00F96A7C /* FRLoginViewController.m */; };
 		0690B6F72138EC1D0059B857 /* FRStoreCartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0690B6F62138EC1D0059B857 /* FRStoreCartViewController.m */; };
 		0690B6FD2138F38B0059B857 /* FRStoreCartTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0690B6FC2138F38B0059B857 /* FRStoreCartTableViewCell.m */; };
@@ -107,6 +110,16 @@
 		06EA08832132A2D90039491C /* MyMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA08822132A2D90039491C /* MyMenuModel.m */; };
 		06EA08862132A7200039491C /* FRUserHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA08852132A7200039491C /* FRUserHeaderView.m */; };
 		06EA08892132AD2F0039491C /* FRMenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06EA08882132AD2F0039491C /* FRMenuTableViewCell.m */; };
+		06F38BD2214A13BF00440BA6 /* FRCartEditRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BD1214A13BF00440BA6 /* FRCartEditRequest.m */; };
+		06F38BD5214A147800440BA6 /* FRStoreTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BD4214A147800440BA6 /* FRStoreTool.m */; };
+		06F38BD9214A18ED00440BA6 /* FRChooseSpecView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BD8214A18ED00440BA6 /* FRChooseSpecView.m */; };
+		06F38BDC214A1EDE00440BA6 /* FRChooseSpecCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BDB214A1EDE00440BA6 /* FRChooseSpecCell.m */; };
+		06F38BDF214A43B300440BA6 /* FRInvoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BDE214A43B300440BA6 /* FRInvoiceViewController.m */; };
+		06F38BE2214A449B00440BA6 /* FRMyInvoiceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BE1214A449B00440BA6 /* FRMyInvoiceTableViewCell.m */; };
+		06F38BE8214A537200440BA6 /* FREditInvoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BE7214A537200440BA6 /* FREditInvoiceViewController.m */; };
+		06F38BEB214A66EC00440BA6 /* FRMyCollectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BEA214A66EC00440BA6 /* FRMyCollectViewController.m */; };
+		06F38BEE214A678500440BA6 /* FRMyCollectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BED214A678500440BA6 /* FRMyCollectTableViewCell.m */; };
+		06F38BF2214A706700440BA6 /* UIButton+Badge.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F38BF1214A706700440BA6 /* UIButton+Badge.m */; };
 		06F60A39213ED20100E5E31A /* FRUserInfoRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F60A38213ED20100E5E31A /* FRUserInfoRequest.m */; };
 		06F60A3C213ED4FE00E5E31A /* FRCityModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F60A3B213ED4FE00E5E31A /* FRCityModel.m */; };
 		06FE2CEB212C6E0500E850D8 /* UIView+Additional.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE2CE7212C6E0500E850D8 /* UIView+Additional.m */; };
@@ -219,8 +232,6 @@
 		06686CBC214675BE002130B1 /* FRMyAccountModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyAccountModel.m; sourceTree = "<group>"; };
 		06686CBE21467772002130B1 /* FRMyAccountTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyAccountTableViewCell.h; sourceTree = "<group>"; };
 		06686CBF21467772002130B1 /* FRMyAccountTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyAccountTableViewCell.m; sourceTree = "<group>"; };
-		06686CC121467AEB002130B1 /* FRMyInvoiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyInvoiceViewController.h; sourceTree = "<group>"; };
-		06686CC221467AEB002130B1 /* FRMyInvoiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyInvoiceViewController.m; sourceTree = "<group>"; };
 		06686CC421467B76002130B1 /* FRAliyunSTSRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAliyunSTSRequest.h; sourceTree = "<group>"; };
 		06686CC521467B76002130B1 /* FRAliyunSTSRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRAliyunSTSRequest.m; sourceTree = "<group>"; };
 		06686CC721467D71002130B1 /* FRCommentLevelView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRCommentLevelView.h; sourceTree = "<group>"; };
@@ -251,6 +262,14 @@
 		06744A4A2147C76700F38318 /* FRAllCateListTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRAllCateListTableViewCell.m; sourceTree = "<group>"; };
 		06744A4C2147D4CE00F38318 /* FRNavAutoButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRNavAutoButton.h; sourceTree = "<group>"; };
 		06744A4D2147D4CE00F38318 /* FRNavAutoButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRNavAutoButton.m; sourceTree = "<group>"; };
+		0679C07D21493C3300ABB4D1 /* FRStoreSearchRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreSearchRequest.h; sourceTree = "<group>"; };
+		0679C07E21493C3300ABB4D1 /* FRStoreSearchRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreSearchRequest.m; sourceTree = "<group>"; };
+		0679C0802149460900ABB4D1 /* FRMyServiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyServiceViewController.h; sourceTree = "<group>"; };
+		0679C0812149460900ABB4D1 /* FRMyServiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyServiceViewController.m; sourceTree = "<group>"; };
+		0679C0832149462D00ABB4D1 /* FRMyServiceTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyServiceTableViewCell.h; sourceTree = "<group>"; };
+		0679C0842149462D00ABB4D1 /* FRMyServiceTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyServiceTableViewCell.m; sourceTree = "<group>"; };
+		0679C08A21494ABC00ABB4D1 /* FRPublishServiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRPublishServiceViewController.h; sourceTree = "<group>"; };
+		0679C08B21494ABC00ABB4D1 /* FRPublishServiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRPublishServiceViewController.m; sourceTree = "<group>"; };
 		06842DEE2141005B00F96A7C /* FRLoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRLoginViewController.h; sourceTree = "<group>"; };
 		06842DEF2141005B00F96A7C /* FRLoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRLoginViewController.m; sourceTree = "<group>"; };
 		0690B6F52138EC1D0059B857 /* FRStoreCartViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreCartViewController.h; sourceTree = "<group>"; };
@@ -341,6 +360,26 @@
 		06EA08852132A7200039491C /* FRUserHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRUserHeaderView.m; sourceTree = "<group>"; };
 		06EA08872132AD2F0039491C /* FRMenuTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMenuTableViewCell.h; sourceTree = "<group>"; };
 		06EA08882132AD2F0039491C /* FRMenuTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMenuTableViewCell.m; sourceTree = "<group>"; };
+		06F38BD0214A13BF00440BA6 /* FRCartEditRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRCartEditRequest.h; sourceTree = "<group>"; };
+		06F38BD1214A13BF00440BA6 /* FRCartEditRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRCartEditRequest.m; sourceTree = "<group>"; };
+		06F38BD3214A147800440BA6 /* FRStoreTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRStoreTool.h; sourceTree = "<group>"; };
+		06F38BD4214A147800440BA6 /* FRStoreTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRStoreTool.m; sourceTree = "<group>"; };
+		06F38BD7214A18ED00440BA6 /* FRChooseSpecView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRChooseSpecView.h; sourceTree = "<group>"; };
+		06F38BD8214A18ED00440BA6 /* FRChooseSpecView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRChooseSpecView.m; sourceTree = "<group>"; };
+		06F38BDA214A1EDE00440BA6 /* FRChooseSpecCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRChooseSpecCell.h; sourceTree = "<group>"; };
+		06F38BDB214A1EDE00440BA6 /* FRChooseSpecCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRChooseSpecCell.m; sourceTree = "<group>"; };
+		06F38BDD214A43B300440BA6 /* FRInvoiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRInvoiceViewController.h; sourceTree = "<group>"; };
+		06F38BDE214A43B300440BA6 /* FRInvoiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRInvoiceViewController.m; sourceTree = "<group>"; };
+		06F38BE0214A449B00440BA6 /* FRMyInvoiceTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyInvoiceTableViewCell.h; sourceTree = "<group>"; };
+		06F38BE1214A449B00440BA6 /* FRMyInvoiceTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyInvoiceTableViewCell.m; sourceTree = "<group>"; };
+		06F38BE6214A537200440BA6 /* FREditInvoiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FREditInvoiceViewController.h; sourceTree = "<group>"; };
+		06F38BE7214A537200440BA6 /* FREditInvoiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FREditInvoiceViewController.m; sourceTree = "<group>"; };
+		06F38BE9214A66EC00440BA6 /* FRMyCollectViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyCollectViewController.h; sourceTree = "<group>"; };
+		06F38BEA214A66EC00440BA6 /* FRMyCollectViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyCollectViewController.m; sourceTree = "<group>"; };
+		06F38BEC214A678500440BA6 /* FRMyCollectTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMyCollectTableViewCell.h; sourceTree = "<group>"; };
+		06F38BED214A678500440BA6 /* FRMyCollectTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMyCollectTableViewCell.m; sourceTree = "<group>"; };
+		06F38BF0214A706700440BA6 /* UIButton+Badge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+Badge.h"; sourceTree = "<group>"; };
+		06F38BF1214A706700440BA6 /* UIButton+Badge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Badge.m"; sourceTree = "<group>"; };
 		06F60A37213ED20100E5E31A /* FRUserInfoRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRUserInfoRequest.h; sourceTree = "<group>"; };
 		06F60A38213ED20100E5E31A /* FRUserInfoRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRUserInfoRequest.m; sourceTree = "<group>"; };
 		06F60A3A213ED4FE00E5E31A /* FRCityModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRCityModel.h; sourceTree = "<group>"; };
@@ -429,6 +468,8 @@
 			children = (
 				060C315C212DC534002F5919 /* FRApplicatinInfoTool.h */,
 				060C315A212DC534002F5919 /* FRApplicatinInfoTool.m */,
+				06F38BD3214A147800440BA6 /* FRStoreTool.h */,
+				06F38BD4214A147800440BA6 /* FRStoreTool.m */,
 				060C315D212DC534002F5919 /* FRCreateViewTool.h */,
 				060C315B212DC534002F5919 /* FRCreateViewTool.m */,
 			);
@@ -501,6 +542,12 @@
 				06686CA021462852002130B1 /* FRUserMenuLogoCell.m */,
 				06686CBE21467772002130B1 /* FRMyAccountTableViewCell.h */,
 				06686CBF21467772002130B1 /* FRMyAccountTableViewCell.m */,
+				0679C0832149462D00ABB4D1 /* FRMyServiceTableViewCell.h */,
+				0679C0842149462D00ABB4D1 /* FRMyServiceTableViewCell.m */,
+				06F38BE0214A449B00440BA6 /* FRMyInvoiceTableViewCell.h */,
+				06F38BE1214A449B00440BA6 /* FRMyInvoiceTableViewCell.m */,
+				06F38BEC214A678500440BA6 /* FRMyCollectTableViewCell.h */,
+				06F38BED214A678500440BA6 /* FRMyCollectTableViewCell.m */,
 			);
 			path = My;
 			sourceTree = "<group>";
@@ -610,6 +657,10 @@
 				0673EB4821427DD7001C5769 /* FRStoreHomeRequest.m */,
 				06FFCBB321455DC60001BF46 /* FRStoreDetailRequest.h */,
 				06FFCBB421455DC60001BF46 /* FRStoreDetailRequest.m */,
+				0679C07D21493C3300ABB4D1 /* FRStoreSearchRequest.h */,
+				0679C07E21493C3300ABB4D1 /* FRStoreSearchRequest.m */,
+				06F38BD0214A13BF00440BA6 /* FRCartEditRequest.h */,
+				06F38BD1214A13BF00440BA6 /* FRCartEditRequest.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -636,6 +687,66 @@
 				06744A342147682200F38318 /* LMJGradeStarsControl.m */,
 			);
 			path = LMJGradeStarsControl;
+			sourceTree = "<group>";
+		};
+		0679C08621494A2800ABB4D1 /* myService */ = {
+			isa = PBXGroup;
+			children = (
+				0679C0802149460900ABB4D1 /* FRMyServiceViewController.h */,
+				0679C0812149460900ABB4D1 /* FRMyServiceViewController.m */,
+				0679C08A21494ABC00ABB4D1 /* FRPublishServiceViewController.h */,
+				0679C08B21494ABC00ABB4D1 /* FRPublishServiceViewController.m */,
+			);
+			path = myService;
+			sourceTree = "<group>";
+		};
+		0679C08721494A3100ABB4D1 /* myAddress */ = {
+			isa = PBXGroup;
+			children = (
+				06E864A2213F8AF1007B1B4E /* FRAddressViewController.h */,
+				06E864A3213F8AF1007B1B4E /* FRAddressViewController.m */,
+				06E864B2213F9A03007B1B4E /* FRAddNewAddressViewController.h */,
+				06E864B3213F9A03007B1B4E /* FRAddNewAddressViewController.m */,
+			);
+			path = myAddress;
+			sourceTree = "<group>";
+		};
+		0679C08821494A4700ABB4D1 /* myAccount */ = {
+			isa = PBXGroup;
+			children = (
+				06E864B8213FD82C007B1B4E /* FRUserAdviceViewController.h */,
+				06E864B9213FD82C007B1B4E /* FRUserAdviceViewController.m */,
+				06842DEE2141005B00F96A7C /* FRLoginViewController.h */,
+				06842DEF2141005B00F96A7C /* FRLoginViewController.m */,
+				06686CA521462AD6002130B1 /* FRMyInfoViewController.h */,
+				06686CA621462AD6002130B1 /* FRMyInfoViewController.m */,
+				06686CB8214674F3002130B1 /* FRMyAccountViewController.h */,
+				06686CB9214674F3002130B1 /* FRMyAccountViewController.m */,
+				06686CA82146414F002130B1 /* FREditNameViewController.h */,
+				06686CA92146414F002130B1 /* FREditNameViewController.m */,
+				06F38BDD214A43B300440BA6 /* FRInvoiceViewController.h */,
+				06F38BDE214A43B300440BA6 /* FRInvoiceViewController.m */,
+				06F38BE6214A537200440BA6 /* FREditInvoiceViewController.h */,
+				06F38BE7214A537200440BA6 /* FREditInvoiceViewController.m */,
+				06F38BE9214A66EC00440BA6 /* FRMyCollectViewController.h */,
+				06F38BEA214A66EC00440BA6 /* FRMyCollectViewController.m */,
+			);
+			path = myAccount;
+			sourceTree = "<group>";
+		};
+		0679C08921494A7000ABB4D1 /* Order */ = {
+			isa = PBXGroup;
+			children = (
+				064512752133CE430072138F /* FROrderPageViewController.h */,
+				064512762133CE430072138F /* FROrderPageViewController.m */,
+				064512722133CBE80072138F /* FROrderViewController.h */,
+				064512732133CBE80072138F /* FROrderViewController.m */,
+				0690B705213938280059B857 /* FROrderDetailViewController.h */,
+				0690B706213938280059B857 /* FROrderDetailViewController.m */,
+				06744A37214771DE00F38318 /* FRCommentViewController.h */,
+				06744A38214771DE00F38318 /* FRCommentViewController.m */,
+			);
+			path = Order;
 			sourceTree = "<group>";
 		};
 		0690B6FE21391CAC0059B857 /* User */ = {
@@ -775,6 +886,7 @@
 		06C403AB21298C69001416B8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				06F38BD6214A189700440BA6 /* FRChooseView */,
 				06FFCBBB2145637E0001BF46 /* FRPriceView */,
 				06EA085B2132881C0039491C /* CollectionViewCell */,
 				06EA085F2132926B0039491C /* CollectionHeaderFooter */,
@@ -903,32 +1015,12 @@
 			children = (
 				06EA087A2132A25C0039491C /* FRMyViewController.h */,
 				06EA087B2132A25C0039491C /* FRMyViewController.m */,
-				06842DEE2141005B00F96A7C /* FRLoginViewController.h */,
-				06842DEF2141005B00F96A7C /* FRLoginViewController.m */,
-				06686CA521462AD6002130B1 /* FRMyInfoViewController.h */,
-				06686CA621462AD6002130B1 /* FRMyInfoViewController.m */,
-				06686CA82146414F002130B1 /* FREditNameViewController.h */,
-				06686CA92146414F002130B1 /* FREditNameViewController.m */,
-				064512752133CE430072138F /* FROrderPageViewController.h */,
-				064512762133CE430072138F /* FROrderPageViewController.m */,
-				064512722133CBE80072138F /* FROrderViewController.h */,
-				064512732133CBE80072138F /* FROrderViewController.m */,
-				0690B705213938280059B857 /* FROrderDetailViewController.h */,
-				0690B706213938280059B857 /* FROrderDetailViewController.m */,
-				06744A37214771DE00F38318 /* FRCommentViewController.h */,
-				06744A38214771DE00F38318 /* FRCommentViewController.m */,
-				06686CB8214674F3002130B1 /* FRMyAccountViewController.h */,
-				06686CB9214674F3002130B1 /* FRMyAccountViewController.m */,
-				06686CC121467AEB002130B1 /* FRMyInvoiceViewController.h */,
-				06686CC221467AEB002130B1 /* FRMyInvoiceViewController.m */,
-				06E864A2213F8AF1007B1B4E /* FRAddressViewController.h */,
-				06E864A3213F8AF1007B1B4E /* FRAddressViewController.m */,
-				06E864B2213F9A03007B1B4E /* FRAddNewAddressViewController.h */,
-				06E864B3213F9A03007B1B4E /* FRAddNewAddressViewController.m */,
-				06E864B8213FD82C007B1B4E /* FRUserAdviceViewController.h */,
-				06E864B9213FD82C007B1B4E /* FRUserAdviceViewController.m */,
 				06E864BB213FE2F7007B1B4E /* FRSettingViewController.h */,
 				06E864BC213FE2F7007B1B4E /* FRSettingViewController.m */,
+				0679C08921494A7000ABB4D1 /* Order */,
+				0679C08821494A4700ABB4D1 /* myAccount */,
+				0679C08721494A3100ABB4D1 /* myAddress */,
+				0679C08621494A2800ABB4D1 /* myService */,
 			);
 			path = MyViewController;
 			sourceTree = "<group>";
@@ -948,6 +1040,17 @@
 				06686CB621465195002130B1 /* FRUserHeaderMenuModel.m */,
 			);
 			path = MyModel;
+			sourceTree = "<group>";
+		};
+		06F38BD6214A189700440BA6 /* FRChooseView */ = {
+			isa = PBXGroup;
+			children = (
+				06F38BD7214A18ED00440BA6 /* FRChooseSpecView.h */,
+				06F38BD8214A18ED00440BA6 /* FRChooseSpecView.m */,
+				06F38BDA214A1EDE00440BA6 /* FRChooseSpecCell.h */,
+				06F38BDB214A1EDE00440BA6 /* FRChooseSpecCell.m */,
+			);
+			path = FRChooseView;
 			sourceTree = "<group>";
 		};
 		06F60A3D213ED56E00E5E31A /* UserManager */ = {
@@ -971,6 +1074,8 @@
 		06FE2CE6212C6E0500E850D8 /* Additional */ = {
 			isa = PBXGroup;
 			children = (
+				06F38BF0214A706700440BA6 /* UIButton+Badge.h */,
+				06F38BF1214A706700440BA6 /* UIButton+Badge.m */,
 				06FE2CE9212C6E0500E850D8 /* UIView+Additional.h */,
 				06FE2CE7212C6E0500E850D8 /* UIView+Additional.m */,
 				06FE2CE8212C6E0500E850D8 /* UIImage+Additional.h */,
@@ -1233,10 +1338,13 @@
 				060C3163212DCA0B002F5919 /* FRManager.m in Sources */,
 				06744A452147C37400F38318 /* FRCatePageDetailViewController.m in Sources */,
 				06F60A3C213ED4FE00E5E31A /* FRCityModel.m in Sources */,
+				0679C08C21494ABC00ABB4D1 /* FRPublishServiceViewController.m in Sources */,
 				06744A39214771DE00F38318 /* FRCommentViewController.m in Sources */,
+				0679C07F21493C3300ABB4D1 /* FRStoreSearchRequest.m in Sources */,
 				06FFCBCD214588B60001BF46 /* FRPulishNeedRequest.m in Sources */,
 				0690B6FD2138F38B0059B857 /* FRStoreCartTableViewCell.m in Sources */,
 				06686CBA214674F3002130B1 /* FRMyAccountViewController.m in Sources */,
+				0679C0852149462D00ABB4D1 /* FRMyServiceTableViewCell.m in Sources */,
 				0673EB502142878A001C5769 /* FRStoreBlockModel.m in Sources */,
 				06EA08832132A2D90039491C /* MyMenuModel.m in Sources */,
 				060C3147212DBDC6002F5919 /* FRCityViewController.m in Sources */,
@@ -1253,16 +1361,18 @@
 				06EA08862132A7200039491C /* FRUserHeaderView.m in Sources */,
 				06FE2CEB212C6E0500E850D8 /* UIView+Additional.m in Sources */,
 				06E864A7213F8C64007B1B4E /* FRUserAddressRequest.m in Sources */,
+				06F38BEB214A66EC00440BA6 /* FRMyCollectViewController.m in Sources */,
 				06EA08652132968E0039491C /* FRStorePageViewController.m in Sources */,
-				06686CC321467AEB002130B1 /* FRMyInvoiceViewController.m in Sources */,
 				06E864C0213FE70B007B1B4E /* FRSettingModel.m in Sources */,
 				06686C9E2146234C002130B1 /* FRUserMenuCell.m in Sources */,
 				0690E1962137D03B00F732E0 /* FRStoreSearchViewController.m in Sources */,
 				0658C7FC212A69A000800D7A /* FRNetWorkConfiguration.m in Sources */,
 				064512742133CBE80072138F /* FROrderViewController.m in Sources */,
+				06F38BE8214A537200440BA6 /* FREditInvoiceViewController.m in Sources */,
 				06EA086C21329AA60039491C /* FRMessageNeedCell.m in Sources */,
 				06529612213E3A9800D876EB /* FRStoreDetailViewController.m in Sources */,
 				06744A4B2147C76700F38318 /* FRAllCateListTableViewCell.m in Sources */,
+				06F38BEE214A678500440BA6 /* FRMyCollectTableViewCell.m in Sources */,
 				0658C80A212A7DA400800D7A /* FRHomeBaseViewController.m in Sources */,
 				06E864AA213F8EE3007B1B4E /* FRAddressModel.m in Sources */,
 				06EA0868213299400039491C /* FRMessagePageViewController.m in Sources */,
@@ -1277,12 +1387,15 @@
 				065FE62221355347005DAB06 /* FRServiceDetailViewController.m in Sources */,
 				0645127A2133E7390072138F /* FROrderTableViewCell.m in Sources */,
 				06686CB021464899002130B1 /* FRUserInfoUpdateRequest.m in Sources */,
+				06F38BD2214A13BF00440BA6 /* FRCartEditRequest.m in Sources */,
 				0645126E2133998E0072138F /* FRServiceTableViewCell.m in Sources */,
+				06F38BF2214A706700440BA6 /* UIButton+Badge.m in Sources */,
 				06686CC621467B76002130B1 /* FRAliyunSTSRequest.m in Sources */,
 				06E864BA213FD82C007B1B4E /* FRUserAdviceViewController.m in Sources */,
 				0658C803212A797700800D7A /* FatrabbitConfig.m in Sources */,
 				06FFCBC721457B520001BF46 /* FRNeedListRequest.m in Sources */,
 				06FE2CEF212C70B000E850D8 /* FRHomePageViewController.m in Sources */,
+				06F38BE2214A449B00440BA6 /* FRMyInvoiceTableViewCell.m in Sources */,
 				064512772133CE430072138F /* FROrderPageViewController.m in Sources */,
 				06842DF02141005B00F96A7C /* FRLoginViewController.m in Sources */,
 				064CA6E821367AFC0084E30D /* FRStoreCollectionViewCell.m in Sources */,
@@ -1297,6 +1410,7 @@
 				06FFCBC1214563AE0001BF46 /* FRStorePriceView.m in Sources */,
 				0673EB4921427DD7001C5769 /* FRStoreHomeRequest.m in Sources */,
 				064512712133B3350072138F /* FRSearchViewController.m in Sources */,
+				06F38BDC214A1EDE00440BA6 /* FRChooseSpecCell.m in Sources */,
 				06A8CDF0213C4DC5002A03BD /* FRCateListViewController.m in Sources */,
 				0658C816212A93D200800D7A /* FRTabBarController.m in Sources */,
 				060C314E212DC0A9002F5919 /* FRNavAutoView.m in Sources */,
@@ -1310,17 +1424,21 @@
 				06E864B1213F9074007B1B4E /* FRAddressTableViewCell.m in Sources */,
 				0658C819212A94A300800D7A /* FRNavigationController.m in Sources */,
 				06C403AF21298D7F001416B8 /* FRBaseViewController.m in Sources */,
+				0679C0822149460900ABB4D1 /* FRMyServiceViewController.m in Sources */,
 				06F60A39213ED20100E5E31A /* FRUserInfoRequest.m in Sources */,
 				0690E1A02138014600F732E0 /* FRMenuCollectionViewCell.m in Sources */,
 				06744A362147682200F38318 /* LMJGradeStarsControl.m in Sources */,
 				06EA087C2132A25C0039491C /* FRMyViewController.m in Sources */,
 				06686C9B21462269002130B1 /* FRUserMenuModel.m in Sources */,
+				06F38BDF214A43B300440BA6 /* FRInvoiceViewController.m in Sources */,
 				0620E340213D2FDD000E19BB /* FRPublishNeedController.m in Sources */,
 				0673EB53214287D2001C5769 /* FRStoreModel.m in Sources */,
+				06F38BD5214A147800440BA6 /* FRStoreTool.m in Sources */,
 				06744A482147C6E600F38318 /* FRAllCateListViewController.m in Sources */,
 				06A8CDEA213C4693002A03BD /* FRCateListRequest.m in Sources */,
 				06C4037821298BEC001416B8 /* AppDelegate.m in Sources */,
 				060C3152212DC2D9002F5919 /* FRCityListRequest.m in Sources */,
+				06F38BD9214A18ED00440BA6 /* FRChooseSpecView.m in Sources */,
 				06686CC021467772002130B1 /* FRMyAccountTableViewCell.m in Sources */,
 				06A8CDF3213C54B8002A03BD /* FRCateListCell.m in Sources */,
 				060C315F212DC534002F5919 /* FRCreateViewTool.m in Sources */,

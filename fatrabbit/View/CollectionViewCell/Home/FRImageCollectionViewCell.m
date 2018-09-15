@@ -14,7 +14,6 @@
 @property (nonatomic, strong) UIImageView * baseImageView;
 
 @property (nonatomic, strong) UIButton * deleteButton;
-
 @end
 
 @implementation FRImageCollectionViewCell
@@ -30,7 +29,7 @@
 - (void)configLastCell
 {
     self.deleteButton.hidden = YES;
-    [self.baseImageView setImage:[UIImage new]];
+    [self.baseImageView setImage:[UIImage imageNamed:@"addPhoto"]];
 }
 
 - (void)configWithImage:(UIImage *)image
@@ -46,7 +45,6 @@
     self.baseImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
     self.baseImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.baseImageView.clipsToBounds = YES;
-    self.baseImageView.backgroundColor = [UIColor greenColor];
     [self.contentView addSubview:self.baseImageView];
     [self.baseImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(10 * scale);
@@ -56,13 +54,16 @@
     }];
     
     self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.deleteButton.backgroundColor = [UIColor redColor];
+    self.deleteButton.backgroundColor = UIColorFromRGB(0xffffff);
+    [self.deleteButton setImage:[UIImage imageNamed:@"deletePhoto"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.deleteButton];
     [self.deleteButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.baseImageView.mas_right);
         make.centerY.mas_equalTo(self.baseImageView.mas_top);
-        make.width.height.mas_equalTo(15 * scale);
+        make.width.height.mas_equalTo(20 * scale);
     }];
+    self.deleteButton.layer.cornerRadius = 10 * scale;
+    self.deleteButton.clipsToBounds = YES;
     [self.deleteButton addTarget:self action:@selector(deleteButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
 }
 

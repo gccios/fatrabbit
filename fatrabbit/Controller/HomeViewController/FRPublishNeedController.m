@@ -100,9 +100,9 @@
 
 - (void)chooseCateType
 {
-    FRCateListViewController * list = [[FRCateListViewController alloc] initWithType:FRCateListType_Choose];
-    list.delegate = self;
-    [self presentViewController:list animated:YES completion:nil];
+//    FRCateListViewController * list = [[FRCateListViewController alloc] initWithType:FRCateListType_Choose];
+//    list.delegate = self;
+//    [self presentViewController:list animated:YES completion:nil];
 }
 
 #pragma mark - FRCateListViewControllerDelegate
@@ -125,7 +125,7 @@
     }];
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50 * scale, 0);
     
-    UIButton * handleButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"发布需求"];
+    UIButton * handleButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(13 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"发布需求"];
     [handleButton setBackgroundColor:UIColorFromRGB(0xf8bf44)];
     [self.view addSubview:handleButton];
     [handleButton mas_makeConstraints:^(MASConstraintMaker *make) {

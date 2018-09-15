@@ -92,6 +92,12 @@
     [self.navigationController pushViewController:storeSearch animated:YES];
 }
 
+- (void)searchWithModel:(FRCateModel *)model
+{
+    FRStoreSearchViewController * search = [[FRStoreSearchViewController alloc] initWithCateModel:model];
+    [self.navigationController pushViewController:search animated:YES];
+}
+
 - (void)storeCartButtonDidClicked
 {
     FRStoreCartViewController * cart = [[FRStoreCartViewController alloc] init];
@@ -117,12 +123,13 @@
     [FRCreateViewTool cornerView:searchButton radius:15];
     [searchButton addTarget:self action:@selector(searchButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
-    UIButton * storeCartButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14 * scale) titleColor:UIColorFromRGB(0xFFFFFF) title:@"购物车"];
+    UIButton * storeCartButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14 * scale) titleColor:UIColorFromRGB(0xFFFFFF) title:@""];
+    [storeCartButton setImage:[UIImage imageNamed:@"navStoreCart"] forState:UIControlStateNormal];
     [navView addSubview:storeCartButton];
     [storeCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.mas_equalTo(0);
         make.right.mas_equalTo(0 * scale);
-        make.width.mas_equalTo(60 * scale);
+        make.width.mas_equalTo(40 * scale);
     }];
     [storeCartButton addTarget:self action:@selector(storeCartButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
@@ -194,6 +201,13 @@
             FRStoreBannerHeaderView * view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"FRStoreBannerHeaderView" forIndexPath:indexPath];
             [view configWithBannerSource:self.advs];
             [view configCateSource:self.cateList];
+            
+            __weak typeof(self) weakSelf = self;
+            view.menuDidClickedHandle = ^(FRCateModel *model) {
+                if (model) {
+                    [weakSelf searchWithModel:model];
+                }
+            };
             
             return view;
         }else{

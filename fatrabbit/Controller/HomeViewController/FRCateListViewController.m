@@ -165,7 +165,7 @@
     self.titleView.layer.shadowOffset = CGSizeMake(0, 4);
     
     UILabel * titleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(17) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentCenter];
-    titleLabel.text = @"请选择需求类型";
+    titleLabel.text = @"请选择类型";
     [self.titleView addSubview:titleLabel];
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(kStatusBarHeight);

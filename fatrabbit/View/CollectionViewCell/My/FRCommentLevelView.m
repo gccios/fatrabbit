@@ -9,13 +9,8 @@
 #import "FRCommentLevelView.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
-#import "LMJGradeStarsControl.h"
 
 @interface FRCommentLevelView ()
-
-@property (nonatomic, strong) LMJGradeStarsControl * serviceLevel;//服务评分
-@property (nonatomic, strong) LMJGradeStarsControl * companyLevel;//公司评分
-@property (nonatomic, strong) LMJGradeStarsControl * businessLevel;//业务评分
 
 @end
 
@@ -36,6 +31,13 @@
     [self.serviceLevel setSelectedStarIndex:serviceLevel];
     [self.companyLevel setSelectedStarIndex:companyLevel];
     [self.businessLevel setSelectedStarIndex:businessLevel];
+}
+
+- (void)configDelegateWith:(id)delegate
+{
+    self.serviceLevel.delegate = delegate;
+    self.companyLevel.delegate = delegate;
+    self.businessLevel.delegate = delegate;
 }
 
 - (void)createLevelView

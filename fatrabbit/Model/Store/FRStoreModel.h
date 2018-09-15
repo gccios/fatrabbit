@@ -12,7 +12,7 @@
 
 @interface FRStoreModel : NSObject
 
-@property (nonatomic, assign) NSInteger cid;//ID
+@property (nonatomic, assign) NSInteger pid;//ID
 @property (nonatomic, assign) CGFloat price;//价格
 @property (nonatomic, copy) NSString * name;//名称
 @property (nonatomic, copy) NSString * cover;//封面图
@@ -26,6 +26,6 @@
 @property (nonatomic, assign) NSInteger has_collect;//是否收藏
 @property (nonatomic, strong) NSArray * spec;//商品的规格集合
 
-@property (nonatomic, assign) NSInteger number;//选中该商品的数量
+@property (nonatomic, assign) NSInteger num;//选中该商品的数量
 
 @end

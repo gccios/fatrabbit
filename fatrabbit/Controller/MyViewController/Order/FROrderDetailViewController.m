@@ -8,10 +8,13 @@
 
 #import "FROrderDetailViewController.h"
 #import "FRCommentLevelView.h"
+#import "FRCommentViewController.h"
 
 @interface FROrderDetailViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView * tableView;
+
+@property (nonatomic, strong) UIButton * statusButton;
 
 @property (nonatomic, strong) UIView * bottomView;
 @property (nonatomic, strong) FRCommentLevelView * commentLevelView;
@@ -30,7 +33,8 @@
 //前去评价
 - (void)goToComment
 {
-    
+    FRCommentViewController * comment = [[FRCommentViewController alloc] init];
+    [self.navigationController pushViewController:comment animated:YES];
 }
 
 - (void)createViews
@@ -67,8 +71,128 @@
     [self.view addSubview:self.bottomView];
     [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.mas_equalTo(0);
-        make.height.mas_equalTo(50 * scale);
+        make.height.mas_equalTo(40 * scale);
     }];
+    
+    [self bottomViewWithDeal];
+}
+
+/**
+ 等待付款
+ */
+- (void)bottomViewWithWaitPay
+{
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
+    UILabel * totalTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentRight];
+    totalTipLabel.text = @"合计:";
+    [self.bottomView addSubview:totalTipLabel];
+    [totalTipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 5.f);
+    }];
+    
+    UILabel * priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
+    priceLabel.text = @"￥2000";
+    [self.bottomView addSubview:priceLabel];
+    [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.bottom.mas_equalTo(0);
+        make.left.mas_equalTo(totalTipLabel.mas_right);
+        make.width.mas_equalTo(kMainBoundsWidth / 2.f - kMainBoundsWidth / 5.f);
+    }];
+    
+    UIButton * payButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"立即付款"];
+    payButton.backgroundColor = KPriceColor;
+    [self.bottomView addSubview:payButton];
+    [payButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 4.f);
+    }];
+    
+    UIButton * cancleButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"取消订单"];
+    cancleButton.backgroundColor = UIColorFromRGB(0x999999);
+    [self.bottomView addSubview:cancleButton];
+    [cancleButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.bottom.mas_equalTo(0);
+        make.right.mas_equalTo(payButton.mas_left);
+        make.width.mas_equalTo(kMainBoundsWidth / 4.f);
+    }];
+    
+    [self.statusButton setImage:[UIImage imageNamed:@"orderSmail"] forState:UIControlStateNormal];
+    [self.statusButton setTitle:@"  已下单，待付款" forState:UIControlStateNormal];
+}
+
+/**
+ 已付款
+ */
+- (void)bottomViewWithHasPay
+{
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
+    UIButton * contactButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"联系他们"];
+    contactButton.backgroundColor = UIColorFromRGB(0xf8bf44);
+    [self.bottomView addSubview:contactButton];
+    [contactButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 2.f);
+    }];
+    
+    UIButton * completeButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"确认服务完成"];
+    completeButton.backgroundColor = KPriceColor;
+    [self.bottomView addSubview:completeButton];
+    [completeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 2.f);
+    }];
+    [self.statusButton setImage:[UIImage imageNamed:@"orderSmail"] forState:UIControlStateNormal];
+    [self.statusButton setTitle:@"  已付款，下单成功" forState:UIControlStateNormal];
+}
+
+/**
+ 交易成功
+ */
+- (void)bottomViewWithDeal
+{
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
+    UIButton * contactButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"联系他们"];
+    contactButton.backgroundColor = UIColorFromRGB(0xf8bf44);
+    [self.bottomView addSubview:contactButton];
+    [contactButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 2.f);
+    }];
+    
+    UIButton * commentButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"评价"];
+    commentButton.backgroundColor = KPriceColor;
+    [self.bottomView addSubview:commentButton];
+    [commentButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 2.f);
+    }];
+    [commentButton addTarget:self action:@selector(goToComment) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.statusButton setImage:[UIImage imageNamed:@"orderSmail"] forState:UIControlStateNormal];
+    [self.statusButton setTitle:@"  交易成功" forState:UIControlStateNormal];
+}
+
+/**
+ 评价成功
+ */
+- (void)bottomViewWithHasComment
+{
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
+    UIButton * contactButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"联系他们"];
+    contactButton.backgroundColor = UIColorFromRGB(0xf8bf44);
+    [self.bottomView addSubview:contactButton];
+    [contactButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth);
+    }];
+    
+    [self.statusButton setImage:[UIImage imageNamed:@"orderSmail"] forState:UIControlStateNormal];
+    [self.statusButton setTitle:@"  交易成功" forState:UIControlStateNormal];
 }
 
 - (void)createTableHeaderView
@@ -114,10 +238,10 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
-    UIButton * statusButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangLight(20 * scale) titleColor:UIColorFromRGB(0x333333) title:@"测试订单状态"];
-    statusButton.enabled = NO;
-    [headerView addSubview:statusButton];
-    [statusButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.statusButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangLight(20 * scale) titleColor:UIColorFromRGB(0x333333) title:@""];
+    self.statusButton.enabled = NO;
+    [headerView addSubview:self.statusButton];
+    [self.statusButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(0);
         make.top.mas_equalTo(110 * scale);
         make.height.mas_equalTo(40 * scale);
@@ -127,7 +251,7 @@
     lineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [headerView addSubview:lineView];
     [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(statusButton.mas_bottom).offset(25 * scale);
+        make.top.mas_equalTo(self.statusButton.mas_bottom).offset(25 * scale);
         make.left.right.mas_equalTo(0);
         make.height.mas_equalTo(10 * scale);
     }];

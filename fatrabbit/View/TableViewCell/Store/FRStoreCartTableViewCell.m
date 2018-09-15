@@ -37,23 +37,23 @@
 
 - (void)addButtonDidClicked
 {
-    self.model.number++;
+    self.model.num++;
     [self reloadGoodsModel];
 }
 
 - (void)deleteButtonDidClicked
 {
-    if (self.model.number > 1) {
-        self.model.number--;
+    if (self.model.num > 1) {
+        self.model.num--;
         [self reloadGoodsModel];
     }
 }
 
 - (void)reloadGoodsModel
 {
-    CGFloat price = self.model.number * self.model.price;
+    CGFloat price = self.model.num * self.model.price;
     
-    NSString * numberStr = [NSString stringWithFormat:@"%ld", self.model.number];
+    NSString * numberStr = [NSString stringWithFormat:@"%ld", self.model.num];
     NSString * priceStr = [NSString stringWithFormat:@"%.2lf", price];
     [self.numberButton setTitle:numberStr forState:UIControlStateNormal];
     self.priceLabel.text = priceStr;

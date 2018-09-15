@@ -32,7 +32,7 @@
     
     for (NSInteger i = 0; i < 20; i++) {
         FRStoreModel * model = [[FRStoreModel alloc] init];
-        model.number = 1;
+        model.num = 1;
         model.price = arc4random()%100 + 1;
         [self.dataSource addObject:model];
     }

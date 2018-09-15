@@ -7,7 +7,10 @@
 //
 
 #import <WMPageController.h>
+#import "FRCateModel.h"
 
 @interface FRStoreSearchViewController : WMPageController
+
+- (instancetype)initWithCateModel:(FRCateModel *)model;
 
 @end

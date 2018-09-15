@@ -8,6 +8,7 @@
 
 #import "FRMyAccountViewController.h"
 #import "FRMyAccountTableViewCell.h"
+#import "FRInvoiceViewController.h"
 
 @interface FRMyAccountViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -53,7 +54,8 @@
 {
     FRMyAccountModel * model = [self.dataSource objectAtIndex:indexPath.row];
     if (model.type == FRMyAccountType_Invoice) {
-        
+        FRInvoiceViewController * invoice = [[FRInvoiceViewController alloc] init];
+        [self.navigationController pushViewController:invoice animated:YES];
     }
 }
 

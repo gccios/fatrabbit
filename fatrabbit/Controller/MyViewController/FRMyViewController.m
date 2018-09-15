@@ -15,8 +15,10 @@
 #import "FRSettingViewController.h"
 #import "FRLoginViewController.h"
 #import "FRMyInfoViewController.h"
+#import "FRMyServiceViewController.h"
 #import "UserManager.h"
 #import "FRMyAccountViewController.h"
+#import "FRMyCollectViewController.h"
 
 @interface FRMyViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -49,7 +51,7 @@
 {
     [self.dataSource removeAllObjects];
     
-    if ([UserManager shareManager].isLogin && [UserManager shareManager].is_provider == 1) {
+    if ([UserManager shareManager].isLogin && [UserManager shareManager].is_provider == 0) {
         
         [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyAccount],
                                      [[MyMenuModel alloc] initWithType:MyMenuType_MyAddress]]];
@@ -85,6 +87,12 @@
 - (void)headerMenuDidSelect:(FRUserHeaderMenuModel *)model
 {
     if (model.type == FRUserHeaderMenuType_Order) {
+        FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
+        [self.navigationController pushViewController:order animated:YES];
+    }else if (model.type == FRUserHeaderMenuType_Collect) {
+        FRMyCollectViewController * collect = [[FRMyCollectViewController alloc] init];
+        [self.navigationController pushViewController:collect animated:YES];
+    }else if (model.type == FRUserHeaderMenuType_Need) {
         FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
         [self.navigationController pushViewController:order animated:YES];
     }
@@ -154,6 +162,12 @@
     }else if (model.type == MyMenuType_MyAccount) {
         FRMyAccountViewController * account = [[FRMyAccountViewController alloc] init];
         [self.navigationController pushViewController:account animated:YES];
+    }else if (model.type == MyMenuType_MyService) {
+        FRMyServiceViewController * service = [[FRMyServiceViewController alloc] init];
+        [self.navigationController pushViewController:service animated:YES];
+    }else if (model.type == MyMenuType_MyGetOrder) {
+        FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
+        [self.navigationController pushViewController:order animated:YES];
     }
 }
 

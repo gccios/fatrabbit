@@ -335,6 +335,10 @@
         FRAllCateListViewController * allCate = [[FRAllCateListViewController alloc] init];
         allCate.delegate = self;
         [self presentViewController:allCate animated:YES completion:nil];
+    }else {
+        FRCateModel * model = [self.cateMenuList objectAtIndex:indexPath.item];
+        FRCatePageViewController * catePage = [[FRCatePageViewController alloc] initWithModel:model];
+        [self.navigationController pushViewController:catePage animated:YES];
     }
 }
 

@@ -52,6 +52,15 @@
         make.left.mas_equalTo(sysImageView.mas_right).offset(10 * scale);
         make.right.mas_equalTo(-40 * scale);
     }];
+    
+    UIImageView * moreImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage imageNamed:@"more"]];
+    [self.contentView addSubview:moreImageView];
+    [moreImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(0);
+        make.right.mas_equalTo(-15);
+        make.width.mas_equalTo(7);
+        make.height.mas_equalTo(13);
+    }];
 }
 
 - (void)awakeFromNib {
