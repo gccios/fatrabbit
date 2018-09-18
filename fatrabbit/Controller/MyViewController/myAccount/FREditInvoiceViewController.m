@@ -7,8 +7,12 @@
 //
 
 #import "FREditInvoiceViewController.h"
+#import "FRUserInvoiceRequest.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FREditInvoiceViewController ()
+
+@property (nonatomic, strong) FRMyInvoiceModel * invoiceModel;
 
 @property (nonatomic, strong) UITextField * companyField;
 @property (nonatomic, strong) UITextField * numberField;
@@ -21,6 +25,14 @@
 
 @implementation FREditInvoiceViewController
 
+- (instancetype)initWithInvoiceModel:(FRMyInvoiceModel *)invoiceModel
+{
+    if (self = [super init]) {
+        self.invoiceModel = invoiceModel;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -30,7 +42,66 @@
 
 - (void)saveButtonDidClicked
 {
+    NSString * company = self.companyField.text;
+    if (isEmptyString(company)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入单位名称"];
+        return;
+    }
     
+    NSString * number = self.numberField.text;
+    if (isEmptyString(number)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入纳税识别码"];
+        return;
+    }
+    
+    NSString * address = self.addressField.text;
+    if (isEmptyString(address)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入注册地址"];
+        return;
+    }
+    
+    NSString * mobile = self.mobileField.text;
+    if (isEmptyString(mobile)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入注册电话"];
+        return;
+    }
+    
+    NSString * bank = self.bankField.text;
+    if (isEmptyString(bank)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入开户银行"];
+        return;
+    }
+    
+    NSString * banAccount = self.bankAccountField.text;
+    if (isEmptyString(banAccount)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入银行账户"];
+        return;
+    }
+    
+    FRUserInvoiceRequest * request;
+    if (self.invoiceModel) {
+        request = [[FRUserInvoiceRequest alloc] initEditWith:company number:number address:address mobile:mobile bank:bank bankAccount:banAccount invoiceID:self.invoiceModel.cid];
+    }else{
+        request = [[FRUserInvoiceRequest alloc] initAddWith:company number:number address:address mobile:mobile bank:bank bankAccount:banAccount];
+    }
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [MBProgressHUD showTextHUDWithText:@"保存成功"];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(FRUserInvoiceDidChange)]) {
+            [self.delegate FRUserInvoiceDidChange];
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [MBProgressHUD showTextHUDWithText:@"保存失败"];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络连接失败"];
+        
+    }];
 }
 
 - (void)createViews
@@ -163,6 +234,15 @@
     saveButton.frame = CGRectMake(0, 0, 40 * scale, 30 * scale);
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:saveButton];
     [saveButton addTarget:self action:@selector(saveButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (self.invoiceModel) {
+        self.companyField.text = self.invoiceModel.company;
+        self.numberField.text = self.invoiceModel.idnumber;
+        self.mobileField.text = self.invoiceModel.phone;
+        self.addressField.text = self.invoiceModel.address;
+        self.bankField.text = self.invoiceModel.bankname;
+        self.bankAccountField.text = self.invoiceModel.bankaccount;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

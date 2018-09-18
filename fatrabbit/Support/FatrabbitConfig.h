@@ -18,4 +18,6 @@
 
 + (void)requestAliyunSTS;
 
++ (void)cacheCateList:(NSArray *)data;
+
 @end

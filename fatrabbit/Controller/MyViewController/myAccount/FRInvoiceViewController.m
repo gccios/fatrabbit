@@ -9,8 +9,11 @@
 #import "FRInvoiceViewController.h"
 #import "FRMyInvoiceTableViewCell.h"
 #import "FREditInvoiceViewController.h"
+#import "FRUserInvoiceRequest.h"
+#import <MJRefreshNormalHeader.h>
+#import "UserManager.h"
 
-@interface FRInvoiceViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface FRInvoiceViewController () <UITableViewDelegate, UITableViewDataSource, FREditInvoiceViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, strong) NSMutableArray * dataSource;
@@ -24,12 +27,75 @@
     // Do any additional setup after loading the view.
     
     [self createViews];
+    self.dataSource = [UserManager shareManager].invoiceList;
+    if (self.dataSource.count == 0) {
+        [self requestInvoiceList];
+    }
+}
+
+- (void)requestInvoiceList
+{
+    FRUserInvoiceRequest * request = [[FRUserInvoiceRequest alloc] initWithGetList];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                [self.dataSource removeAllObjects];
+                [UserManager shareManager].invoiceList = [FRMyInvoiceModel mj_objectArrayWithKeyValuesArray:data];
+                [self.dataSource addObjectsFromArray:[UserManager shareManager].invoiceList];
+                [self.tableView reloadData];
+            }
+        }
+        
+        [self.tableView.mj_header endRefreshing];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self.tableView.mj_header endRefreshing];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [self.tableView.mj_header endRefreshing];
+        
+    }];
 }
 
 - (void)addButtonDidClicked
 {
     FREditInvoiceViewController * edit = [[FREditInvoiceViewController alloc] init];
+    edit.delegate = self;
     [self.navigationController pushViewController:edit animated:YES];
+}
+
+- (void)editWithModel:(FRMyInvoiceModel *)model
+{
+    FREditInvoiceViewController * edit = [[FREditInvoiceViewController alloc] initWithInvoiceModel:model];
+    edit.delegate = self;
+    [self.navigationController pushViewController:edit animated:YES];
+}
+
+- (void)deleteWithModel:(NSIndexPath *)indexPath
+{
+    FRMyInvoiceModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    [self.dataSource removeObject:model];
+    [self.tableView beginUpdates];
+    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    [self.tableView endUpdates];
+    
+    FRUserInvoiceRequest * request = [[FRUserInvoiceRequest alloc] initDeleteWithInvoiceID:model.cid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
+- (void)FRUserInvoiceDidChange
+{
+    [self requestInvoiceList];
 }
 
 - (void)createViews
@@ -49,6 +115,7 @@
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.bottom.right.mas_equalTo(0);
     }];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestInvoiceList)];
     
     UIButton * addButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0xFFFFFF) title:@"添加"];
     addButton.frame = CGRectMake(0, 0, 40 * scale, 30 * scale);
@@ -58,20 +125,34 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FRMyInvoiceTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRMyInvoiceTableViewCell" forIndexPath:indexPath];
     
+    FRMyInvoiceModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    [cell configWithInvoiceModel:model];
+    
     __weak typeof(self) weakSelf = self;
     cell.invoiceEditHandle = ^{
-        FREditInvoiceViewController * edit = [[FREditInvoiceViewController alloc] init];
-        [weakSelf.navigationController pushViewController:edit animated:YES];
+        [weakSelf editWithModel:model];
+    };
+    
+    cell.invoiceDeleteHandle = ^{
+        [weakSelf deleteWithModel:indexPath];
     };
     
     return cell;
+}
+
+- (NSMutableArray *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource = [[NSMutableArray alloc] init];
+    }
+    return _dataSource;
 }
 
 - (void)didReceiveMemoryWarning {

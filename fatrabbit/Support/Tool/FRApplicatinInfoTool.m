@@ -12,6 +12,13 @@
 
 @implementation FRApplicatinInfoTool
 
++ (NSString *)getTimeStampMS
+{
+    NSTimeInterval time = [[NSDate date] timeIntervalSince1970] * 1000;
+    NSString *timeString = [NSString stringWithFormat:@"%.0f", time];
+    return timeString;
+}
+
 + (NSString *)getApplicationVersion
 {
     return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];

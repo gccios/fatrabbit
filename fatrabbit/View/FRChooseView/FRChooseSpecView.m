@@ -41,18 +41,24 @@
         make.top.left.bottom.right.mas_equalTo(0);
     }];
     
-    [UIView animateWithDuration:.3f delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:.2f delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.contentView.frame = CGRectMake(0, kMainBoundsHeight / 3.f, kMainBoundsWidth, kMainBoundsHeight / 3.f * 2);
     } completion:nil];
 }
 
 - (void)close
 {
-    [UIView animateWithDuration:.3f delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:.2f delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.contentView.frame = CGRectMake(0, kMainBoundsHeight, kMainBoundsWidth, kMainBoundsHeight / 3.f * 2);
     } completion:^(BOOL finished) {
         [self removeFromSuperview];
     }];
+}
+
+- (void)handleButtonDidClecked
+{
+    self.chooseDidCompletetHandle(self.model);
+    [self close];
 }
 
 - (void)createChooseView
@@ -96,14 +102,14 @@
     }];
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50 * scale, 0);
     
-    UIButton * handleButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(13 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"关闭"];
+    UIButton * handleButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(13 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"确定"];
     [handleButton setBackgroundColor:KPriceColor];
     [self.contentView addSubview:handleButton];
     [handleButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.mas_equalTo(0);
         make.height.mas_equalTo(40 * scale);
     }];
-    [handleButton addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
+    [handleButton addTarget:self action:@selector(handleButtonDidClecked) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -128,11 +134,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.chooseDidCompletetHandle) {
-        FRStoreSpecModel * model = [self.dataSource objectAtIndex:indexPath.row];
-        self.chooseDidCompletetHandle(model);
-    }
-    [self close];
+    FRStoreSpecModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    self.model = model;
+    [self.tableView reloadData];
 }
 
 @end

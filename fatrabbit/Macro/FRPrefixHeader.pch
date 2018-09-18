@@ -53,6 +53,7 @@
  */
 #define FRDocumentPath [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 #define FRUserInfoPath [NSString stringWithFormat:@"%@/FRUserInfo.plist", FRDocumentPath]
+#define FRCateListPath [NSString stringWithFormat:@"%@/FRCateList.plist", FRDocumentPath]
 
 /*
  工具

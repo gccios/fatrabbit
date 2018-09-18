@@ -14,6 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.0.4)
   - AFNetworking/UIKit (3.0.4):
     - AFNetworking/NSURLSession
+  - AliyunOSSiOS (2.10.4)
   - BGNetwork (0.2.6):
     - AFNetworking (~> 3.0.2)
   - IQKeyboardManager (6.0.4)
@@ -30,6 +31,7 @@ PODS:
   - WMPageController (2.5.2)
 
 DEPENDENCIES:
+  - AliyunOSSiOS
   - BGNetwork
   - IQKeyboardManager
   - Masonry (~> 1.1.0)
@@ -44,6 +46,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AFNetworking
+    - AliyunOSSiOS
     - BGNetwork
     - IQKeyboardManager
     - Masonry
@@ -57,6 +60,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
+  AliyunOSSiOS: e5dcdba99963ca6b43fea863cead49423c5d4c75
   BGNetwork: 66986f143548bb5308bffd85dfb2bfd544de1450
   IQKeyboardManager: 29514134ef0334a6fa33cf4eee11c36c064baeaf
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
@@ -68,6 +72,6 @@ SPEC CHECKSUMS:
   TZImagePickerController: bc25e933c9d970a622d052f0d4de16202bbcd863
   WMPageController: 0c7624d2b48e4f1ab92371688cf6744ed701575d
 
-PODFILE CHECKSUM: b57f0e55e2ea33a058edfa175188f7b6386e92da
+PODFILE CHECKSUM: 63ddd810ecf982fb1d7cf360a9f30fb278267fd7
 
 COCOAPODS: 1.5.0

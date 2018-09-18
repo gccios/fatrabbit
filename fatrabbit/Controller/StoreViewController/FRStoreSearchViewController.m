@@ -129,7 +129,7 @@
 {
     FRStoreSearchRequest * request = [[FRStoreSearchRequest alloc] init];
     if (self.cateModel) {
-        [request configWithKeyWord:self.cateModel.name];
+        [request configWithCateID:self.cateModel.cid];
     }
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         

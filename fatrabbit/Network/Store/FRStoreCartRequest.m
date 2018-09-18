@@ -1,14 +1,23 @@
 //
-//  FRCartEditRequest.m
+//  FRStoreCartRequest.m
 //  fatrabbit
 //
-//  Created by 郭春城 on 2018/9/13.
+//  Created by 郭春城 on 2018/9/17.
 //  Copyright © 2018年 郭春城. All rights reserved.
 //
 
-#import "FRCartEditRequest.h"
+#import "FRStoreCartRequest.h"
 
-@implementation FRCartEditRequest
+@implementation FRStoreCartRequest
+
+- (instancetype)initWithStoreList
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"cartlist";
+    }
+    return self;
+}
 
 - (instancetype)initAddWithStoreID:(NSInteger)storeID
 {

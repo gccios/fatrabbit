@@ -11,6 +11,7 @@
 #import "UserManager.h"
 #import "FRAddressTableViewCell.h"
 #import "FRAddNewAddressViewController.h"
+#import <MJRefresh.h>
 
 @interface FRAddressViewController () <UITableViewDelegate, UITableViewDataSource, FRAddNewAddressViewControllerDelegate>
 
@@ -47,10 +48,15 @@
                 [self.tableView reloadData];
             }
         }
+        [self.tableView.mj_header endRefreshing];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
+        [self.tableView.mj_header endRefreshing];
+        
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+       
+        [self.tableView.mj_header endRefreshing];
         
     }];
 }
@@ -85,6 +91,7 @@
     }];
     self.tableView.tableFooterView = [UIView new];
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 40 * scale, 0);
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestAddressList)];
     
     UIButton * addAddressButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"新增收货地址"];
     addAddressButton.backgroundColor = KThemeColor;

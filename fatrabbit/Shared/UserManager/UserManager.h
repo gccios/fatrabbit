@@ -10,8 +10,11 @@
 #import <MJExtension.h>
 #import "FRCityModel.h"
 #import "FRAddressModel.h"
+#import "FRMyInvoiceModel.h"
+#import "FRStoreModel.h"
 
 extern NSString * const FRUserLoginStatusDidChange; //用户退出通知
+extern NSString * const FRUserStoreCartStatusDidChange; //用户购物车发生改变通知
 
 @interface UserManager : NSObject
 
@@ -31,9 +34,12 @@ extern NSString * const FRUserLoginStatusDidChange; //用户退出通知
 @property (nonatomic, assign) CGFloat balance;//账户余额
 @property (nonatomic, assign) NSInteger points;//可用积分
 
-@property (nonatomic, strong) FRCityModel * city;
+@property (nonatomic, strong) FRCityModel * city;//当前城市
 
-@property (nonatomic, strong) NSMutableArray * addressList;
+@property (nonatomic, strong) NSMutableArray * addressList;//地址列表
+@property (nonatomic, strong) NSMutableArray * invoiceList;//发票列表
+
+@property (nonatomic, strong) NSMutableArray * storeCart;//购物车
 
 
 - (void)loginSuccesWithCache:(NSDictionary *)data;
@@ -41,5 +47,23 @@ extern NSString * const FRUserLoginStatusDidChange; //用户退出通知
 - (void)loginSuccessWithUid:(NSInteger)uid token:(NSString *)token mobile:(NSString *)mobile;
 
 - (void)needUpdateLocalUserInfo;
+
+/**
+ 添加商品到购物车
+
+ @param model 要添加的商品规格model
+ */
+- (void)addStoreCartWithStore:(FRStoreSpecModel *)model;
+
+/**
+ 移除商品从购物车
+ 
+ @param model 移除的商品规格model
+ */
+- (void)removeStoreCartWithStore:(FRStoreSpecModel *)model;
+
+- (void)requestStoreCartList;
+- (void)requestAddressList;
+- (void)requestInvoiceList;
 
 @end

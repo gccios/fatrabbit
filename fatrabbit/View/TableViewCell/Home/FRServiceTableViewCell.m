@@ -67,6 +67,7 @@
     baseView.layer.shadowOffset = CGSizeMake(0, 2 * scale);
     
     self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
+    self.coverImageView.clipsToBounds = YES;
     [baseView addSubview:self.coverImageView];
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);

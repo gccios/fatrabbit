@@ -11,6 +11,8 @@
 
 @interface FRStoreCollectionViewCell : UICollectionViewCell
 
+@property (nonatomic, copy) void (^storeCartHandle)(void);
+
 - (void)configWithModel:(FRStoreModel *)model;
 
 @end

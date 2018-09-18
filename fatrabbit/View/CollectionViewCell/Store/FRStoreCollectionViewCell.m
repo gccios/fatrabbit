@@ -31,6 +31,13 @@
     return self;
 }
 
+- (void)buyButtonDidClicked
+{
+    if (self.storeCartHandle) {
+        self.storeCartHandle();
+    }
+}
+
 - (void)configWithModel:(FRStoreModel *)model
 {
     [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
@@ -95,6 +102,7 @@
         make.height.mas_equalTo(25 * scale);
         make.right.mas_equalTo(-15 * scale);
     }];
+    [self.buyButton addTarget:self action:@selector(buyButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UIImageView * buyImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage imageNamed:@"storeCart"]];
     [self.buyButton addSubview:buyImageView];

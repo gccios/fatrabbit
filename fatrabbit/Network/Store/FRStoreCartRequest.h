@@ -1,14 +1,16 @@
 //
-//  FRCartEditRequest.h
+//  FRStoreCartRequest.h
 //  fatrabbit
 //
-//  Created by 郭春城 on 2018/9/13.
+//  Created by 郭春城 on 2018/9/17.
 //  Copyright © 2018年 郭春城. All rights reserved.
 //
 
 #import "FRBaseNetworkRequest.h"
 
-@interface FRCartEditRequest : FRBaseNetworkRequest
+@interface FRStoreCartRequest : FRBaseNetworkRequest
+
+- (instancetype)initWithStoreList;
 
 - (instancetype)initAddWithStoreID:(NSInteger)storeID;
 

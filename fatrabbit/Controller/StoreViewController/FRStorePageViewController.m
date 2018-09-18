@@ -19,6 +19,9 @@
 #import "FRBannerModel.h"
 #import "FRStoreBlockModel.h"
 #import "FRCateModel.h"
+#import "FRChooseSpecView.h"
+#import "FRStoreDetailRequest.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FRStorePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -189,7 +192,44 @@
     FRStoreModel * model = [block.list objectAtIndex:indexPath.item];
     [cell configWithModel:model];
     
+    __weak typeof(self) weakSelf = self;
+    cell.storeCartHandle = ^{
+        [weakSelf showChooseSpecWith:model];
+    };
+    
     return cell;
+}
+
+- (void)showChooseSpecWith:(FRStoreModel *)model
+{
+    if (model.spec) {
+        FRChooseSpecView * spec = [[FRChooseSpecView alloc] initWithSpecList:model.spec chooseModel:model.spec.firstObject];
+        spec.chooseDidCompletetHandle = ^(FRStoreSpecModel *model) {
+            
+        };
+        [spec show];
+    }else{
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在获取商品详情" inView:self.view];
+        FRStoreDetailRequest * request = [[FRStoreDetailRequest alloc] initWithID:model.pid];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            if (KIsDictionary(response)) {
+                NSDictionary * data = [response objectForKey:@"data"];
+                if (KIsDictionary(data)) {
+                    [model mj_setKeyValues:data];
+                    [self showChooseSpecWith:model];
+                }
+            }
+            
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"获取商品失败"];
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        }];
+    }
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath

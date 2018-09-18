@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRMyInvoiceModel.h"
 
 @interface FRMyInvoiceTableViewCell : UITableViewCell
 
 @property (nonatomic, copy) void (^invoiceEditHandle)(void);
 
 @property (nonatomic, copy) void (^invoiceDeleteHandle)(void);
+
+- (void)configWithInvoiceModel:(FRMyInvoiceModel *)model;
 
 @end

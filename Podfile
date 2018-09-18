@@ -10,4 +10,5 @@ pod 'MJExtension', '~> 3.0.13'
 pod 'TZImagePickerController', '~> 2.1.6'
 pod 'SDWebImage'
 pod 'MJRefresh'
+pod 'AliyunOSSiOS'
 end

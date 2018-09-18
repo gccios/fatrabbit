@@ -13,6 +13,7 @@
 #import "GCCKeyChain.h"
 #import "UserManager.h"
 #import "FRManager.h"
+#import "FRUploadManager.h"
 #import "FRUserInfoRequest.h"
 #import "FRAliyunSTSRequest.h"
 
@@ -43,7 +44,7 @@
         }
     }
     
-    [self requestAliyunSTS];
+    [[FRUploadManager shareManager] updateUploadAccessInfo];
 }
 
 + (void)requestUserInfo
@@ -59,18 +60,6 @@
                 [[UserManager shareManager] needUpdateLocalUserInfo];
             }
         }
-        
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-        
-    }];
-}
-
-+ (void)requestAliyunSTS
-{
-    FRAliyunSTSRequest * request = [[FRAliyunSTSRequest alloc] init];
-    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         

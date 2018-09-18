@@ -7,7 +7,18 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRMyInvoiceModel.h"
+
+@protocol FREditInvoiceViewControllerDelegate <NSObject>
+
+- (void)FRUserInvoiceDidChange;
+
+@end
 
 @interface FREditInvoiceViewController : FRBaseViewController
+
+@property (nonatomic, weak) id<FREditInvoiceViewControllerDelegate> delegate;
+
+- (instancetype)initWithInvoiceModel:(FRMyInvoiceModel *)invoiceModel;
 
 @end

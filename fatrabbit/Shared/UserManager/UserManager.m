@@ -7,8 +7,14 @@
 //
 
 #import "UserManager.h"
+#import "FRStoreCartRequest.h"
+#import "FRUserInvoiceRequest.h"
+#import "FRUserAddressRequest.h"
+#import "FRStoreCartModel.h"
+#import "MBProgressHUD+FRHUD.h"
 
 NSString * const FRUserLoginStatusDidChange = @"FRUserLoginStatusDidChange";
+NSString * const FRUserStoreCartStatusDidChange = @"FRUserStoreCartStatusDidChange";
 
 @implementation UserManager
 
@@ -27,6 +33,7 @@ NSString * const FRUserLoginStatusDidChange = @"FRUserLoginStatusDidChange";
     [self mj_setKeyValues:data];
     self.isLogin = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:FRUserLoginStatusDidChange object:nil];
+    [self configUserStoreInfo];
 }
 
 - (void)loginSuccessWithUid:(NSInteger)uid token:(NSString *)token mobile:(NSString *)mobile
@@ -43,6 +50,7 @@ NSString * const FRUserLoginStatusDidChange = @"FRUserLoginStatusDidChange";
     [dict writeToFile:FRUserInfoPath atomically:YES];
     self.isLogin = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:FRUserLoginStatusDidChange object:nil];
+    [self configUserStoreInfo];
 }
 
 - (void)needUpdateLocalUserInfo
@@ -84,12 +92,127 @@ NSString * const FRUserLoginStatusDidChange = @"FRUserLoginStatusDidChange";
     [[NSNotificationCenter defaultCenter] postNotificationName:FRUserLoginStatusDidChange object:nil];
 }
 
+- (void)addStoreCartWithStore:(FRStoreSpecModel *)model
+{
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initAddWithStoreID:model.cid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self requestStoreCartList];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        
+    }];
+}
+
+- (void)removeStoreCartWithStore:(FRStoreSpecModel *)model
+{
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initDeleteWithStoreID:model.cid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self requestStoreCartList];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        
+    }];
+}
+
+- (void)configUserStoreInfo
+{
+    [self requestAddressList];
+    [self requestInvoiceList];
+    [self requestStoreCartList];
+}
+
+- (void)requestAddressList
+{
+    FRUserAddressRequest * request = [[FRUserAddressRequest alloc] init];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                self.addressList = [FRAddressModel mj_objectArrayWithKeyValuesArray:data];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
+- (void)requestInvoiceList
+{
+    FRUserInvoiceRequest * request = [[FRUserInvoiceRequest alloc] initWithGetList];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                self.invoiceList = [FRMyInvoiceModel mj_objectArrayWithKeyValuesArray:data];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
+- (void)requestStoreCartList
+{
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initWithStoreList];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                self.storeCart = [FRStoreCartModel mj_objectArrayWithKeyValuesArray:data];
+                [[NSNotificationCenter defaultCenter] postNotificationName:FRUserStoreCartStatusDidChange object:nil];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+}
+
 - (NSMutableArray *)addressList
 {
     if (!_addressList) {
         _addressList = [[NSMutableArray alloc] init];
     }
     return _addressList;
+}
+
+- (NSMutableArray *)storeCart
+{
+    if (!_storeCart) {
+        _storeCart = [[NSMutableArray alloc] init];
+    }
+    return _storeCart;
 }
 
 @end

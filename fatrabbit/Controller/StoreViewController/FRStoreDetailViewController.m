@@ -16,6 +16,8 @@
 #import "LookImageViewController.h"
 #import "FRChooseSpecView.h"
 #import "UIButton+Badge.h"
+#import "UserManager.h"
+#import "FRStoreOrderViewController.h"
 
 @interface FRStoreDetailViewController () <WKNavigationDelegate, SDCycleScrollViewDelegate>
 
@@ -66,6 +68,9 @@
             NSDictionary * data = [response objectForKey:@"data"];
             if (KIsDictionary(data)) {
                 [self.model mj_setKeyValues:data];
+                if (self.model.spec.count > 0) {
+                    self.specModel = [self.model.spec firstObject];
+                }
             }
         }
         
@@ -94,6 +99,34 @@
     };
     
     [choose show];
+}
+
+/**
+ 添加至购物车
+ */
+- (void)addStoreCartButtonDidClicked
+{
+    [[UserManager shareManager] addStoreCartWithStore:self.specModel];
+}
+
+/**
+ 立即购买
+ */
+- (void)buyButtonDidClicked
+{
+    FRStoreOrderViewController * order = [[FRStoreOrderViewController alloc] init];
+    [self.navigationController pushViewController:order animated:YES];
+}
+
+- (void)userStoreCartShouldUpdate
+{
+    NSInteger count = [UserManager shareManager].storeCart.count;
+    
+    NSString * badge = [NSString stringWithFormat:@"%ld", count];
+    if (count > 99) {
+        badge = @"99+";
+    }
+    [self.storeCartButton setBadgeValue:badge];
 }
 
 - (void)refreshSpec
@@ -185,8 +218,28 @@
     [self.view addSubview:bottomHandleView];
     [bottomHandleView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.mas_equalTo(0);
-        make.height.mas_equalTo(50);
+        make.height.mas_equalTo(40);
     }];
+    
+    UIButton * buyButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15) titleColor:UIColorFromRGB(0xffffff) title:@"立即购买"];
+    [buyButton setBackgroundColor:KPriceColor];
+    [bottomHandleView addSubview:buyButton];
+    [buyButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.bottom.mas_equalTo(0);
+        make.right.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth / 8.f * 3);
+    }];
+    [buyButton addTarget:self action:@selector(buyButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+
+    UIButton * addStoreCartButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15) titleColor:UIColorFromRGB(0xffffff) title:@"加入购物车"];
+    [addStoreCartButton setBackgroundColor:UIColorFromRGB(0xf8bf44)];
+    [bottomHandleView addSubview:addStoreCartButton];
+    [addStoreCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.bottom.mas_equalTo(0);
+        make.right.mas_equalTo(buyButton.mas_left);
+        make.width.mas_equalTo(kMainBoundsWidth / 8.f * 3);
+    }];
+    [addStoreCartButton addTarget:self action:@selector(addStoreCartButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UIView * storeCartView = [[UIView alloc] initWithFrame:CGRectZero];
     [bottomHandleView addSubview:storeCartView];
@@ -212,24 +265,16 @@
     
     [self.storeCartButton setBadgeBGColor:KPriceColor];
     [self.storeCartButton setBadgeTextColor:UIColorFromRGB(0xffffff)];
-    [self.storeCartButton setBadgeFont:kPingFangRegular(10)];
-    [self.storeCartButton setBadgeValue:@"1"];
     [self.storeCartButton setBadgeOriginX:30];
+    [self.storeCartButton setShouldHideBadgeAtZero:YES];
+    
+    [self userStoreCartShouldUpdate];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStoreCartShouldUpdate) name:FRUserStoreCartStatusDidChange object:nil];
 }
 
 - (void)createTableHeaderView
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
-    
-    if (self.model.spec.count > 0) {
-        self.specModel = [self.model.spec firstObject];
-        for (FRStoreSpecModel * model in self.model.spec) {
-            if (model.isdefault == 1) {
-                self.specModel = model;
-                break;
-            }
-        }
-    }
     
     self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 405 * scale)];
     self.headerView.backgroundColor = [UIColor whiteColor];
@@ -315,7 +360,7 @@
         make.height.mas_equalTo(0);
     }];
     
-    NSString * storeURL = [NSString stringWithFormat:@"%@/product/detai/%ld", HOSTURL, self.model.pid];
+    NSString * storeURL = [NSString stringWithFormat:@"%@/product/detail/%ld", HOSTURL, self.model.pid];
     NSURLRequest * request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:storeURL]];
     [self.webView loadRequest:request];
     
@@ -352,6 +397,11 @@
 //{
 //    [self.webView.scrollView removeObserver:self forKeyPath:@"contentSize"];
 //}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:FRUserStoreCartStatusDidChange object:nil];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

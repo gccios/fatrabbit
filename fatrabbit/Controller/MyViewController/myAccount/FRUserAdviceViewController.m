@@ -59,7 +59,7 @@
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50 * scale, 0);
     self.tableView.tableFooterView = [UIView new];
     
-    UIButton * handleButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:KThemeColor title:@"发布"];
+    UIButton * handleButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xffffff) title:@"发布"];
     [handleButton setBackgroundColor:UIColorFromRGB(0xf8bf44)];
     [self.view addSubview:handleButton];
     [handleButton mas_makeConstraints:^(MASConstraintMaker *make) {

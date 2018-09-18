@@ -55,26 +55,20 @@
 //获取分类列表
 - (void)requestFatrabbitCateInfo
 {
+    NSFileManager * manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:FRCateListPath]) {
+        NSArray * data = [NSArray arrayWithContentsOfFile:FRCateListPath];
+        [self analysisCateData:data];
+    }
+    
     FRCateListRequest * request = [[FRCateListRequest alloc] init];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         if (KIsDictionary(response)) {
             NSArray * data = [response objectForKey:@"data"];
             if (KIsArray(data)) {
-                [FRManager shareManager].cateList = [FRCateModel mj_objectArrayWithKeyValuesArray:data];
-                [self.cateMenuList removeAllObjects];
-                if ([FRManager shareManager].cateList.count > 8) {
-                    
-                    for (NSInteger i = 0; i < 7; i++) {
-                        FRCateModel * model = [[FRManager shareManager].cateList objectAtIndex:i];
-                        [self.cateMenuList addObject:model];
-                    }
-                    
-                }else{
-                    [self.cateMenuList addObjectsFromArray:[FRManager shareManager].cateList];
-                }
-                
-                [self.menuCollectionView reloadData];
+                [data writeToFile:FRCateListPath atomically:YES];
+                [self analysisCateData:data];
             }
         }
         
@@ -83,6 +77,26 @@
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
     }];
+}
+
+- (void)analysisCateData:(NSArray *)data
+{
+    if ([data isKindOfClass:[NSArray class]]) {
+        [FRManager shareManager].cateList = [FRCateModel mj_objectArrayWithKeyValuesArray:data];
+        [self.cateMenuList removeAllObjects];
+        if ([FRManager shareManager].cateList.count >= 8) {
+            
+            for (NSInteger i = 0; i < 7; i++) {
+                FRCateModel * model = [[FRManager shareManager].cateList objectAtIndex:i];
+                [self.cateMenuList addObject:model];
+            }
+            
+        }else{
+            [self.cateMenuList addObjectsFromArray:[FRManager shareManager].cateList];
+        }
+        
+        [self.menuCollectionView reloadData];
+    }
 }
 
 //获取城市列表
@@ -312,6 +326,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    NSLog(@"%ld", self.cateMenuList.count+1);
     return self.cateMenuList.count + 1;
 }
 

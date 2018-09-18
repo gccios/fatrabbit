@@ -12,6 +12,8 @@
 
 @interface FRMyInvoiceTableViewCell ()
 
+@property (nonatomic, strong) FRMyInvoiceModel * model;
+
 @property (nonatomic, strong) UILabel * nameLabel;
 @property (nonatomic, strong) UILabel * numberLabel;
 
@@ -25,6 +27,13 @@
         [self createInvoiceCell];
     }
     return self;
+}
+
+- (void)configWithInvoiceModel:(FRMyInvoiceModel *)model
+{
+    self.model = model;
+    self.nameLabel.text = model.company;
+    self.numberLabel.text = model.idnumber;
 }
 
 - (void)editDidClicked
@@ -57,7 +66,6 @@
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.nameLabel.text = @"测试发票公司名称";
     [self.contentView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(15 * scale);
@@ -67,7 +75,6 @@
     }];
     
     self.numberLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.numberLabel.text = @"0000000000000";
     [self.contentView addSubview:self.numberLabel];
     [self.numberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.nameLabel.mas_bottom);

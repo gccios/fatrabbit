@@ -14,6 +14,8 @@
  */
 @interface FRApplicatinInfoTool : NSObject
 
++ (NSString *)getTimeStampMS;
+
 + (NSString *)getApplicationVersion;
 
 + (NSString *)getDeviceSystemVersion;
