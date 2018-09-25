@@ -30,9 +30,10 @@
 {
     if (self = [super init]) {
         self.titleArray = @[@"全部商品", @"销量", @"价格"];
-        self.vcArray = @[[[FRStoreListViewController alloc] init],
-                         [[FRStoreListViewController alloc] init],
-                         [[FRStoreListViewController alloc] init]];
+        self.vcArray = @[[[FRStoreListViewController alloc] initWithType:FRStoreSearchType_All],
+                         [[FRStoreListViewController alloc] initWithType:FRStoreSearchType_DealNumber],
+                         [[FRStoreListViewController alloc] initWithType:FRStoreSearchType_Price]];
+        [self.vcArray makeObjectsPerformSelector:@selector(configWithModel:) withObject:model];
         self.cateModel = model;
         [self configSelf];
     }
@@ -43,9 +44,9 @@
 {
     if (self = [super init]) {
         self.titleArray = @[@"全部商品", @"销量", @"价格"];
-        self.vcArray = @[[[FRStoreListViewController alloc] init],
-                         [[FRStoreListViewController alloc] init],
-                         [[FRStoreListViewController alloc] init]];
+        self.vcArray = @[[[FRStoreListViewController alloc] initWithType:FRStoreSearchType_All],
+                         [[FRStoreListViewController alloc] initWithType:FRStoreSearchType_DealNumber],
+                         [[FRStoreListViewController alloc] initWithType:FRStoreSearchType_Price]];
         [self configSelf];
     }
     return self;
@@ -123,6 +124,9 @@
         self.searchTextField.text = self.cateModel.name;
         [self searchRequest];
     }
+    if (self.vcArray) {
+        [self.vcArray makeObjectsPerformSelector:@selector(search) withObject:nil];
+    }
 }
 
 - (void)searchRequest
@@ -176,6 +180,9 @@
 {
     if (textField.text.length) {
         [self keyBoardDidEndEditing];
+        
+        NSString * keyWord = textField.text;
+        [self.vcArray makeObjectsPerformSelector:@selector(searchWithKeyWord:) withObject:keyWord];
     }
     
     return YES;

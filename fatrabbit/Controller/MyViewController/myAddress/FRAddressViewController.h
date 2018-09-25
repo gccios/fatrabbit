@@ -7,7 +7,16 @@
 //
 
 #import "FRBaseViewController.h"
+#import "UserManager.h"
+
+@protocol FRAddressViewControllerDelegate <NSObject>
+
+- (void)FRAddressDidChoose:(FRAddressModel *)address;
+
+@end
 
 @interface FRAddressViewController : FRBaseViewController
+
+@property (nonatomic, weak) id<FRAddressViewControllerDelegate> delegate;
 
 @end

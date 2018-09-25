@@ -97,6 +97,7 @@ NSString * const FRUserStoreCartStatusDidChange = @"FRUserStoreCartStatusDidChan
     FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initAddWithStoreID:model.cid];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
+        [MBProgressHUD showTextHUDWithText:@"添加成功"];
         [self requestStoreCartList];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {

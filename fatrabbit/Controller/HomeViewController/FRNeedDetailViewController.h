@@ -7,7 +7,10 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRNeedModel.h"
 
 @interface FRNeedDetailViewController : FRBaseViewController
+
+- (instancetype)initWithNeedModel:(FRNeedModel *)model;
 
 @end

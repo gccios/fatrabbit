@@ -42,7 +42,9 @@
             case FRStorePayMenuType_InvoiceInfo:
             {
                 self.title = @"发票信息";
-                self.detail = @"";
+                FRMyInvoiceModel * invoice = [[FRMyInvoiceModel alloc] init];
+                invoice.company = @"不开发票";
+                self.invoice = invoice;
             }
                 break;
                 
@@ -64,6 +66,12 @@
 {
     _payWay = payWay;
     _detail = payWay.title;
+}
+
+- (void)setInvoice:(FRMyInvoiceModel *)invoice
+{
+    _invoice = invoice;
+    _detail = invoice.company;
 }
 
 @end

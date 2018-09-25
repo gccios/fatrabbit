@@ -9,6 +9,7 @@
 #import "FRStoreTableViewCell.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
+#import <UIImageView+WebCache.h>
 
 @interface FRStoreTableViewCell ()
 
@@ -31,12 +32,23 @@
     return self;
 }
 
+- (void)configWithModel:(FRStoreModel *)model
+{
+    [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
+    self.nameLabel.text = model.name;
+    self.priceLabel.text = [NSString stringWithFormat:@"%.2lf", model.price];
+    self.commentLabel.text = [NSString stringWithFormat:@"%ld条评论", model.comment_num];
+    self.dealLabel.text = [NSString stringWithFormat:@"近三月成交%ld单", model.order_num];
+}
+
 - (void)createFtoreTableViewCell
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
-    self.coverImageView.backgroundColor = [UIColor greenColor];
+    self.coverImageView.clipsToBounds = YES;
     [self.contentView addSubview:self.coverImageView];
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(15 * scale);
@@ -46,7 +58,6 @@
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.nameLabel.text = @"测试标题测试标题测试标题";
     [self.contentView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.coverImageView).mas_equalTo(5 * scale);
@@ -65,7 +76,6 @@
     }];
     
     self.priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.priceLabel.text = @"测试金额";
     [self.contentView addSubview:self.priceLabel];
     [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(price);
@@ -74,7 +84,6 @@
     }];
     
     self.commentLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.commentLabel.text = @"测试评论数";
     [self.contentView addSubview:self.commentLabel];
     [self.commentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(self.coverImageView.mas_bottom).offset(-5 * scale);
@@ -83,7 +92,6 @@
     }];
     
     self.dealLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.dealLabel.text = @"测试成交数10单";
     [self.contentView addSubview:self.dealLabel];
     [self.dealLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.commentLabel);
@@ -92,7 +100,7 @@
     }];
     
     self.buyButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15 * scale) titleColor:UIColorFromRGB(0xFFFFFF) title:@""];
-    self.buyButton.backgroundColor = [UIColor greenColor];
+    [self.buyButton setImage:[UIImage imageNamed:@"storeCart"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.buyButton];
     [self.buyButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(self.dealLabel);
@@ -100,6 +108,14 @@
         make.height.mas_equalTo(25 * scale);
         make.right.mas_equalTo(-20 * scale);
     }];
+    [self.buyButton addTarget:self action:@selector(buyButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)buyButtonDidClicked
+{
+    if (self.storeCartHandle) {
+        self.storeCartHandle();
+    }
 }
 
 - (void)awakeFromNib {

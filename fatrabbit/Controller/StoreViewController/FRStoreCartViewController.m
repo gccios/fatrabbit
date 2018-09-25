@@ -8,12 +8,16 @@
 
 #import "FRStoreCartViewController.h"
 #import "FRStoreCartTableViewCell.h"
+#import "UserManager.h"
+#import "FRStoreCartRequest.h"
+#import "FRStoreOrderViewController.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FRStoreCartViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView * tableView;
 
-@property (nonatomic, strong) NSMutableArray * dataSource;
+@property (nonatomic, weak) NSMutableArray * dataSource;
 
 @property (nonatomic, strong) UIView * bottomPayView;
 @property (nonatomic, strong) UIButton * allSelectButton;
@@ -21,6 +25,9 @@
 @property (nonatomic, strong) UILabel * totalPriceLabel;
 @property (nonatomic, strong) UILabel * salePriceLabel;
 @property (nonatomic, strong) UILabel * saleRemarkLabel;
+
+@property (nonatomic, assign) BOOL isAllChoose;
+@property (nonatomic, assign) CGFloat totalPrice;
 
 @end
 
@@ -30,19 +37,50 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    for (NSInteger i = 0; i < 20; i++) {
-        FRStoreModel * model = [[FRStoreModel alloc] init];
-        model.num = 1;
-        model.price = arc4random()%100 + 1;
-        [self.dataSource addObject:model];
-    }
+    self.navigationItem.title = @"购物车";
+    [self requestStoreCartList];
     
     [self createViews];
 }
 
+- (void)requestStoreCartList
+{
+    self.dataSource = [UserManager shareManager].storeCart;
+}
+
+- (void)allSelectButtonDidClicked
+{
+    self.isAllChoose = !self.isAllChoose;
+    if (self.isAllChoose) {
+        [self.dataSource makeObjectsPerformSelector:@selector(changeToSelect)];
+        [self.tableView reloadData];
+        [self.allSelectButton setTitle:@"取消全选" forState:UIControlStateNormal];
+    }else{
+        [self.dataSource makeObjectsPerformSelector:@selector(changeToNoSelect)];
+        [self.tableView reloadData];
+        [self.allSelectButton setTitle:@"全选" forState:UIControlStateNormal];
+    }
+}
+
+- (void)payButtonDidClicked
+{
+    NSMutableArray * paySource = [[NSMutableArray alloc] init];
+    for (FRStoreCartModel * model in self.dataSource) {
+        if (model.isSelected == YES) {
+            [paySource addObject:model];
+        }
+    }
+    
+    if (paySource.count == 0) {
+        [MBProgressHUD showTextHUDWithText:@"请先选择要结算的商品"];
+    }else{
+        FRStoreOrderViewController * order = [[FRStoreOrderViewController alloc] initWithSource:paySource];
+        [self.navigationController pushViewController:order animated:YES];
+    }
+}
+
 - (void)createViews
 {
-    self.navigationItem.title = @"购物车";
     
     CGFloat scale = kMainBoundsWidth / 375.f;
     
@@ -57,6 +95,7 @@
         make.edges.mas_equalTo(0);
     }];
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 60 * scale, 0);
+    self.tableView.tableFooterView = [UIView new];
     
     [self createBottomPayView];
 }
@@ -80,6 +119,7 @@
         make.left.mas_equalTo(20 * scale);
         make.bottom.mas_equalTo(-10 * scale);
     }];
+    [self.allSelectButton addTarget:self action:@selector(allSelectButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     self.payButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(17 * scale) titleColor:UIColorFromRGB(0xFFFFFF) title:@"结算"];
     self.payButton.backgroundColor = KPriceColor;
@@ -88,6 +128,7 @@
         make.top.right.bottom.mas_equalTo(0);
         make.width.mas_equalTo(80 * scale);
     }];
+    [self.payButton addTarget:self action:@selector(payButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UILabel * totalLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
     totalLabel.text = @"合计：";
@@ -99,7 +140,7 @@
     }];
     
     self.totalPriceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.totalPriceLabel.text = @"￥2200";
+    self.totalPriceLabel.text = @"￥0";
     [self.bottomPayView addSubview:self.totalPriceLabel];
     [self.totalPriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(totalLabel);
@@ -117,7 +158,7 @@
     }];
     
     self.salePriceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.salePriceLabel.text = @"￥50";
+    self.salePriceLabel.text = @"￥0";
     [self.bottomPayView addSubview:self.salePriceLabel];
     [self.salePriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(saleLabel);
@@ -144,18 +185,80 @@
 {
     FRStoreCartTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRStoreCartTableViewCell" forIndexPath:indexPath];
     
-    FRStoreModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    FRStoreCartModel * model = [self.dataSource objectAtIndex:indexPath.row];
     [cell configWithGoodsModel:model];
+    
+    __weak typeof(self) weakSelf = self;
+    cell.addCartHandle = ^(FRStoreCartModel *cartModel) {
+        [weakSelf addWithModel:cartModel];
+    };
+    
+    cell.deleteCartHandle = ^(FRStoreCartModel *cartModel) {
+        [weakSelf deleteWithModel:cartModel];
+    };
+    
+    cell.chooseCartHandle = ^(FRStoreCartModel *cartModel) {
+        [weakSelf chooseWithModel:cartModel];
+    };
     
     return cell;
 }
 
-- (NSMutableArray *)dataSource
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (!_dataSource) {
-        _dataSource = [[NSMutableArray alloc] init];
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        FRStoreCartModel * model = [self.dataSource objectAtIndex:indexPath.row];
+        [self.dataSource removeObject:model];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+        [self deleteWithModel:model];
     }
-    return _dataSource;
+}
+
+- (void)addWithModel:(FRStoreCartModel *)model
+{
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initAddWithStoreID:model.sid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+    if (model.isSelected) {
+        self.totalPrice += model.price;
+        self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.totalPrice];
+    }
+}
+
+- (void)deleteWithModel:(FRStoreCartModel *)model
+{
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initDeleteWithStoreID:model.sid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
+    if (model.isSelected) {
+        self.totalPrice -= model.price;
+        self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.totalPrice];
+    }
+}
+
+- (void)chooseWithModel:(FRStoreCartModel *)model
+{
+    if (model.isSelected) {
+        self.totalPrice += model.amount;
+    }else{
+        self.totalPrice -= model.amount;
+    }
+    self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.totalPrice];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -10,10 +10,13 @@
 #import "FRMyServiceTableViewCell.h"
 #import "FRCateListViewController.h"
 #import "FRPublishServiceViewController.h"
+#import "FRServiceRequest.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FRMyServiceViewController () <UITableViewDelegate, UITableViewDataSource, FRCateListViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView * tableView;
+@property (nonatomic, strong) NSMutableArray * dataSource;
 
 @end
 
@@ -23,7 +26,30 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self createViews];
+    [self requestMyService];
+}
+
+- (void)requestMyService
+{
+    FRServiceRequest * request = [[FRServiceRequest alloc] initWithMySerivice];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                self.dataSource = [FRMySeriviceModel mj_objectArrayWithKeyValuesArray:data];
+                [self createViews];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+    }];
 }
 
 - (void)publishButtonDidClicked
@@ -73,12 +99,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FRMyServiceTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRMyServiceTableViewCell" forIndexPath:indexPath];
+    
+    FRMySeriviceModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    [cell configWithModel:model];
     
     return cell;
 }

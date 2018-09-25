@@ -15,4 +15,6 @@
 
 @property (nonatomic, copy) void (^userHeaderMenuDidClickedHandle)(FRUserHeaderMenuModel *model);
 
+- (void)userLoginStatusChange;
+
 @end

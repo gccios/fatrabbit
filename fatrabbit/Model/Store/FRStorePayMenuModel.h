@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FRPayWayModel.h"
+#import "FRMyInvoiceModel.h"
 
 typedef enum : NSUInteger {
     FRStorePayMenuType_PayWay,
@@ -28,5 +29,6 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) BOOL isChoose;
 
 @property (nonatomic, strong) FRPayWayModel * payWay;
+@property (nonatomic, strong) FRMyInvoiceModel * invoice;
 
 @end

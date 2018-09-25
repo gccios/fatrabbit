@@ -10,8 +10,14 @@
 #import "UserManager.h"
 #import "FRStorePayMenuCell.h"
 #import "FRChoosePayWayView.h"
+#import "FRChooseInvoiceView.h"
+#import "FRAddressViewController.h"
+#import "FRStoreOrderDetailCell.h"
+#import "FRStoreReamrkViewController.h"
+#import "FRStoreOrderRequest.h"
+#import "MBProgressHUD+FRHUD.h"
 
-@interface FRStoreOrderViewController () <UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource>
+@interface FRStoreOrderViewController () <UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, FRAddressViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton * addressButton;
 @property (nonatomic, strong) UILabel * nameLabel;
@@ -22,26 +28,86 @@
 @property (nonatomic, strong) NSMutableArray * menuSource;
 
 @property (nonatomic, strong) UICollectionView * collectionView;
+@property (nonatomic, strong) NSMutableArray * dataSource;
 @property (nonatomic, strong) UILabel * orderNumberLabel;
 
 @property (nonatomic, strong) FRAddressModel * addressModel;
+@property (nonatomic, strong) FRStorePayMenuModel * invoiceModel;
+@property (nonatomic, strong) FRStorePayMenuModel * payWayModel;
+@property (nonatomic, strong) FRStorePayMenuModel * remarkModel;
+@property (nonatomic, strong) UILabel * totalLabel;
+@property (nonatomic, strong) UILabel * pointsLabel;
 
 @end
 
 @implementation FRStoreOrderViewController
+
+- (instancetype)initWithSource:(NSArray *)source
+{
+    if (self = [super init]) {
+        self.dataSource = [[NSMutableArray alloc] initWithArray:source];
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     self.menuSource = [[NSMutableArray alloc] init];
-    [self.menuSource addObject:@[[[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_PayWay],
+    
+    self.invoiceModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_InvoiceInfo];
+    self.payWayModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_PayWay];
+    self.remarkModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Remark];
+    
+    [self.menuSource addObject:@[self.payWayModel,
                                  [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Points],
                                  [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Discount]]];
-    [self.menuSource addObject:@[[[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_InvoiceInfo],
-                                 [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Remark]]];
+    [self.menuSource addObject:@[self.invoiceModel, self.remarkModel]];
     
     [self createViews];
+}
+
+- (void)addressButtonDidClicked
+{
+    FRAddressViewController * address = [[FRAddressViewController alloc] init];
+    address.delegate = self;
+    [self.navigationController pushViewController:address animated:YES];
+}
+
+- (void)FRAddressDidChoose:(FRAddressModel *)address
+{
+    self.addressModel = address;
+    [self createTableHeaderView];
+}
+
+- (void)postOrderButtonDidClicked
+{
+    NSMutableArray * cartIDs = [[NSMutableArray alloc] init];
+    for (FRStoreCartModel * model in self.dataSource) {
+        if (model.isSelected) {
+            [cartIDs addObject:@(model.cid)];
+        }
+    }
+    
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在提交订单" inView:self.view];
+    FRStoreOrderRequest * request = [[FRStoreOrderRequest alloc] initWithPayWithAddressID:self.addressModel.cid invoiceID:self.invoiceModel.invoice.cid payWay:self.payWayModel.type reamrk:self.remarkModel.detail cartIDs:cartIDs];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"订单提交成功"];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"订单提交失败"];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"网络连接失败"];
+        
+    }];
 }
 
 - (void)createViews
@@ -58,10 +124,69 @@
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50, 0);
     
     if ([UserManager shareManager].addressList.count > 0) {
         self.addressModel = [UserManager shareManager].addressList.firstObject;
     }
+    
+    UIView * bottomHandleView = [[UIView alloc] initWithFrame:CGRectZero];
+    bottomHandleView.backgroundColor = UIColorFromRGB(0xffffff);
+    [self.view addSubview:bottomHandleView];
+    [bottomHandleView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.right.mas_equalTo(0);
+        make.height.mas_equalTo(45);
+    }];
+    
+    UIButton * postOrderButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(17) titleColor:UIColorFromRGB(0xFFFFFF) title:@"提交订单"];
+    postOrderButton.backgroundColor = KThemeColor;
+    [bottomHandleView addSubview:postOrderButton];
+    [postOrderButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(130);
+    }];
+    [postOrderButton addTarget:self action:@selector(postOrderButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    UILabel * totalTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    totalTipLabel.text = @"应付款：";
+    [bottomHandleView addSubview:totalTipLabel];
+    [totalTipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(10);
+        make.left.mas_equalTo(30);
+        make.height.mas_equalTo(15);
+    }];
+    
+    CGFloat totalPrice = 0;
+    for (FRStoreCartModel * model in self.dataSource) {
+        totalPrice += model.amount;
+    }
+    
+    self.totalLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10) textColor:KThemeColor alignment:NSTextAlignmentLeft];
+    self.totalLabel.text = [NSString stringWithFormat:@"￥%.2lf", totalPrice];
+    [bottomHandleView addSubview:self.totalLabel];
+    [self.totalLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(totalTipLabel);
+        make.left.mas_equalTo(totalTipLabel.mas_right);
+        make.height.mas_equalTo(totalTipLabel);
+    }];
+    
+    UILabel * pointTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    pointTipLabel.text = @"总积分：";
+    [bottomHandleView addSubview:pointTipLabel];
+    [pointTipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(totalTipLabel.mas_bottom);
+        make.left.mas_equalTo(30);
+        make.height.mas_equalTo(15);
+    }];
+    
+    self.pointsLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10) textColor:KThemeColor alignment:NSTextAlignmentLeft];
+    self.pointsLabel.text = @"2369";
+    [bottomHandleView addSubview:self.pointsLabel];
+    [self.pointsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(pointTipLabel);
+        make.left.mas_equalTo(pointTipLabel.mas_right);
+        make.height.mas_equalTo(pointTipLabel);
+    }];
     
     [self createTableHeaderView];
 }
@@ -80,6 +205,7 @@
         make.width.mas_equalTo(kMainBoundsWidth);
         make.height.mas_equalTo(68 * scale);
     }];
+    [self.addressButton addTarget:self action:@selector(addressButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UILabel * addressTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
     addressTipLabel.text = @"收货信息";
@@ -146,15 +272,15 @@
     layout.minimumInteritemSpacing = 5 * scale;
     
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"UICollectionViewCell"];
+    [self.collectionView registerClass:[FRStoreOrderDetailCell class] forCellWithReuseIdentifier:@"FRStoreOrderDetailCell"];
     self.collectionView.backgroundColor = UIColorFromRGB(0xffffff);
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
     self.collectionView.scrollEnabled = NO;
     [headerView addSubview:self.collectionView];
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(orderTipLabel.mas_bottom).offset(10 * scale);
-        make.left.mas_equalTo(10 * scale);
+        make.top.mas_equalTo(orderTipLabel.mas_bottom).offset(5 * scale);
+        make.left.mas_equalTo(15 * scale);
         make.width.mas_equalTo((width + 10 * scale) * 3);
         make.height.mas_equalTo(width + 10 * scale);
     }];
@@ -169,7 +295,7 @@
     }];
     
     self.orderNumberLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.orderNumberLabel.text = @"共3件";
+    self.orderNumberLabel.text = [NSString stringWithFormat:@"共%ld件", self.dataSource.count];
     [headerView addSubview:self.orderNumberLabel];
     [self.orderNumberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(moreImageView);
@@ -191,14 +317,19 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 3;
+    if (self.dataSource.count > 3) {
+        return 3;
+    }else{
+        return self.dataSource.count;
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UICollectionViewCell" forIndexPath:indexPath];
+    FRStoreOrderDetailCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FRStoreOrderDetailCell" forIndexPath:indexPath];
     
-    cell.backgroundColor = [UIColor greenColor];
+    FRStoreCartModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    [cell configWithModel:model];
     
     return cell;
 }
@@ -219,6 +350,23 @@
             [weakSelf.tableView reloadData];
         };
         [payway show];
+    }else if (menuModel.type == FRStorePayMenuType_InvoiceInfo) {
+        FRChooseInvoiceView * invoice = [[FRChooseInvoiceView alloc] initWithModel:menuModel.invoice];
+        
+        __weak typeof(self) weakSelf = self;
+        invoice.chooseDidCompletetHandle = ^(FRMyInvoiceModel *model) {
+            menuModel.invoice = model;
+            [weakSelf.tableView reloadData];
+        };
+        [invoice show];
+    }else if (menuModel.type == FRStorePayMenuType_Remark) {
+        FRStoreReamrkViewController * remarkVC = [[FRStoreReamrkViewController alloc] init];
+        __weak typeof(self) weakSelf = self;
+        remarkVC.remarkDidCompletetHandle = ^(NSString *remark) {
+            menuModel.detail = remark;
+            [weakSelf.tableView reloadData];
+        };
+        [self.navigationController pushViewController:remarkVC animated:YES];
     }
 }
 
@@ -270,12 +418,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 10.f;//把高度设置很小，效果可以看成footer的高度等于0
-}
-
-- (void)dealloc
-{
-    
+    return 10.f;
 }
 
 - (void)didReceiveMemoryWarning {

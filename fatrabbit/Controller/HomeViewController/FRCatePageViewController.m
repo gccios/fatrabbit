@@ -68,6 +68,7 @@
 {
     [self setSelectIndex:0];
     self.model = model;
+    self.titleLabel.text = model.name;
     [self reloadData];
 }
 
@@ -118,7 +119,8 @@
 
 - (UIViewController *)pageController:(WMPageController *)pageController viewControllerAtIndex:(NSInteger)index
 {
-    return [[FRCatePageDetailViewController alloc] init];
+    FRCateModel * model = [self.model.child objectAtIndex:index];
+    return [[FRCatePageDetailViewController alloc] initWithCateModel:model];
 }
 
 - (CGRect)pageController:(WMPageController *)pageController preferredFrameForMenuView:(WMMenuView *)menuView

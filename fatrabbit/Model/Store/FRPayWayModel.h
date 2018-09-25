@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 typedef enum : NSUInteger {
-    FRPayWayType_Wechat,
-    FRPayWayType_Alipay,
-    FRPayWayType_Balance,
-    FRPayWayType_UnderLine
+    FRPayWayType_Wechat = 1,
+    FRPayWayType_Alipay = 2,
+    FRPayWayType_Balance = 3,
+    FRPayWayType_UnderLine = 4,
 } FRPayWayType;
 
 @interface FRPayWayModel : NSObject

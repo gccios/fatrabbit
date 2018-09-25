@@ -220,7 +220,8 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 10.f;//把高度设置很小，效果可以看成footer的高度等于0
+    return 10.f;
+    
 }
 
 - (NSMutableArray *)dataSource
@@ -229,6 +230,11 @@
         _dataSource = [[NSMutableArray alloc] init];
     }
     return _dataSource;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:FRUserLoginStatusDidChange object:nil];
 }
 
 - (void)didReceiveMemoryWarning {

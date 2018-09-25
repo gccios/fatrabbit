@@ -12,6 +12,9 @@
 #import <TZImagePickerController.h>
 #import "FREditNameViewController.h"
 #import "UserManager.h"
+#import "FRUploadManager.h"
+#import "MBProgressHUD+FRHUD.h"
+#import "FRUserInfoUpdateRequest.h"
 
 @interface FRMyInfoViewController () <UITableViewDelegate, UITableViewDataSource, TZImagePickerControllerDelegate, FREditNameViewControllerDelegate>
 
@@ -58,11 +61,45 @@
 {
     if (photos) {
         UIImage * logo = [photos firstObject];
-        FRUserMenuModel * model = [self.dataSource firstObject];
-        if (model.type == FRUserMenuType_Logo) {
-            model.image = logo;
-        }
-        [self.tableView reloadData];
+        
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在上传头像" inView:self.view];
+        [[FRUploadManager shareManager] uploadImageArray:@[logo] progress:^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
+            
+        } success:^(NSString *path, NSInteger index) {
+            
+            FRUserInfoUpdateRequest * request = [[FRUserInfoUpdateRequest alloc] initWithNickName:nil avatar:path];
+            [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+                
+                [hud hideAnimated:YES];
+                [UserManager shareManager].avatar = path;
+                [[UserManager shareManager] needUpdateLocalUserInfo];
+                FRUserMenuModel * model = [self.dataSource firstObject];
+                if (model.type == FRUserMenuType_Logo) {
+                    model.image = logo;
+                }
+                [self.tableView reloadData];
+                
+                [MBProgressHUD showTextHUDWithText:@"保存成功"];
+                
+            } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+                
+                [hud hideAnimated:YES];
+                [MBProgressHUD showTextHUDWithText:@"保存失败"];
+                
+            } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+                
+                [hud hideAnimated:YES];
+                [MBProgressHUD showTextHUDWithText:@"网络连接错误"];
+                
+            }];
+            
+        } failure:^(NSError *error, NSInteger index) {
+            
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"头像上传失败"];
+            
+        }];
+        
     }
 }
 

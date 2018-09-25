@@ -22,6 +22,7 @@
 #import "FRChooseSpecView.h"
 #import "FRStoreDetailRequest.h"
 #import "MBProgressHUD+FRHUD.h"
+#import "UserManager.h"
 
 @interface FRStorePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -205,7 +206,7 @@
     if (model.spec) {
         FRChooseSpecView * spec = [[FRChooseSpecView alloc] initWithSpecList:model.spec chooseModel:model.spec.firstObject];
         spec.chooseDidCompletetHandle = ^(FRStoreSpecModel *model) {
-            
+            [[UserManager shareManager] addStoreCartWithStore:model];
         };
         [spec show];
     }else{

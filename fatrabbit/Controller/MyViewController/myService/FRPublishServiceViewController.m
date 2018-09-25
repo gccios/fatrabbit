@@ -13,7 +13,8 @@
 #import "LookImageViewController.h"
 #import "FRCateListViewController.h"
 #import <TZImagePickerController.h>
-#import "MBProgressHUD+FRHUD.h"
+#import "FRUploadManager.h"
+#import "FRServiceRequest.h"
 
 @interface FRPublishServiceViewController () <UICollectionViewDelegate, UICollectionViewDataSource, TZImagePickerControllerDelegate, FRCateListViewControllerDelegate>
 
@@ -74,6 +75,56 @@
     }
     
     float priceFloat = [price floatValue];
+    if (self.imageSource.count > 0) {
+        
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在上传图片" inView:self.view];
+        NSMutableArray * imageList = [[NSMutableArray alloc] init];
+        __block NSInteger count = 0;
+        
+        [[FRUploadManager shareManager] uploadImageArray:self.imageSource progress:^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
+            
+        } success:^(NSString *path, NSInteger index) {
+            [imageList addObject:path];
+            count++;
+            if (count == self.imageSource.count) {
+                [hud hideAnimated:NO];
+                [self publishSeriviceWithPrice:priceFloat title:title remark:remark images:imageList];
+            }
+            NSLog(@"%@", [NSString stringWithFormat:@"%ld张地址：%@", index, path]);
+        } failure:^(NSError *error, NSInteger index) {
+            count++;
+            if (count == self.imageSource.count) {
+                [hud hideAnimated:NO];
+                [self publishSeriviceWithPrice:priceFloat title:title remark:remark images:imageList];
+            }
+            NSLog(@"%@\n%@", [NSString stringWithFormat:@"%ld张上传失败", index], error);
+        }];
+    }else{
+        [self publishSeriviceWithPrice:priceFloat title:title remark:remark images:nil];
+    }
+}
+
+- (void)publishSeriviceWithPrice:(float)priceFloat title:(NSString *)title remark:(NSString *)remark images:(NSArray *)image
+{
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在发布需求" inView:self.view];
+    FRServiceRequest * request =  [[FRServiceRequest alloc] initPublishWithPrice:priceFloat title:title remark:remark img:image cateID:self.model.cid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"发布成功"];
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"发布失败"];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"发布失败"];
+        
+    }];
 }
 
 - (void)chooseCateType

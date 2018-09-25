@@ -9,6 +9,8 @@
 #import "FRMyAccountViewController.h"
 #import "FRMyAccountTableViewCell.h"
 #import "FRInvoiceViewController.h"
+#import "FRAccountMoneyController.h"
+#import "FRAccountPointsViewController.h"
 
 @interface FRMyAccountViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -56,6 +58,12 @@
     if (model.type == FRMyAccountType_Invoice) {
         FRInvoiceViewController * invoice = [[FRInvoiceViewController alloc] init];
         [self.navigationController pushViewController:invoice animated:YES];
+    }else if (model.type == FRMyAccountType_Money) {
+        FRAccountMoneyController * money = [[FRAccountMoneyController alloc] init];
+        [self.navigationController pushViewController:money animated:YES];
+    }else if (model.type == FRMyAccountType_Point) {
+        FRAccountPointsViewController * points = [[FRAccountPointsViewController alloc] init];
+        [self.navigationController pushViewController:points animated:YES];
     }
 }
 

@@ -92,7 +92,7 @@
     [self addSubview:self.contentView];
     
     UILabel * titleLabel = [FRCreateViewTool createLabelWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 60 * scale) font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentCenter];
-    titleLabel.text = @"选择商品规格";
+    titleLabel.text = @"选择支付方式";
     [self.contentView addSubview:titleLabel];
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.mas_equalTo(0);

@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FRStoreModel.h"
+#import "FRStoreCartModel.h"
 
 @interface FRStoreCartTableViewCell : UITableViewCell
 
-- (void)configWithGoodsModel:(FRStoreModel *)model;
+@property (nonatomic, copy) void (^addCartHandle)(FRStoreCartModel * cartModel);
+@property (nonatomic, copy) void (^deleteCartHandle)(FRStoreCartModel * cartModel);
+@property (nonatomic, copy) void (^chooseCartHandle)(FRStoreCartModel * cartModel);
+
+- (void)configWithGoodsModel:(FRStoreCartModel *)model;
 
 @end

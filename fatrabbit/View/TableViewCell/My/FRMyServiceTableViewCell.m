@@ -9,6 +9,7 @@
 #import "FRMyServiceTableViewCell.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
+#import <UIImageView+WebCache.h>
 
 @interface FRMyServiceTableViewCell ()
 
@@ -33,6 +34,15 @@
     return self;
 }
 
+- (void)configWithModel:(FRMySeriviceModel *)model
+{
+    [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
+    self.nameLabel.text = model.title;
+    self.infoLabel.text = model.remark;
+    self.priceLabel.text = [NSString stringWithFormat:@"%.2lf", model.amount];
+    self.levelLabel.text = [NSString stringWithFormat:@"%.1lf", model.score];
+}
+
 - (void)createFRMyServiceTableViewCell
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -41,7 +51,6 @@
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
-    self.coverImageView.backgroundColor = [UIColor greenColor];
     [self.contentView addSubview:self.coverImageView];
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
@@ -51,7 +60,6 @@
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.nameLabel.text = @"测试标题测试标题";
     [self.contentView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.coverImageView.mas_right).offset(10 * scale);
@@ -69,7 +77,6 @@
     }];
     
     self.priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:KPriceColor alignment:NSTextAlignmentLeft];
-    self.priceLabel.text = @"测试金额";
     [self.contentView addSubview:self.priceLabel];
     [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(totalTitleLabel.mas_right);
@@ -78,7 +85,6 @@
     
     self.infoLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
     self.infoLabel.numberOfLines = 3;
-    self.infoLabel.text = @"测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情";
     [self.contentView addSubview:self.infoLabel];
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(5 * scale);
@@ -87,7 +93,6 @@
     }];
     
     self.levelLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:KThemeColor alignment:NSTextAlignmentRight];
-    self.levelLabel.text = @"5.0";
     [self.contentView addSubview:self.levelLabel];
     [self.levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-15 * scale);

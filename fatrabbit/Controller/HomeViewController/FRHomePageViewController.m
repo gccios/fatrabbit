@@ -12,6 +12,7 @@
 #import "FRNavAutoView.h"
 #import "FRTableTabView.h"
 #import "FRServiceTableViewCell.h"
+#import "FRNeedDetailViewController.h"
 #import "FRSearchViewController.h"
 #import "FRServiceDetailViewController.h"
 #import "FRMenuCollectionViewCell.h"
@@ -24,12 +25,14 @@
 #import "FRNeedModel.h"
 #import "FRAllCateListViewController.h"
 #import "FRCatePageViewController.h"
+#import <MJRefresh.h>
 
 @interface FRHomePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, FRCityViewControllerDelegate, FRAllCateListViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton * locationButton;
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, strong) NSMutableArray * needSource;
+@property (nonatomic, assign) NSInteger needPage;
 
 @property (nonatomic, strong) SDCycleScrollView * bannerView;
 @property (nonatomic, strong) NSMutableArray * cateMenuList;
@@ -133,19 +136,53 @@
 //获取需求列表
 - (void)requestNeedSource
 {
-    FRNeedListRequest * request = [[FRNeedListRequest alloc] init];
+    FRNeedListRequest * request = [[FRNeedListRequest alloc] initWithCateID:0 page:1];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         if (KIsDictionary(response)) {
-            NSData * data = [response objectForKey:@"data"];
+            NSArray * data = [response objectForKey:@"data"];
             [self.needSource removeAllObjects];
             [self.needSource addObjectsFromArray:[FRNeedModel mj_objectArrayWithKeyValuesArray:data]];
             [self.tableView reloadData];
+            
+            self.needPage = 2;
         }
+        [self.tableView.mj_header endRefreshing];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
+        [self.tableView.mj_header endRefreshing];
+        
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [self.tableView.mj_header endRefreshing];
+        
+    }];
+}
+
+- (void)loadMoreNeed
+{
+    FRNeedListRequest * request = [[FRNeedListRequest alloc] initWithCateID:0 page:self.needPage];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data) && data.count > 0) {
+                [self.needSource addObjectsFromArray:[FRNeedModel mj_objectArrayWithKeyValuesArray:data]];
+                [self.tableView reloadData];
+                
+                self.needPage++;
+            }
+        }
+        [self.tableView.mj_footer endRefreshing];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self.tableView.mj_footer endRefreshing];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [self.tableView.mj_footer endRefreshing];
         
     }];
 }
@@ -227,6 +264,8 @@
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestNeedSource)];
+    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreNeed)];
     
     [self createTableHeaderView];
 }
@@ -320,7 +359,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FRServiceDetailViewController * detail = [[FRServiceDetailViewController alloc] init];
+    FRNeedModel * model = [self.needSource objectAtIndex:indexPath.row];
+    FRNeedDetailViewController * detail = [[FRNeedDetailViewController alloc] initWithNeedModel:model];
     [self.navigationController pushViewController:detail animated:YES];
 }
 

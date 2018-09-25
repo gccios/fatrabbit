@@ -7,7 +7,6 @@
 //
 
 #import "FRChoosePayWayCell.h"
-
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
 

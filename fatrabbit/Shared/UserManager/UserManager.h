@@ -33,6 +33,9 @@ extern NSString * const FRUserStoreCartStatusDidChange; //用户购物车发生�
 @property (nonatomic, assign) NSInteger city_id;//城市ID
 @property (nonatomic, assign) CGFloat balance;//账户余额
 @property (nonatomic, assign) NSInteger points;//可用积分
+@property (nonatomic, copy) NSString * vip_name;//VIP等级
+@property (nonatomic, assign) CGFloat vip_discount;//VIP打折率
+@property (nonatomic, copy) NSString * vip_discount_tip;//VIP打折率语义化结果
 
 @property (nonatomic, strong) FRCityModel * city;//当前城市
 

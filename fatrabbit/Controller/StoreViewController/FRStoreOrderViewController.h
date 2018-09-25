@@ -13,4 +13,6 @@
  */
 @interface FRStoreOrderViewController : FRBaseViewController
 
+- (instancetype)initWithSource:(NSArray *)source;
+
 @end

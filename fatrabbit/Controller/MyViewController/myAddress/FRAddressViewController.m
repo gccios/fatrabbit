@@ -8,7 +8,6 @@
 
 #import "FRAddressViewController.h"
 #import "FRUserAddressRequest.h"
-#import "UserManager.h"
 #import "FRAddressTableViewCell.h"
 #import "FRAddNewAddressViewController.h"
 #import <MJRefresh.h>
@@ -123,6 +122,15 @@
     };
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    FRAddressModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(FRAddressDidChoose:)]) {
+        [self.delegate FRAddressDidChoose:model];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

@@ -71,6 +71,7 @@
     [self.contentView addSubview:self.infoLabel];
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.mas_equalTo(0);
+        make.width.mas_lessThanOrEqualTo(kMainBoundsWidth - 150);
         make.right.mas_equalTo(-50);
     }];
     

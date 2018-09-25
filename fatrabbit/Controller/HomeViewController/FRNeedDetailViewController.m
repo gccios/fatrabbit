@@ -9,6 +9,8 @@
 #import "FRNeedDetailViewController.h"
 #import "FRServiceTableViewCell.h"
 #import <SDCycleScrollView.h>
+#import "FRNeedDetailRequest.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FRNeedDetailViewController ()
 
@@ -20,20 +22,53 @@
 @property (nonatomic, strong) UILabel * titleLabel;
 @property (nonatomic, strong) UILabel * detailLabel;
 
-@property (nonatomic, strong) UIImageView * logoImageView;
-@property (nonatomic, strong) UILabel * nameLabel;
-@property (nonatomic, strong) UILabel * favorableLabel;
-@property (nonatomic, strong) UILabel * dealLabel;
+@property (nonatomic, strong) FRNeedModel * model;
 
 @end
 
 @implementation FRNeedDetailViewController
 
+- (instancetype)initWithNeedModel:(FRNeedModel *)model
+{
+    if (self = [super init]) {
+        self.model = model;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self createViews];
+    [self requestNeedDetail];
+}
+
+- (void)requestNeedDetail
+{
+    FRNeedDetailRequest * request = [[FRNeedDetailRequest alloc] initWithNeedID:self.model.cid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSDictionary * data = [response objectForKey:@"data"];
+            [self.model mj_setKeyValues:data];
+        }
+        
+        [self createViews];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [MBProgressHUD showTextHUDWithText:@"获取详情失败"];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"获取详情失败"];
+        
+    }];
+}
+
+- (void)contanctButtonDidClicked
+{
+    
 }
 
 - (void)createViews
@@ -46,18 +81,33 @@
         make.top.mas_equalTo(-kStatusBarHeight);
         make.left.bottom.right.mas_equalTo(0);
     }];
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50, 0);
+    
+    UIButton * contanctButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15) titleColor:UIColorFromRGB(0xffffff) title:@"联系Ta"];
+    contanctButton.backgroundColor = UIColorFromRGB(0xf8bf44);
+    [self.view addSubview:contanctButton];
+    [contanctButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.right.mas_equalTo(0);
+        make.height.mas_equalTo(45);
+    }];
+    [contanctButton addTarget:self action:@selector(contanctButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     [self createTableHeaderView];
+    
+    UIButton * backButton = [FRCreateViewTool createButtonWithFrame:CGRectMake(10, 20, 30, 30) font:kPingFangRegular(10) titleColor:UIColorFromRGB(0xffffff) title:@""];
+    [backButton setImage:[UIImage imageNamed:@"blackBack"] forState:UIControlStateNormal];
+    [self.view addSubview:backButton];
+    [backButton addTarget:self action:@selector(backButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)createTableHeaderView
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
-    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 485 * scale)];
+    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 300 * scale)];
     headerView.backgroundColor = UIColorFromRGB(0xFFFFFF);
     
-    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:@[@"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg"]];
+    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:self.model.img];
     self.bannerView.autoScrollTimeInterval = 3.f;
     [headerView addSubview:self.bannerView];
     [self.bannerView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -66,7 +116,7 @@
     }];
     
     self.priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.priceLabel.text = @"测试金额";
+    self.priceLabel.text = [NSString stringWithFormat:@"%.2lf", self.model.amount];
     [headerView addSubview:self.priceLabel];
     [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.bannerView.mas_bottom).offset(15 * scale);
@@ -75,7 +125,7 @@
     }];
     
     self.titleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.titleLabel.text = @"测试标题测试标题测试标题";
+    self.titleLabel.text = self.model.title;
     [headerView addSubview:self.titleLabel];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.priceLabel.mas_bottom).offset(5 * scale);
@@ -83,73 +133,26 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
+    NSString * remark = self.model.remark;
+    CGFloat height = [remark boundingRectWithSize:CGSizeMake(kMainBoundsWidth - 30 * scale, 1000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:kPingFangRegular(10 * scale)} context:nil].size.height;
+    headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 300 * scale + height);
     self.detailLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentLeft];
     self.detailLabel.numberOfLines = 0;
-    self.detailLabel.text = @"测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容";
+    self.detailLabel.text = remark;
     [headerView addSubview:self.detailLabel];
     [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.titleLabel.mas_bottom).offset(0 * scale);
         make.left.mas_equalTo(15 * scale);
         make.width.mas_equalTo(kMainBoundsWidth - 30 * scale);
-        make.height.mas_lessThanOrEqualTo(60 * scale);
-    }];
-    
-    UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
-    lineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
-    [headerView addSubview:lineView];
-    [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.titleLabel.mas_bottom).offset(70 * scale);
-        make.left.right.mas_equalTo(0);
-        make.height.mas_equalTo(10 * scale);
-    }];
-    
-    self.logoImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
-    self.logoImageView.backgroundColor = [UIColor greenColor];
-    [headerView addSubview:self.logoImageView];
-    [self.logoImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(lineView.mas_bottom).offset(15 * scale);
-        make.left.mas_equalTo(15 * scale);
-        make.height.mas_equalTo(70 * scale);
-        make.width.mas_equalTo(120 * scale);
-    }];
-    
-    self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.nameLabel.text = @"测试标题测试标题测试标题测试标题测试标题测试标题";
-    [headerView addSubview:self.nameLabel];
-    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.logoImageView).offset(5 * scale);
-        make.height.mas_equalTo(20 * scale);
-        make.left.mas_equalTo(self.logoImageView.mas_right).offset(10 * scale);
-        make.width.mas_equalTo(kMainBoundsWidth - 160 * scale);
-    }];
-    
-    self.favorableLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.favorableLabel.text = @"测试好评率";
-    [headerView addSubview:self.favorableLabel];
-    [self.favorableLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.logoImageView).offset(-5 * scale);
-        make.height.mas_equalTo(20 * scale);
-        make.left.mas_equalTo(self.logoImageView.mas_right).offset(10 * scale);
-    }];
-    
-    self.dealLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.dealLabel.text = @"测试成交10单";
-    [headerView addSubview:self.dealLabel];
-    [self.dealLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.logoImageView).offset(-5 * scale);
-        make.height.mas_equalTo(20 * scale);
-        make.left.mas_equalTo(self.favorableLabel.mas_right).offset(15 * scale);
-    }];
-    
-    UIView * bottomView = [[UIView alloc] initWithFrame:CGRectZero];
-    bottomView.backgroundColor = UIColorFromRGB(0xf5f5f5);
-    [headerView addSubview:bottomView];
-    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.logoImageView.mas_bottom).offset(15 * scale);
-        make.left.bottom.right.mas_equalTo(0);
+        make.height.mas_lessThanOrEqualTo(height + 20 * scale);
     }];
     
     self.tableView.tableHeaderView = headerView;
+}
+
+- (void)backButtonDidClicked
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated

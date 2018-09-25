@@ -18,7 +18,7 @@
         self.type = type;
         
         if (type == FRMyAccountType_Money) {
-            self.title = @"账户";
+            self.title = @"账户余额";
             self.detail = [NSString stringWithFormat:@"%.2lf", [UserManager shareManager].balance];
         }else if (type == FRMyAccountType_Point) {
             self.title = @"积分";

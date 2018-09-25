@@ -17,7 +17,10 @@
 #import "FRChooseSpecView.h"
 #import "UIButton+Badge.h"
 #import "UserManager.h"
-#import "FRStoreOrderViewController.h"
+#import "FRStoreCartViewController.h"
+#import "FRStoreCartModel.h"
+#import "FRStoreCartRequest.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FRStoreDetailViewController () <WKNavigationDelegate, SDCycleScrollViewDelegate>
 
@@ -114,8 +117,63 @@
  */
 - (void)buyButtonDidClicked
 {
-    FRStoreOrderViewController * order = [[FRStoreOrderViewController alloc] init];
-    [self.navigationController pushViewController:order animated:YES];
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在添加商品" inView:self.view];
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initAddWithStoreID:self.specModel.cid];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self storeCartUpdate];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        
+    }];
+}
+
+- (void)storeCartUpdate
+{
+    FRStoreCartRequest * updateRequest = [[FRStoreCartRequest alloc] initWithStoreList];
+    [updateRequest sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                [UserManager shareManager].storeCart = [FRStoreCartModel mj_objectArrayWithKeyValuesArray:data];
+                [[NSNotificationCenter defaultCenter] postNotificationName:FRUserStoreCartStatusDidChange object:nil];
+            }
+        }
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self storeCartButtonDidClicked];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        
+    }];
+}
+
+- (void)storeCartButtonDidClicked
+{
+    FRStoreCartViewController * cart = [[FRStoreCartViewController alloc] init];
+    [self.navigationController pushViewController:cart animated:YES];
 }
 
 - (void)userStoreCartShouldUpdate
@@ -126,6 +184,7 @@
     if (count > 99) {
         badge = @"99+";
     }
+    [self.storeCartButton setBadgeOriginX:30];
     [self.storeCartButton setBadgeValue:badge];
 }
 
@@ -248,13 +307,14 @@
         make.width.mas_equalTo(kMainBoundsWidth / 4.f);
     }];
     
-    self.storeCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.self.storeCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [storeCartView addSubview:self.storeCartButton];
     [self.storeCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.mas_equalTo(0);
         make.height.mas_equalTo(40);
         make.width.mas_equalTo(50);
     }];
+    [self.storeCartButton addTarget:self action:@selector(storeCartButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UIImageView * imageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFit image:[UIImage imageNamed:@"storeCart"]];
     [self.storeCartButton addSubview:imageView];
@@ -265,7 +325,6 @@
     
     [self.storeCartButton setBadgeBGColor:KPriceColor];
     [self.storeCartButton setBadgeTextColor:UIColorFromRGB(0xffffff)];
-    [self.storeCartButton setBadgeOriginX:30];
     [self.storeCartButton setShouldHideBadgeAtZero:YES];
     
     [self userStoreCartShouldUpdate];

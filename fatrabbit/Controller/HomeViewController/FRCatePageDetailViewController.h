@@ -7,7 +7,10 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRCateModel.h"
 
 @interface FRCatePageDetailViewController : FRBaseViewController
+
+- (instancetype)initWithCateModel:(FRCateModel *)model;
 
 @end

@@ -10,6 +10,7 @@
 #import "FRCreateViewTool.h"
 #import "UserManager.h"
 #import <Masonry.h>
+#import <UIImageView+WebCache.h>
 
 @interface FRUserHeaderView () <UICollectionViewDelegate, UICollectionViewDataSource>
 
@@ -52,6 +53,9 @@
         self.infoView.hidden = NO;
         
         self.nameLabel.text = [UserManager shareManager].nickname;
+        self.vipLabel.text = [UserManager shareManager].vip_name;
+        self.levelLabel.text = [NSString stringWithFormat:@"%ld", [UserManager shareManager].points];
+        [self.logoImageView sd_setImageWithURL:[NSURL URLWithString:[UserManager shareManager].avatar]];
     }else{
         self.infoView.hidden = YES;
     }
@@ -108,7 +112,7 @@
     }];
     
     UILabel * levelTip = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    levelTip.text = @"积分";
+    levelTip.text = @"积分：";
     [self.infoView addSubview:levelTip];
     [levelTip mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(10 * scale);
@@ -117,7 +121,6 @@
     }];
     
     self.levelLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.levelLabel.text = @"测试积分";
     [self.infoView addSubview:self.levelLabel];
     [self.levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(levelTip);
@@ -139,7 +142,6 @@
     [FRCreateViewTool cornerView:self.levelProgressView radius:5 * scale];
     
     self.vipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentLeft];
-    self.vipLabel.text = @"测试vip等级";
     [self.infoView addSubview:self.vipLabel];
     [self.vipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.levelProgressView.mas_right).offset(5 * scale);
@@ -216,5 +218,9 @@
     }
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:FRUserLoginStatusDidChange object:nil];
+}
 
 @end
