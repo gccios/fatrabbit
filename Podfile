@@ -11,4 +11,6 @@ pod 'TZImagePickerController', '~> 2.1.6'
 pod 'SDWebImage'
 pod 'MJRefresh'
 pod 'AliyunOSSiOS'
+pod 'WechatOpenSDK'
+pod 'JPush'
 end

@@ -21,21 +21,12 @@
 
 @property (nonatomic, strong) NSMutableArray * dataSource;
 
-@property (nonatomic, assign) FRStoreSearchType type;
 @property (nonatomic, strong) FRCateModel * model;
 @property (nonatomic, copy) NSString * keyWord;
 
 @end
 
 @implementation FRStoreListViewController
-
-- (instancetype)initWithType:(FRStoreSearchType)type
-{
-    if (self = [super init]) {
-        self.type = type;
-    }
-    return self;
-}
 
 - (void)configWithModel:(FRCateModel *)model
 {
@@ -79,6 +70,11 @@
 - (void)showChooseSpecWith:(FRStoreModel *)model
 {
     if (model.spec) {
+        if (model.spec.count == 1) {
+            [[UserManager shareManager] addStoreCartWithStore:model.spec.firstObject];
+            return;
+        }
+        
         FRChooseSpecView * spec = [[FRChooseSpecView alloc] initWithSpecList:model.spec chooseModel:model.spec.firstObject];
         spec.chooseDidCompletetHandle = ^(FRStoreSpecModel *model) {
             [[UserManager shareManager] addStoreCartWithStore:model];

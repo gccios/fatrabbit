@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 我的服务页面
+ */
 @interface FRMyServiceViewController : FRBaseViewController
 
 @end

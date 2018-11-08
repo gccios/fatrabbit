@@ -9,6 +9,7 @@
 #import "FRMessageNeedCell.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
+#import <UIImageView+WebCache.h>
 
 @interface FRMessageNeedCell ()
 
@@ -27,6 +28,12 @@
     return self;
 }
 
+- (void)configWithModel:(FRMessageModel *)model
+{
+    [self.needImageView sd_setImageWithURL:[NSURL URLWithString:model.icon]];
+    self.needLabel.text = model.tip;
+}
+
 - (void)createMessageNeedCell
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -34,8 +41,8 @@
     
     CGFloat scale = kMainBoundsWidth / 375.f;
     
-    self.needImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleToFill image:[UIImage new]];
-    self.needImageView.backgroundColor = [UIColor greenColor];
+    self.needImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
+    self.needImageView.clipsToBounds = YES;
     [self.contentView addSubview:self.needImageView];
     [self.needImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(20 * scale);
@@ -45,7 +52,6 @@
     }];
     
     self.needLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.needLabel.text = @"测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据";
     self.needLabel.numberOfLines = 3;
     [self.contentView addSubview:self.needLabel];
     [self.needLabel mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -42,7 +42,10 @@
 {
     [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
     self.nameLabel.text = model.name;
-    self.priceLabel.text = [NSString stringWithFormat:@"%.2f", model.price];
+    self.priceLabel.text = [NSString stringWithFormat:@"￥%.2f", model.price];
+    if (model.is_points) {
+        self.priceLabel.text = [NSString stringWithFormat:@"%.2f 积分", model.price];
+    }
 }
 
 - (void)createStoreCell
@@ -54,9 +57,9 @@
     [self.contentView addSubview:baseView];
     [baseView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(5 * scale);
-        make.left.mas_equalTo(15 * scale);
+        make.left.mas_equalTo(5 * scale);
         make.bottom.mas_equalTo(-5 * scale);
-        make.right.mas_equalTo(-15 * scale);
+        make.right.mas_equalTo(-5 * scale);
     }];
     [FRCreateViewTool cornerView:baseView radius:15 * scale];
     
@@ -77,20 +80,11 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
-    UILabel * price = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    price.text = @"￥";
-    [baseView addSubview:price];
-    [price mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(-15 * scale);
-        make.left.mas_equalTo(10 * scale);
-        make.height.mas_equalTo(20 * scale);
-    }];
-    
     self.priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:KPriceColor alignment:NSTextAlignmentLeft];
     [baseView addSubview:self.priceLabel];
     [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(price);
-        make.left.mas_equalTo(price.mas_right);
+        make.bottom.mas_equalTo(-15 * scale);
+        make.left.mas_equalTo(10 * scale);
         make.height.mas_equalTo(20 * scale);
     }];
     
@@ -103,6 +97,7 @@
         make.right.mas_equalTo(-15 * scale);
     }];
     [self.buyButton addTarget:self action:@selector(buyButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    self.buyButton.hidden = YES;
     
     UIImageView * buyImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage imageNamed:@"storeCart"]];
     [self.buyButton addSubview:buyImageView];

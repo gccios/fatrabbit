@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 我的账户积分页面
+ */
 @interface FRAccountPointsViewController : FRBaseViewController
 
 @end

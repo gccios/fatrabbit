@@ -18,6 +18,7 @@
 
 @interface FRPublishServiceViewController () <UICollectionViewDelegate, UICollectionViewDataSource, TZImagePickerControllerDelegate, FRCateListViewControllerDelegate>
 
+@property (nonatomic, strong) FRMySeriviceModel * seriviceModel;
 @property (nonatomic, strong) FRCateModel * model;
 
 @property (nonatomic, strong) UITextField * serviceTitleField;
@@ -36,6 +37,16 @@
 @end
 
 @implementation FRPublishServiceViewController
+
+- (instancetype)initEditWithServiceModel:(FRMySeriviceModel *)seriviceModel imageSource:(NSArray *)imageSource cateModel:(FRCateModel *)model
+{
+    if (self = [super init]) {
+        self.model = model;
+        [self.imageSource addObjectsFromArray:imageSource];
+        self.seriviceModel = seriviceModel;
+    }
+    return self;
+}
 
 - (instancetype)initWithFRCateModel:(FRCateModel *)model
 {
@@ -74,13 +85,13 @@
         return;
     }
     
-    float priceFloat = [price floatValue];
+    double priceFloat = [price doubleValue];
     if (self.imageSource.count > 0) {
         
         MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在上传图片" inView:self.view];
         NSMutableArray * imageList = [[NSMutableArray alloc] init];
         __block NSInteger count = 0;
-        
+        hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
         [[FRUploadManager shareManager] uploadImageArray:self.imageSource progress:^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             
         } success:^(NSString *path, NSInteger index) {
@@ -89,6 +100,8 @@
             if (count == self.imageSource.count) {
                 [hud hideAnimated:NO];
                 [self publishSeriviceWithPrice:priceFloat title:title remark:remark images:imageList];
+            }else{
+                hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
             }
             NSLog(@"%@", [NSString stringWithFormat:@"%ld张地址：%@", index, path]);
         } failure:^(NSError *error, NSInteger index) {
@@ -96,6 +109,8 @@
             if (count == self.imageSource.count) {
                 [hud hideAnimated:NO];
                 [self publishSeriviceWithPrice:priceFloat title:title remark:remark images:imageList];
+            }else{
+                hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
             }
             NSLog(@"%@\n%@", [NSString stringWithFormat:@"%ld张上传失败", index], error);
         }];
@@ -104,20 +119,33 @@
     }
 }
 
-- (void)publishSeriviceWithPrice:(float)priceFloat title:(NSString *)title remark:(NSString *)remark images:(NSArray *)image
+- (void)publishSeriviceWithPrice:(double)priceFloat title:(NSString *)title remark:(NSString *)remark images:(NSArray *)image
 {
-    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在发布需求" inView:self.view];
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在发布服务" inView:self.view];
     FRServiceRequest * request =  [[FRServiceRequest alloc] initPublishWithPrice:priceFloat title:title remark:remark img:image cateID:self.model.cid];
+    
+    if (self.seriviceModel) {
+        [request configEditWithID:self.seriviceModel.cid];
+    }
+    
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         [hud hideAnimated:YES];
         [MBProgressHUD showTextHUDWithText:@"发布成功"];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(FRPublishServiceDidUpdate)]) {
+            [self.delegate FRPublishServiceDidUpdate];
+        }
+        
         [self.navigationController popViewControllerAnimated:YES];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         [hud hideAnimated:YES];
-        [MBProgressHUD showTextHUDWithText:@"发布失败"];
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
         
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
@@ -190,6 +218,9 @@
         make.height.mas_equalTo(25 * scale);
         make.width.mas_equalTo(175 * scale);
     }];
+    if (self.seriviceModel) {
+        self.serviceTitleField.text = self.seriviceModel.title;
+    }
     
     UILabel * priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
     priceLabel.text = @"服务定价";
@@ -210,6 +241,9 @@
         make.height.mas_equalTo(25 * scale);
         make.width.mas_equalTo(175 * scale);
     }];
+    if (self.seriviceModel) {
+        self.servicePriceField.text = [NSString stringWithFormat:@"%.2lf", self.seriviceModel.amount];
+    }
     
     UILabel * tipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentLeft];
     tipLabel.text = @"描述您的服务";
@@ -244,6 +278,9 @@
         make.width.mas_equalTo(kMainBoundsWidth - 20 * scale);
         make.height.mas_equalTo(100 * scale);
     }];
+    if (self.seriviceModel) {
+        self.textView.text = self.seriviceModel.remark;
+    }
     
     CGFloat width = (kMainBoundsWidth - 20 * scale) / 4.f;
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
@@ -304,6 +341,7 @@
     [footerView addGestureRecognizer:tap];
     
     self.tableView.tableFooterView = footerView;
+    [self reloadWithImageChange];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

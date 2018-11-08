@@ -9,23 +9,49 @@
 #import "FRCommentViewController.h"
 #import "FRCommentLevelView.h"
 #import "RDTextView.h"
+#import "MBProgressHUD+FRHUD.h"
+#import "FRCommentRequest.h"
 
 @interface FRCommentViewController () <LMJGradeStarsControlDelegate>
 
 @property (nonatomic, strong) UIView * commentView;
 
+@property (nonatomic, assign) NSInteger level;
 @property (nonatomic, strong) UIButton * haopingBtn;
 @property (nonatomic, strong) UIButton * zhongpingBtn;
 @property (nonatomic, strong) UIButton * chapingBtn;
 @property (nonatomic, strong) UIButton * chooseButton;
 
+@property (nonatomic, assign) NSInteger serviceStar;
+@property (nonatomic, assign) NSInteger companyStar;
+@property (nonatomic, assign) NSInteger businessStar;
+
 @property (nonatomic, strong) RDTextView * textView;
 
 @property (nonatomic, strong) FRCommentLevelView * commentLevelView;
 
+@property (nonatomic, strong) FRMyStoreOrderModel * storeModel;
+@property (nonatomic, strong) FRMyServiceOrderModel * serviceModel;
+
 @end
 
 @implementation FRCommentViewController
+
+- (instancetype)initWithStoreModel:(FRMyStoreOrderModel *)model
+{
+    if (self = [super init]) {
+        self.storeModel = model;
+    }
+    return self;
+}
+
+- (instancetype)initWithSeriviceModel:(FRMyServiceOrderModel *)model
+{
+    if (self = [super init]) {
+        self.serviceModel = model;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,14 +67,17 @@
         [self.haopingBtn setTitleColor:KThemeColor forState:UIControlStateNormal];
         [self.zhongpingBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
         [self.chapingBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+        self.level = 3;
     }else if (button == self.zhongpingBtn) {
         [self.haopingBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
         [self.zhongpingBtn setTitleColor:UIColorFromRGB(0x3bc2aa)forState:UIControlStateNormal];
         [self.chapingBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+        self.level = 2;
     }else if (button == self.chapingBtn) {
         [self.haopingBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
         [self.zhongpingBtn setTitleColor:UIColorFromRGB(0xffffff)forState:UIControlStateNormal];
         [self.chapingBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+        self.level = 1;
     }
 }
 
@@ -57,7 +86,89 @@
  */
 - (void)publishComment
 {
+    if (self.level == 0) {
+        [MBProgressHUD showTextHUDWithText:@"请对整体作出评价"];
+        return;
+    }
+    if (self.serviceStar == 0) {
+        [MBProgressHUD showTextHUDWithText:@"请对服务作出评价"];
+        return;
+    }
+    if (self.companyStar == 0) {
+        [MBProgressHUD showTextHUDWithText:@"请对公司作出评价"];
+        return;
+    }
+    if (self.businessStar == 0) {
+        [MBProgressHUD showTextHUDWithText:@"请对业务作出评价"];
+        return;
+    }
+    NSString * content = self.textView.text;
+    if (isEmptyString(content)) {
+        [MBProgressHUD showTextHUDWithText:@"请填写文字评价"];
+        return;
+    }
+    if (content.length < 16) {
+        [MBProgressHUD showTextHUDWithText:@"文字评价至少需要16个字"];
+        return;
+    }
     
+    if (self.storeModel) {
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在评价" inView:self.view];
+        FRCommentRequest * request = [[FRCommentRequest alloc] initWithStoreID:self.storeModel.cid level:self.level service_star:self.serviceStar company_star:self.companyStar business_star:self.businessStar content:content];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"评价成功"];
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(conmentDidCompelete)]) {
+                [self.delegate conmentDidCompelete];
+            }
+            
+            [self.navigationController popViewControllerAnimated:YES];
+            
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            NSString * msg = [response objectForKey:@"msg"];
+            if (!isEmptyString(msg)) {
+                [MBProgressHUD showTextHUDWithText:msg];
+            }
+            
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+            
+        }];
+    }else if (self.serviceModel) {
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在评价" inView:self.view];
+        FRCommentRequest * request = [[FRCommentRequest alloc] initServiceComentWithStoreID:self.serviceModel.cid level:self.level service_star:self.serviceStar company_star:self.companyStar business_star:self.businessStar content:content];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"评价成功"];
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(conmentDidCompelete)]) {
+                [self.delegate conmentDidCompelete];
+            }
+            
+            [self.navigationController popViewControllerAnimated:YES];
+            
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            NSString * msg = [response objectForKey:@"msg"];
+            if (!isEmptyString(msg)) {
+                [MBProgressHUD showTextHUDWithText:msg];
+            }
+            
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+            
+        }];
+    }
 }
 
 
@@ -66,7 +177,13 @@
  */
 - (void)gradeStarsControl:(LMJGradeStarsControl *)gradeStarsControl selectedStars:(NSInteger)stars
 {
-    
+    if (gradeStarsControl == self.commentLevelView.serviceLevel) {
+        self.serviceStar = stars;
+    }else if (gradeStarsControl == self.commentLevelView.companyLevel) {
+        self.companyStar = stars;
+    }else if (gradeStarsControl == self.commentLevelView.businessLevel) {
+        self.businessStar = stars;
+    }
 }
 
 - (void)createViews
@@ -136,6 +253,7 @@
     [FRCreateViewTool cornerView:self.textView radius:5 * scale];
     self.textView.layer.borderColor = UIColorFromRGB(0x999999).CGColor;
     self.textView.layer.borderWidth = .5f;
+    self.textView.maxSize = 200;
     [self.commentView addSubview:self.textView];
     [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(baseCommentLabel.mas_bottom).offset(10 * scale);
@@ -169,6 +287,8 @@
         make.height.mas_equalTo(40 * scale);
     }];
     [publishButton addTarget:self action:@selector(publishComment) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self baseCommentButtonDidClicked:self.haopingBtn];
 }
 
 - (void)didReceiveMemoryWarning {

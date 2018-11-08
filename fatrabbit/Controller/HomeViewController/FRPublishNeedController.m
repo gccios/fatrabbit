@@ -17,8 +17,11 @@
 #import "FRPulishNeedRequest.h"
 #import "FRUploadManager.h"
 
+NSString * const FRNeedDidPublishNotification = @"FRNeedDidPublishNotification";
+
 @interface FRPublishNeedController () <UICollectionViewDelegate, UICollectionViewDataSource, TZImagePickerControllerDelegate, FRCateListViewControllerDelegate>
 
+@property (nonatomic, strong) FRNeedModel * needModel;
 @property (nonatomic, strong) FRCateModel * model;
 
 @property (nonatomic, strong) UITextField * needTitleField;
@@ -38,6 +41,16 @@
 
 @implementation FRPublishNeedController
 
+- (instancetype)initEditWithNeedModel:(FRNeedModel *)needModel imageSource:(NSArray *)imageSource cateModel:(FRCateModel *)model
+{
+    if (self = [super init]) {
+        self.model = model;
+        [self.imageSource addObjectsFromArray:imageSource];
+        self.needModel = needModel;
+    }
+    return self;
+}
+
 - (instancetype)initWithFRCateModel:(FRCateModel *)model
 {
     if (self = [super init]) {
@@ -55,6 +68,7 @@
     [self createViews];
     [self createTablerHeaderView];
     [self createTablerfooterView];
+    [self reloadWithImageChange];
 }
 
 - (void)handleButtonDidClicked
@@ -66,8 +80,7 @@
     }
     NSString * price = self.needPriceField.text;
     if (isEmptyString(price)) {
-        [MBProgressHUD showTextHUDWithText:@"请输入价格"];
-        return;
+        price = @"0";
     }
     NSString * remark = self.textView.text;
     if (isEmptyString(remark)) {
@@ -75,7 +88,7 @@
         return;
     }
     
-    float priceFloat = [price floatValue];
+    double priceFloat = [price doubleValue];
     
     if (self.imageSource.count > 0) {
         
@@ -83,6 +96,7 @@
         NSMutableArray * imageList = [[NSMutableArray alloc] init];
         __block NSInteger count = 0;
         
+        hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
         [[FRUploadManager shareManager] uploadImageArray:self.imageSource progress:^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             
         } success:^(NSString *path, NSInteger index) {
@@ -91,6 +105,8 @@
             if (count == self.imageSource.count) {
                 [hud hideAnimated:NO];
                 [self publishNeedWithPrice:priceFloat title:title remark:remark images:imageList];
+            }else{
+                hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
             }
             NSLog(@"%@", [NSString stringWithFormat:@"%ld张地址：%@", index, path]);
         } failure:^(NSError *error, NSInteger index) {
@@ -98,6 +114,8 @@
             if (count == self.imageSource.count) {
                 [hud hideAnimated:NO];
                 [self publishNeedWithPrice:priceFloat title:title remark:remark images:imageList];
+            }else{
+                hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
             }
             NSLog(@"%@\n%@", [NSString stringWithFormat:@"%ld张上传失败", index], error);
         }];
@@ -106,25 +124,34 @@
     }
 }
 
-- (void)publishNeedWithPrice:(float)priceFloat title:(NSString *)title remark:(NSString *)remark images:(NSArray *)image
+- (void)publishNeedWithPrice:(double)priceFloat title:(NSString *)title remark:(NSString *)remark images:(NSArray *)image
 {
     MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在发布需求" inView:self.view];
     FRPulishNeedRequest * request =  [[FRPulishNeedRequest alloc] initWithPrice:priceFloat title:title remark:remark img:image cateID:self.model.cid];
+    
+    if (self.needModel) {
+        [request configWithNeddID:self.needModel.cid];
+    }
+    
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         [hud hideAnimated:YES];
         [MBProgressHUD showTextHUDWithText:@"发布成功"];
         [self.navigationController popViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:FRNeedDidPublishNotification object:nil];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         [hud hideAnimated:YES];
-        [MBProgressHUD showTextHUDWithText:@"发布失败"];
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
         
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
         [hud hideAnimated:YES];
-        [MBProgressHUD showTextHUDWithText:@"发布失败"];
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
         
     }];
 }
@@ -174,7 +201,7 @@
     self.contentView.backgroundColor = UIColorFromRGB(0xffffff);
     [self.view addSubview:self.contentView];
     
-    UILabel * titleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    UILabel * titleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
     titleLabel.text = @"需求标题";
     [self.contentView addSubview:titleLabel];
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -189,12 +216,15 @@
     [self.needTitleField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(titleLabel);
         make.left.mas_equalTo(titleLabel.mas_right).offset(15 * scale);
-        make.height.mas_equalTo(25 * scale);
+        make.height.mas_equalTo(30 * scale);
         make.width.mas_equalTo(175 * scale);
     }];
+    if (self.needModel) {
+        self.needTitleField.text = self.needModel.title;
+    }
     
-    UILabel * priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    priceLabel.text = @"需求价格";
+    UILabel * priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    priceLabel.text = @"需求预算";
     [self.contentView addSubview:priceLabel];
     [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(titleLabel.mas_bottom).offset(20 * scale);
@@ -205,13 +235,17 @@
     self.needPriceField = [[UITextField alloc] initWithFrame:CGRectZero];
     self.needPriceField.borderStyle = UITextBorderStyleRoundedRect;
     self.needPriceField.keyboardType = UIKeyboardTypeDecimalPad;
+    self.needPriceField.placeholder = @"非必填，默认为面议";
     [self.contentView addSubview:self.needPriceField];
     [self.needPriceField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(priceLabel);
         make.left.mas_equalTo(priceLabel.mas_right).offset(15 * scale);
-        make.height.mas_equalTo(25 * scale);
-        make.width.mas_equalTo(80 * scale);
+        make.height.mas_equalTo(30 * scale);
+        make.width.mas_equalTo(175 * scale);
     }];
+    if (self.needModel) {
+        self.needPriceField.text = [NSString stringWithFormat:@"%.2lf", self.needModel.amount];
+    }
     
     UILabel * yuanLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(15 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
     yuanLabel.text = @"元";
@@ -243,10 +277,10 @@
     
     self.textView = [[RDTextView alloc] initWithFrame:CGRectZero];
     self.textView.font = kPingFangRegular(12 * scale);
-    self.textView.textColor = UIColorFromRGB(0x666666);
+    self.textView.textColor = UIColorFromRGB(0x333333);
     self.textView.placeholder = @"请详细描述您的需求，以便为您更快的找到服务商，特殊要求请重点突出";
-    self.textView.placeholderLabel.textColor = UIColorFromRGB(0x999999);
-    self.textView.placeholderLabel.font = kPingFangRegular(10 * scale);
+    self.textView.placeholderLabel.textColor = UIColorFromRGB(0xdbdbdb);
+    self.textView.placeholderLabel.font = kPingFangRegular(12 * scale);
     self.textView.maxSize = 200;
     [self.contentView addSubview:self.textView];
     [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -255,6 +289,9 @@
         make.width.mas_equalTo(kMainBoundsWidth - 20 * scale);
         make.height.mas_equalTo(100 * scale);
     }];
+    if (self.needModel) {
+        self.textView.text = self.needModel.remark;
+    }
     
     CGFloat width = (kMainBoundsWidth - 20 * scale) / 4.f;
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];

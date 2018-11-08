@@ -16,6 +16,7 @@
 #import "FRUploadManager.h"
 #import "FRUserInfoRequest.h"
 #import "FRAliyunSTSRequest.h"
+#import <WXApi.h>
 
 @implementation FatrabbitConfig
 
@@ -23,6 +24,8 @@
 + (void)configFatrabbitApplication
 {
     [[BGNetworkManager sharedManager] setNetworkConfiguration:[FRNetWorkConfiguration configuration]];
+    
+    [WXApi registerApp:WeChatAPPKey];
     
     //利用keyChain存储，仿造设备唯一标识
     NSString* identifierNumber = [[UIDevice currentDevice].identifierForVendor UUIDString];
@@ -44,7 +47,13 @@
         }
     }
     
-    [[FRUploadManager shareManager] updateUploadAccessInfo];
+    [[FRUploadManager shareManager] updateUploadAccessInfoWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
 }
 
 + (void)requestUserInfo
@@ -58,6 +67,8 @@
             if (KIsDictionary(data)) {
                 [[UserManager shareManager] mj_setKeyValues:data];
                 [[UserManager shareManager] needUpdateLocalUserInfo];
+                
+                [FRManager shareManager].kf_phone = [data objectForKey:@"kf_phone"];
             }
         }
         

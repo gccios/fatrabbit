@@ -9,6 +9,9 @@
 #import "WMPageController.h"
 #import "FRManager.h"
 
+/**
+ 分类页，继承WMPageController实现多控制器翻页
+ */
 @interface FRCatePageViewController : WMPageController
 
 - (instancetype)initWithModel:(FRCateModel *)model;

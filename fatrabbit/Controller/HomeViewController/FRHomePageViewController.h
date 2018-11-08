@@ -8,6 +8,9 @@
 
 #import "FRHomeBaseViewController.h"
 
+/**
+ 首页
+ */
 @interface FRHomePageViewController : FRHomeBaseViewController
 
 @end

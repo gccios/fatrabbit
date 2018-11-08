@@ -15,6 +15,9 @@
 
 @end
 
+/**
+ 编辑发票页面
+ */
 @interface FREditInvoiceViewController : FRBaseViewController
 
 @property (nonatomic, weak) id<FREditInvoiceViewControllerDelegate> delegate;

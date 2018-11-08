@@ -8,6 +8,7 @@
 
 #import "FRSettingViewController.h"
 #import "FRSettingTableViewCell.h"
+#import "UserManager.h"
 
 @interface FRSettingViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -34,6 +35,9 @@
     [self.dataSource addObject:[[FRSettingModel alloc] initWithType:FRSettingType_Cache]];
     [self.dataSource addObject:[[FRSettingModel alloc] initWithType:FRSettingType_Version]];
     [self.dataSource addObject:[[FRSettingModel alloc] initWithType:FRSettingType_AboutUs]];
+    if ([UserManager shareManager].isLogin) {
+        [self.dataSource addObject:[[FRSettingModel alloc] initWithType:FRSettingType_LogOut]];
+    }
 }
 
 - (void)createViews
@@ -57,6 +61,23 @@
             [self createDataSource];
             [self.tableView reloadData];
         }];
+    }else if (model.type == FRSettingType_LogOut) {
+        
+        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认要退出当前登录账号？" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction * cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        UIAlertAction * sureAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[UserManager shareManager] logOut];
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+        
+        [alert addAction:cancleAction];
+        [alert addAction:sureAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        
     }
 }
 

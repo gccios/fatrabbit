@@ -7,7 +7,13 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRMySeriviceModel.h"
 
+/**
+ 服务详情页面
+ */
 @interface FRServiceDetailViewController : FRBaseViewController
+
+- (instancetype)initWithSeriviceModel:(FRMySeriviceModel *)model;
 
 @end

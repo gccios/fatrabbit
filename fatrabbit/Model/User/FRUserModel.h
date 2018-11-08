@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <MJExtension.h>
 
+/**
+ 用户model
+ */
 @interface FRUserModel : NSObject
 
 @property (nonatomic, copy) NSString * uid;

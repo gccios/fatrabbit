@@ -35,6 +35,11 @@
     }else{
         [self.chooseImageView setImage:[UIImage imageNamed:@"chooseno"]];
     }
+    if (model.type == FRPayWayType_FenQi) {
+        self.nameLabel.textColor = UIColorFromRGB(0x999999);
+    }else{
+        self.nameLabel.textColor = UIColorFromRGB(0x333333);
+    }
 }
 
 - (void)createFRChooseCell

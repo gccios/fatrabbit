@@ -61,6 +61,7 @@
     [self.contentView addSubview:self.infoLabel];
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
+        make.left.mas_equalTo(self.nameLbel.mas_right).offset(15 * scale);
         make.right.mas_equalTo(-50 * scale);
         make.height.mas_equalTo(20 * scale);
     }];

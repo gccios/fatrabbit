@@ -36,9 +36,14 @@
 {
     [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
     self.nameLabel.text = model.name;
-    self.priceLabel.text = [NSString stringWithFormat:@"%.2lf", model.price];
+    self.priceLabel.text = [NSString stringWithFormat:@"￥%.2lf", model.price];
+    
+    if (model.is_points == 1) {
+        self.priceLabel.text = [NSString stringWithFormat:@"%.2lf 积分", model.price];
+    }
+    
     self.commentLabel.text = [NSString stringWithFormat:@"%ld条评论", model.comment_num];
-    self.dealLabel.text = [NSString stringWithFormat:@"近三月成交%ld单", model.order_num];
+    self.dealLabel.text = [NSString stringWithFormat:@"%ld人付款", model.order_num];
 }
 
 - (void)createFtoreTableViewCell
@@ -66,36 +71,27 @@
         make.right.mas_equalTo(-15 * scale);
     }];
     
-    UILabel * price = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    price.text = @"￥";
-    [self.contentView addSubview:price];
-    [price mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
+    [self.contentView addSubview:self.priceLabel];
+    [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.coverImageView);
         make.left.mas_equalTo(self.coverImageView.mas_right).mas_offset(10 * scale);
         make.height.mas_equalTo(20 * scale);
     }];
     
-    self.priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(13 * scale) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    [self.contentView addSubview:self.priceLabel];
-    [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(price);
-        make.left.mas_equalTo(price.mas_right);
-        make.height.mas_equalTo(20 * scale);
-    }];
-    
-    self.commentLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    [self.contentView addSubview:self.commentLabel];
-    [self.commentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.coverImageView.mas_bottom).offset(-5 * scale);
-        make.left.mas_equalTo(self.coverImageView.mas_right).offset(10 * scale);
-        make.height.mas_equalTo(20 * scale);
-    }];
+//    self.commentLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+//    [self.contentView addSubview:self.commentLabel];
+//    [self.commentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.bottom.mas_equalTo(self.coverImageView.mas_bottom).offset(-5 * scale);
+//        make.left.mas_equalTo(self.coverImageView.mas_right).offset(10 * scale);
+//        make.height.mas_equalTo(20 * scale);
+//    }];
     
     self.dealLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
     [self.contentView addSubview:self.dealLabel];
     [self.dealLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(self.commentLabel);
-        make.left.mas_equalTo(self.commentLabel.mas_right).offset(15 * scale);
+        make.bottom.mas_equalTo(self.coverImageView.mas_bottom).offset(-5 * scale);
+        make.left.mas_equalTo(self.coverImageView.mas_right).offset(10 * scale);
         make.height.mas_equalTo(20 * scale);
     }];
     
@@ -109,6 +105,7 @@
         make.right.mas_equalTo(-20 * scale);
     }];
     [self.buyButton addTarget:self action:@selector(buyButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    self.buyButton.hidden = YES;
 }
 
 - (void)buyButtonDidClicked

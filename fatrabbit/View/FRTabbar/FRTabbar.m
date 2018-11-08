@@ -47,7 +47,7 @@
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 15)];
     self.titleLabel.textColor = UIColorFromRGB(0x333333);
-    self.titleLabel.font = kPingFangRegular(9);
+    self.titleLabel.font = kPingFangRegular(11);
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.text = @"发布";
     [self addSubview:self.titleLabel];

@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FRNeedModel.h"
+#import "FRMySeriviceModel.h"
 
 @interface FRServiceTableViewCell : UITableViewCell
 
-- (void)configWithModel:(FRNeedModel *)model;
+- (void)configWithModel:(FRMySeriviceModel *)model;
 
 @end

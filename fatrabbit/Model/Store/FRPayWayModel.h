@@ -13,8 +13,12 @@ typedef enum : NSUInteger {
     FRPayWayType_Alipay = 2,
     FRPayWayType_Balance = 3,
     FRPayWayType_UnderLine = 4,
+    FRPayWayType_FenQi = 5,
 } FRPayWayType;
 
+/**
+ 支付方式model
+ */
 @interface FRPayWayModel : NSObject
 
 - (instancetype)initWithType:(FRPayWayType)type;

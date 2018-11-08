@@ -17,7 +17,7 @@
 
 - (NSDictionary *)requestCommonHTTPHeaderFields {
     
-    NSString * deviceID = [GCCKeyChain load:keychainID];
+    NSString * deviceID = [GCCKeyChain load:JPushIDKeychainID];
     if (isEmptyString(deviceID)) {
         deviceID = @"";
     }

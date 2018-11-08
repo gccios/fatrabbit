@@ -48,7 +48,7 @@
         make.left.mas_equalTo(25);
     }];
     
-    self.infoLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    self.infoLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
     [self.contentView addSubview:self.infoLabel];
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.mas_equalTo(0);

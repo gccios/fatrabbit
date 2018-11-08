@@ -9,6 +9,9 @@
 #import "FRBaseViewController.h"
 #import "FRNeedModel.h"
 
+/**
+ 需求详情页面
+ */
 @interface FRNeedDetailViewController : FRBaseViewController
 
 - (instancetype)initWithNeedModel:(FRNeedModel *)model;

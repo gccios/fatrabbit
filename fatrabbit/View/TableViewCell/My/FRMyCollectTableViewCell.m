@@ -9,6 +9,7 @@
 #import "FRMyCollectTableViewCell.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
+#import <UIImageView+WebCache.h>
 
 @interface FRMyCollectTableViewCell ()
 
@@ -31,15 +32,24 @@
     return self;
 }
 
+- (void)configWithModel:(FRCollectModel *)model
+{
+    [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
+    self.nameLabel.text = model.title;
+    self.cityLabel.text = model.city;
+    self.infoLabel.text = model.desc;
+    self.levelLabel.text = model.score;
+}
+
 - (void)createCollectCell
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.backgroundColor = UIColorFromRGB(0Xf5f5f5);
+    self.backgroundColor = UIColorFromRGB(0Xffffff);
     
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
-    self.coverImageView.backgroundColor = [UIColor greenColor];
+    self.coverImageView.clipsToBounds = YES;
     [self.contentView addSubview:self.coverImageView];
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
@@ -49,7 +59,6 @@
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.nameLabel.text = @"测试标题测试标题";
     [self.contentView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.coverImageView.mas_right).offset(10 * scale);
@@ -58,7 +67,6 @@
     }];
     
     self.companyLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.companyLabel.text = @"测试公司名称";
     [self.contentView addSubview:self.companyLabel];
     [self.companyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.nameLabel);
@@ -68,7 +76,6 @@
     }];
     
     self.cityLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentRight];
-    self.cityLabel.text = @"北京";
     [self.contentView addSubview:self.cityLabel];
     [self.cityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-15 * scale);
@@ -79,7 +86,6 @@
     
     self.infoLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
     self.infoLabel.numberOfLines = 3;
-    self.infoLabel.text = @"测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情测试详情";
     [self.contentView addSubview:self.infoLabel];
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(5 * scale);
@@ -88,7 +94,6 @@
     }];
     
     self.levelLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:KThemeColor alignment:NSTextAlignmentRight];
-    self.levelLabel.text = @"5.0";
     [self.contentView addSubview:self.levelLabel];
     [self.levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-15 * scale);

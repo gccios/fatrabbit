@@ -22,6 +22,8 @@
 @property (nonatomic, strong) UIButton * leftHandleButton;
 @property (nonatomic, strong) UIButton * rightHandleButton;
 
+@property (nonatomic, strong) FRMySeriviceModel * model;
+
 @end
 
 @implementation FRMyServiceTableViewCell
@@ -36,11 +38,26 @@
 
 - (void)configWithModel:(FRMySeriviceModel *)model
 {
+    self.model = model;
     [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
     self.nameLabel.text = model.title;
     self.infoLabel.text = model.remark;
     self.priceLabel.text = [NSString stringWithFormat:@"%.2lf", model.amount];
     self.levelLabel.text = [NSString stringWithFormat:@"%.1lf", model.score];
+}
+
+- (void)deleteSerivice
+{
+    if (self.deleteHandle) {
+        self.deleteHandle(self.model);
+    }
+}
+
+- (void)editSerivice
+{
+    if (self.editHandle) {
+        self.editHandle(self.model);
+    }
 }
 
 - (void)createFRMyServiceTableViewCell
@@ -51,12 +68,13 @@
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
+    self.coverImageView.clipsToBounds = YES;
     [self.contentView addSubview:self.coverImageView];
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
         make.left.mas_equalTo(15 * scale);
         make.width.mas_equalTo(110 * scale);
-        make.height.mas_equalTo(110 * scale);
+        make.height.mas_equalTo(100 * scale);
     }];
     
     self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
@@ -110,6 +128,7 @@
         make.height.mas_equalTo(20 * scale);
     }];
     [FRCreateViewTool cornerView:self.rightHandleButton radius:5 * scale];
+    [self.rightHandleButton addTarget:self action:@selector(editSerivice) forControlEvents:UIControlEventTouchUpInside];
     
     self.leftHandleButton = [FRCreateViewTool createButtonWithFrame: CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0x999999) title:@"删除"];
     [self.contentView addSubview:self.leftHandleButton];
@@ -122,6 +141,7 @@
     [FRCreateViewTool cornerView:self.leftHandleButton radius:5 * scale];
     self.leftHandleButton.layer.borderColor = UIColorFromRGB(0x999999).CGColor;
     self.leftHandleButton.layer.borderWidth = .5f;
+    [self.leftHandleButton addTarget:self action:@selector(deleteSerivice) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)awakeFromNib {

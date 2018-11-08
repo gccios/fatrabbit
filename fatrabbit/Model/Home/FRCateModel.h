@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <MJExtension.h>
 
+/**
+ 菜单类别model
+ */
 @interface FRCateModel : NSObject
 
 @property (nonatomic, assign) NSInteger cid;

@@ -24,6 +24,8 @@
             self.detail = [FRApplicatinInfoTool getApplicationVersion];
         }else if (type == FRSettingType_AboutUs) {
             self.title = @"关于我们";
+        }else if (type == FRSettingType_LogOut) {
+            self.title = @"退出登录";
         }
         
     }

@@ -34,12 +34,22 @@
     self.nameLabel.text = model.name;
 }
 
+- (void)configWithTextColor:(UIColor *)color
+{
+    [self.nameLabel setTextColor:color];
+}
+
+- (void)configWithTextFont:(UIFont *)font
+{
+    [self.nameLabel setFont:font];
+}
+
 - (void)createFRCateCell
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.backgroundColor = [UIColor clearColor];
     
-    self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentCenter];
+    self.nameLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangMedium(14) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentCenter];
     [self.contentView addSubview:self.nameLabel];
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.bottom.mas_equalTo(0);

@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ 基类tabbar控制器
+ */
 @interface FRTabBarController : UITabBarController
 
 @end

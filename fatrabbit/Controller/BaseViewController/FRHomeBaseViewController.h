@@ -10,6 +10,9 @@
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
 
+/**
+ 4大板块首页基类VC控制器
+ */
 @interface FRHomeBaseViewController : UIViewController
 
 @end

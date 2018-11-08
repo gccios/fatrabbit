@@ -13,4 +13,8 @@
 
 - (void)configWithModel:(FRCateModel *)model;
 
+- (void)configWithTextColor:(UIColor *)color;
+
+- (void)configWithTextFont:(UIFont *)font;
+
 @end

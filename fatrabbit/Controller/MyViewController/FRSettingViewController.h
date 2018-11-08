@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 设置页面
+ */
 @interface FRSettingViewController : FRBaseViewController
 
 @end

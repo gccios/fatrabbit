@@ -39,6 +39,12 @@
             }
                 break;
                 
+            case FRPayWayType_FenQi:
+            {
+                self.title = @"分期付款";
+            }
+                break;
+                
             default:
                 break;
         }

@@ -19,6 +19,13 @@
 #import "UserManager.h"
 #import "FRMyAccountViewController.h"
 #import "FRMyCollectViewController.h"
+#import "FRApplyServicerViewController.h"
+#import "FRVIPLevelViewController.h"
+#import "FRMyExampleViewController.h"
+#import "FRMyGetOrderViewController.h"
+#import "FRMyNeedViewController.h"
+#import "FRManager.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FRMyViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -26,6 +33,8 @@
 
 @property (nonatomic, strong) FRUserHeaderView * userHeaderView;
 @property (nonatomic, strong) NSMutableArray * dataSource;
+
+@property (nonatomic, strong) UIButton * kefuButton;
 
 @end
 
@@ -35,9 +44,36 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.kefuButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15) titleColor:UIColorFromRGB(0xffffff) title:@" 客服"];
+    self.kefuButton.frame = CGRectMake(0, 0, 60, 30);
+    [self.kefuButton setImage:[UIImage imageNamed:@"kefu"] forState:UIControlStateNormal];
+    [self.kefuButton addTarget:self action:@selector(kefuButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.kefuButton];
+    
     [self createDataSource];
     [self createViews];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePageWithUserLoginStatus) name:FRUserLoginStatusDidChange object:nil];
+}
+
+- (void)kefuButtonDidClicked
+{
+    if (![UserManager shareManager].isLogin) {
+        
+        [MBProgressHUD showTextHUDWithText:@"请登录后进行操作"];
+        
+        FRLoginViewController * login = [[FRLoginViewController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+        return;
+    }
+    
+    NSMutableString  *str = [[NSMutableString alloc] initWithFormat:@"tel:%@", [FRManager shareManager].kf_phone];
+    
+    if (@available(iOS 10.0, *)) {
+        /// 大于等于10.0系统使用此openURL方法
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str] options:@{} completionHandler:nil];
+    }else{
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+    }
 }
 
 - (void)updatePageWithUserLoginStatus
@@ -51,14 +87,18 @@
 {
     [self.dataSource removeAllObjects];
     
-    if ([UserManager shareManager].isLogin && [UserManager shareManager].is_provider == 0) {
+    if ([UserManager shareManager].isLogin) {
         
         [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyAccount],
                                      [[MyMenuModel alloc] initWithType:MyMenuType_MyAddress]]];
-        [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyIntel],
-                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyExample],
-                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyService],
-                                     [[MyMenuModel alloc] initWithType:MyMenuType_MyGetOrder]]];
+        if ([UserManager shareManager].is_provider == 1) {
+            [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_MyIntel],
+                                         [[MyMenuModel alloc] initWithType:MyMenuType_MyExample],
+                                         [[MyMenuModel alloc] initWithType:MyMenuType_MyService],
+                                         [[MyMenuModel alloc] initWithType:MyMenuType_MyGetOrder]]];
+        }else{
+            [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_ApplyRegister]]];
+        }
         [self.dataSource addObject:@[[[MyMenuModel alloc] initWithType:MyMenuType_Advice],
                                      [[MyMenuModel alloc] initWithType:MyMenuType_Setting]]];
         
@@ -86,6 +126,12 @@
 
 - (void)headerMenuDidSelect:(FRUserHeaderMenuModel *)model
 {
+    if (![UserManager shareManager].isLogin) {
+        FRLoginViewController * login = [[FRLoginViewController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+        return;
+    }
+    
     if (model.type == FRUserHeaderMenuType_Order) {
         FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
         [self.navigationController pushViewController:order animated:YES];
@@ -93,8 +139,11 @@
         FRMyCollectViewController * collect = [[FRMyCollectViewController alloc] init];
         [self.navigationController pushViewController:collect animated:YES];
     }else if (model.type == FRUserHeaderMenuType_Need) {
-        FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
+        FRMyNeedViewController * order = [[FRMyNeedViewController alloc] init];
         [self.navigationController pushViewController:order animated:YES];
+    }else if (model.type == FRUserHeaderMenuType_VIP) {
+        FRVIPLevelViewController * vip = [[FRVIPLevelViewController alloc] init];
+        [self.navigationController pushViewController:vip animated:YES];
     }
 }
 
@@ -144,9 +193,11 @@
         if (model.type == MyMenuType_Setting) {
             FRSettingViewController * setting = [[FRSettingViewController alloc] init];
             [self.navigationController pushViewController:setting animated:YES];
+            return;
         }else{
             FRLoginViewController * login = [[FRLoginViewController alloc] init];
             [self.navigationController pushViewController:login animated:YES];
+            return;
         }
     }
     
@@ -166,8 +217,17 @@
         FRMyServiceViewController * service = [[FRMyServiceViewController alloc] init];
         [self.navigationController pushViewController:service animated:YES];
     }else if (model.type == MyMenuType_MyGetOrder) {
-        FROrderPageViewController * order = [[FROrderPageViewController alloc] init];
+        FRMyGetOrderViewController * order = [[FRMyGetOrderViewController alloc] init];
         [self.navigationController pushViewController:order animated:YES];
+    }else if (model.type == MyMenuType_ApplyRegister) {
+        FRApplyServicerViewController * apply = [[FRApplyServicerViewController alloc] init];
+        [self.navigationController pushViewController:apply animated:YES];
+    }else if (model.type == MyMenuType_MyIntel) {
+        FRApplyServicerViewController * apply = [[FRApplyServicerViewController alloc] init];
+        [self.navigationController pushViewController:apply animated:YES];
+    }else if (model.type == MyMenuType_MyExample) {
+        FRMyExampleViewController * example = [[FRMyExampleViewController alloc] init];
+        [self.navigationController pushViewController:example animated:YES];
     }
 }
 

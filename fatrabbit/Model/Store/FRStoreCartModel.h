@@ -9,16 +9,24 @@
 #import <UIKit/UIKit.h>
 #import <MJExtension.h>
 
+/**
+ 购物车model
+ */
 @interface FRStoreCartModel : NSObject
 
 @property (nonatomic, assign) NSInteger cid;//购物车id
 @property (nonatomic, assign) NSInteger sid;//商品规格id
 @property (nonatomic, assign) NSInteger pid;//商品id
+@property (nonatomic, assign) NSInteger is_points;//是否是积分商品，1为是，0为否
 @property (nonatomic, assign) NSInteger num;//购买数量
 @property (nonatomic, assign) CGFloat price;//单价
+@property (nonatomic, assign) CGFloat single;//积分单价
+@property (nonatomic, assign) CGFloat discount_price;
 @property (nonatomic, assign) CGFloat amount;//金额
-@property (nonatomic, assign) NSInteger points;//所需要的总的积分
+@property (nonatomic, assign) CGFloat discount_amount;
+@property (nonatomic, assign) CGFloat points;//所需要的总的积分
 @property (nonatomic, copy) NSString * pname;//商品名称
+@property (nonatomic, copy) NSString * ptitle;
 @property (nonatomic, copy) NSString * sname;//商品规格名称
 @property (nonatomic, copy) NSString * cover;//商品封面图
 @property (nonatomic, assign) NSInteger min_buy_num;//最小购买数量

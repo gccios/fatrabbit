@@ -12,4 +12,6 @@
 
 - (instancetype)initWithNeedID:(NSInteger)needID;
 
+- (instancetype)initContactWithNeedID:(NSInteger)needID;
+
 @end

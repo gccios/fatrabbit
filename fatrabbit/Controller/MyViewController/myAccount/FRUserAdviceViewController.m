@@ -12,6 +12,8 @@
 #import "FRImageCollectionViewCell.h"
 #import "LookImageViewController.h"
 #import "MBProgressHUD+FRHUD.h"
+#import "FRUploadManager.h"
+#import "FRAdviceRequest.h"
 
 @interface FRUserAdviceViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, TZImagePickerControllerDelegate>
 
@@ -42,7 +44,72 @@
 
 - (void)handleButtonDidClicked
 {
+    NSString * mobile = self.contactField.text;
+    NSString * content = self.textView.text;
+    if (isEmptyString(mobile)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入联系方式"];
+        return;
+    }
+    if (isEmptyString(content)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入您对我们的建议"];
+        return;
+    }
     
+    if (self.imageSource.count > 0) {
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在上传图片" inView:self.view];
+        NSMutableArray * imageList = [[NSMutableArray alloc] init];
+        __block NSInteger count = 0;
+        hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
+        [[FRUploadManager shareManager] uploadImageArray:self.imageSource progress:^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
+            
+        } success:^(NSString *path, NSInteger index) {
+            [imageList addObject:path];
+            count++;
+            if (count == self.imageSource.count) {
+                [hud hideAnimated:NO];
+                [self pushWithMobile:mobile content:content images:imageList];
+            }else{
+                hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
+            }
+            NSLog(@"%@", [NSString stringWithFormat:@"%ld张地址：%@", index, path]);
+        } failure:^(NSError *error, NSInteger index) {
+            count++;
+            if (count == self.imageSource.count) {
+                [hud hideAnimated:NO];
+                [self pushWithMobile:mobile content:content images:imageList];
+            }else{
+                hud.label.text = [NSString stringWithFormat:@"正在上传图片%ld/%ld", count+1, self.imageSource.count];
+            }
+            NSLog(@"%@\n%@", [NSString stringWithFormat:@"%ld张上传失败", index], error);
+        }];
+    }else{
+        [self pushWithMobile:mobile content:content images:[NSArray new]];
+    }
+}
+
+- (void)pushWithMobile:(NSString *)mobile content:(NSString *)content images:(NSArray *)images
+{
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在发送" inView:self.view];
+    FRAdviceRequest * request = [[FRAdviceRequest alloc] initWithMobile:mobile content:content images:images];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [MBProgressHUD showTextHUDWithText:@"发送成功"];
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        
+    }];
 }
 
 - (void)createViews
@@ -71,96 +138,94 @@
 
 - (void)createTableHeaderView
 {
-    {
-        CGFloat scale = kMainBoundsWidth / 375.f;
-        
-        self.contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 380 * scale)];
-        self.contentView.backgroundColor = UIColorFromRGB(0xffffff);
-        [self.view addSubview:self.contentView];
-        
-        UIView * contactView = [[UIView alloc] initWithFrame:CGRectZero];
-        [self.contentView addSubview:contactView];
-        [contactView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.left.right.mas_equalTo(0);
-            make.height.mas_equalTo(50 * scale);
-        }];
-        
-        UILabel * contactabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-        contactabel.text = @"联系电话：";
-        [contactView addSubview:contactabel];
-        [contactabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.mas_equalTo(0 * scale);
-            make.left.mas_equalTo(25 * scale);
-            make.height.mas_equalTo(20 * scale);
-            make.width.mas_equalTo(80 * scale);
-        }];
-        
-        self.contactField = [[UITextField alloc] initWithFrame:CGRectZero];
-        self.contactField.textColor = UIColorFromRGB(0x999999);
-        self.contactField.font = kPingFangRegular(13 * scale);
-        [contactView addSubview:self.contactField];
-        [self.contactField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.mas_equalTo(0);
-            make.left.mas_equalTo(contactabel.mas_right);
-            make.height.mas_equalTo(20 * scale);
-            make.width.mas_equalTo(kMainBoundsWidth - 140 * scale);
-        }];
-        
-        UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
-        lineView.backgroundColor = UIColorFromRGB(0xCCCCCC);
-        [contactView addSubview:lineView];
-        [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(15 * scale);
-            make.bottom.mas_equalTo(0);
-            make.width.mas_equalTo(kMainBoundsWidth - 15 * scale);
-            make.height.mas_equalTo(.5f);
-        }];
-        
-        self.textView = [[RDTextView alloc] initWithFrame:CGRectZero];
-        self.textView.font = kPingFangRegular(13 * scale);
-        self.textView.textColor = UIColorFromRGB(0x666666);
-        self.textView.placeholder = @"请详细描述您的意见或建议（限500字）";
-        self.textView.placeholderLabel.textColor = UIColorFromRGB(0x999999);
-        self.textView.placeholderLabel.font = kPingFangRegular(12 * scale);
-        self.textView.maxSize = 500;
-        [self.contentView addSubview:self.textView];
-        [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(lineView.mas_bottom).offset(10 * scale);
-            make.left.mas_equalTo(20 * scale);
-            make.width.mas_equalTo(kMainBoundsWidth - 40 * scale);
-            make.height.mas_equalTo(200 * scale);
-        }];
-        
-        CGFloat width = (kMainBoundsWidth - 20 * scale) / 4.f;
-        UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
-        layout.itemSize = CGSizeMake(width, width);
-        layout.minimumLineSpacing = 0;
-        layout.minimumInteritemSpacing = 0;
-        
-        self.imageCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-        [self.imageCollectionView registerClass:[FRImageCollectionViewCell class] forCellWithReuseIdentifier:@"FRImageCollectionViewCell"];
-        self.imageCollectionView.backgroundColor = UIColorFromRGB(0xffffff);
-        self.imageCollectionView.delegate = self;
-        self.imageCollectionView.dataSource = self;
-        self.imageCollectionView.scrollEnabled = NO;
-        [self.contentView addSubview:self.imageCollectionView];
-        [self.imageCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.textView.mas_bottom);
-            make.left.mas_equalTo(10 * scale);
-            make.width.mas_equalTo(kMainBoundsWidth - 20 * scale);
-            make.height.mas_equalTo(width + 10 * scale);
-        }];
-        
-        UIView * bottomLineView = [[UIView alloc] initWithFrame:CGRectZero];
-        bottomLineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
-        [self.contentView addSubview:bottomLineView];
-        [bottomLineView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.bottom.right.mas_equalTo(0);
-            make.height.mas_equalTo(10 * scale);
-        }];
-        
-        self.tableView.tableHeaderView = self.contentView;
-    }
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
+    self.contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 380 * scale)];
+    self.contentView.backgroundColor = UIColorFromRGB(0xffffff);
+    [self.view addSubview:self.contentView];
+    
+    UIView * contactView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.contentView addSubview:contactView];
+    [contactView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.mas_equalTo(0);
+        make.height.mas_equalTo(50 * scale);
+    }];
+    
+    UILabel * contactabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
+    contactabel.text = @"联系电话：";
+    [contactView addSubview:contactabel];
+    [contactabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(0 * scale);
+        make.left.mas_equalTo(25 * scale);
+        make.height.mas_equalTo(20 * scale);
+        make.width.mas_equalTo(80 * scale);
+    }];
+    
+    self.contactField = [[UITextField alloc] initWithFrame:CGRectZero];
+    self.contactField.textColor = UIColorFromRGB(0x999999);
+    self.contactField.font = kPingFangRegular(13 * scale);
+    [contactView addSubview:self.contactField];
+    [self.contactField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(0);
+        make.left.mas_equalTo(contactabel.mas_right);
+        make.height.mas_equalTo(20 * scale);
+        make.width.mas_equalTo(kMainBoundsWidth - 140 * scale);
+    }];
+    
+    UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
+    lineView.backgroundColor = UIColorFromRGB(0xCCCCCC);
+    [contactView addSubview:lineView];
+    [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(15 * scale);
+        make.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(kMainBoundsWidth - 15 * scale);
+        make.height.mas_equalTo(.5f);
+    }];
+    
+    self.textView = [[RDTextView alloc] initWithFrame:CGRectZero];
+    self.textView.font = kPingFangRegular(13 * scale);
+    self.textView.textColor = UIColorFromRGB(0x666666);
+    self.textView.placeholder = @"请详细描述您的意见或建议（限500字）";
+    self.textView.placeholderLabel.textColor = UIColorFromRGB(0x999999);
+    self.textView.placeholderLabel.font = kPingFangRegular(12 * scale);
+    self.textView.maxSize = 500;
+    [self.contentView addSubview:self.textView];
+    [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(lineView.mas_bottom).offset(10 * scale);
+        make.left.mas_equalTo(20 * scale);
+        make.width.mas_equalTo(kMainBoundsWidth - 40 * scale);
+        make.height.mas_equalTo(200 * scale);
+    }];
+    
+    CGFloat width = (kMainBoundsWidth - 20 * scale) / 4.f;
+    UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.itemSize = CGSizeMake(width, width);
+    layout.minimumLineSpacing = 0;
+    layout.minimumInteritemSpacing = 0;
+    
+    self.imageCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+    [self.imageCollectionView registerClass:[FRImageCollectionViewCell class] forCellWithReuseIdentifier:@"FRImageCollectionViewCell"];
+    self.imageCollectionView.backgroundColor = UIColorFromRGB(0xffffff);
+    self.imageCollectionView.delegate = self;
+    self.imageCollectionView.dataSource = self;
+    self.imageCollectionView.scrollEnabled = NO;
+    [self.contentView addSubview:self.imageCollectionView];
+    [self.imageCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.textView.mas_bottom);
+        make.left.mas_equalTo(10 * scale);
+        make.width.mas_equalTo(kMainBoundsWidth - 20 * scale);
+        make.height.mas_equalTo(width + 10 * scale);
+    }];
+    
+    UIView * bottomLineView = [[UIView alloc] initWithFrame:CGRectZero];
+    bottomLineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
+    [self.contentView addSubview:bottomLineView];
+    [bottomLineView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.right.mas_equalTo(0);
+        make.height.mas_equalTo(10 * scale);
+    }];
+    
+    self.tableView.tableHeaderView = self.contentView;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

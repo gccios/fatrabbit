@@ -10,6 +10,7 @@
 #import "FRMyAccountMoneyCell.h"
 #import "FRUserAccountRequest.h"
 #import "MBProgressHUD+FRHUD.h"
+#import "UserManager.h"
 
 @interface FRAccountPointsViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -38,9 +39,11 @@
         if (KIsDictionary(response)) {
             NSDictionary * data = [response objectForKey:@"data"];
             self.points = [[data objectForKey:@"points"] floatValue];
+            [UserManager shareManager].points = self.points;
             NSArray * logs = [data objectForKey:@"logs"];
             self.dataSource = [FRMyPointsModel mj_objectArrayWithKeyValuesArray:logs];
             [self createViews];
+            [[NSNotificationCenter defaultCenter] postNotificationName:FRUserLoginStatusDidChange object:nil];
         }
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
@@ -142,16 +145,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //    return self.dataSource.count;
-    return 10;
+        return self.dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FRMyAccountMoneyCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRMyAccountMoneyCell" forIndexPath:indexPath];
     
-//    FRMyPointsModel * model = [self.dataSource objectAtIndex:indexPath.row];
-//    [cell configWithPointsModel:model];
+    FRMyPointsModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    [cell configWithPointsModel:model];
     
     return cell;
 }

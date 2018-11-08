@@ -14,6 +14,7 @@
 @property (nonatomic, copy) void (^addCartHandle)(FRStoreCartModel * cartModel);
 @property (nonatomic, copy) void (^deleteCartHandle)(FRStoreCartModel * cartModel);
 @property (nonatomic, copy) void (^chooseCartHandle)(FRStoreCartModel * cartModel);
+@property (nonatomic, copy) void (^numberCartHandle)(FRStoreCartModel * cartModel);
 
 - (void)configWithGoodsModel:(FRStoreCartModel *)model;
 

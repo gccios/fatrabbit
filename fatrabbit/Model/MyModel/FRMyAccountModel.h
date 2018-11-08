@@ -14,6 +14,9 @@ typedef enum : NSUInteger {
     FRMyAccountType_Invoice,
 } FRMyAccountType;
 
+/**
+ 我的账户页面菜单model
+ */
 @interface FRMyAccountModel : NSObject
 
 - (instancetype)initWithType:(FRMyAccountType)type;

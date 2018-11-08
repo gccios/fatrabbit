@@ -11,6 +11,10 @@
 
 @interface FRMyServiceTableViewCell : UITableViewCell
 
+@property (nonatomic, copy) void (^deleteHandle)(FRMySeriviceModel *seriviceModel);
+
+@property (nonatomic, copy) void (^editHandle)(FRMySeriviceModel *seriviceModel);
+
 - (void)configWithModel:(FRMySeriviceModel *)model;
 
 @end

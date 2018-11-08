@@ -12,4 +12,6 @@
 
 - (instancetype)initWithPayWithAddressID:(NSInteger)addressID invoiceID:(NSInteger)invoiceID payWay:(NSInteger)payWay reamrk:(NSString *)remark cartIDs:(NSArray *)cartIDs;
 
+- (instancetype)initSureArriveWithID:(NSInteger)orderID;
+
 @end

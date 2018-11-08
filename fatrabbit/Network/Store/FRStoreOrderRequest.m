@@ -17,10 +17,21 @@
         self.methodName = @"productorderadd";
         
         [self setIntegerValue:addressID forParamKey:@"address_id"];
-        [self setIntegerValue:addressID forParamKey:@"invoice_id"];
-        [self setIntegerValue:addressID forParamKey:@"paymethod"];
+        [self setIntegerValue:invoiceID forParamKey:@"invoice_id"];
+        [self setIntegerValue:payWay forParamKey:@"paymethod"];
         [self setValue:remark forParamKey:@"remark"];
         [self setValue:cartIDs forParamKey:@"cart_ids"];
+    }
+    return self;
+}
+
+- (instancetype)initSureArriveWithID:(NSInteger)orderID
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"productorderconfirm";
+        
+        [self setIntegerValue:orderID forParamKey:@"id"];
     }
     return self;
 }

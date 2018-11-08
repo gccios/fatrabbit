@@ -22,6 +22,8 @@
 
 @property (nonatomic, assign) NSInteger time;
 
+@property (nonatomic, strong) UIView * bottomView;
+
 @end
 
 @implementation FRLoginViewController
@@ -32,13 +34,178 @@
     
     self.navigationItem.title = @"登录";
     [self createViews];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoginWith:) name:DDUserDidGetWeChatCodeNotification object:nil];
+}
+
+- (void)userLoginWith:(NSNotification *)notification
+{
+    SendAuthResp * resp = notification.object;
+    if (resp.errCode) {
+        [MBProgressHUD showTextHUDWithText:@"授权失败"];
+    }else{
+        if (isEmptyString(resp.code)) {
+            [MBProgressHUD showTextHUDWithText:@"授权失败"];
+        }else{
+            [self loginUserWithCode:resp.code];
+        }
+    }
+}
+
+- (void)loginUserWithCode:(NSString *)code
+{
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在登录" inView:self.view];
+    FRTelLogInRequest * request = [[FRTelLogInRequest alloc] initWithWeChatCode:code];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSDictionary * data = [response objectForKey:@"data"];
+            [UserManager shareManager].uid = [[data objectForKey:@"uid"] integerValue];
+            [UserManager shareManager].token = [data objectForKey:@"token"];
+            
+            NSString * mobile = [data objectForKey:@"mobile"];
+            if (isEmptyString(mobile)) {
+                [self bindMobile];
+            }else{
+                [[UserManager shareManager] loginSuccessWithUid:[UserManager shareManager].uid token:[UserManager shareManager].token mobile:mobile];
+                [self requestUserInfo];
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }
+        [hud hideAnimated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        [hud hideAnimated:YES];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        [hud hideAnimated:YES];
+        
+    }];
+}
+
+- (void)bindMobile
+{
+    [MBProgressHUD showTextHUDWithText:@"请先绑定您本人的手机号码"];
+    self.bottomView.hidden = YES;
+    self.navigationItem.title = @"绑定手机号码";
+    
+    [self.loginButton setTitle:@"确定绑定" forState:UIControlStateNormal];
+    [self.loginButton removeTarget:self action:@selector(loginWithTel) forControlEvents:UIControlEventTouchUpInside];
+    [self.loginButton addTarget:self action:@selector(bindWithTel) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.sendButton removeTarget:self action:@selector(sendButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    [self.sendButton addTarget:self action:@selector(sendBindCode) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)sendBindCode
+{
+    NSString * mobile = self.telField.text;
+    if (isEmptyString(mobile)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入手机号码"];
+        return;
+    }
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在获取验证码" inView:self.view];
+    FRTelLogInRequest * send = [[FRTelLogInRequest alloc] initWithSendBindCode:mobile];
+    [send sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        self.sendButton.enabled = NO;
+        self.time = 60;
+        [self timeDidChange];
+        [hud hideAnimated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        [hud hideAnimated:YES];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        [hud hideAnimated:YES];
+        
+    }];
+}
+
+- (void)bindWithTel
+{
+    NSString * mobile = self.telField.text;
+    NSString * code = self.codeField.text;
+    if (isEmptyString(mobile)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入手机号码"];
+        return;
+    }
+    if (isEmptyString(code)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入验证码"];
+        return;
+    }
+    
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在登录" inView:self.view];
+    FRTelLogInRequest * request = [[FRTelLogInRequest alloc] initWithBindMobile:mobile code:code];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        if (KIsDictionary(response)) {
+            [[UserManager shareManager] loginSuccessWithUid:[UserManager shareManager].uid token:[UserManager shareManager].token mobile:mobile];
+            [self requestUserInfo];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"登录失败"];
+        
+    }];
 }
 
 - (void)sendButtonDidClicked
 {
-    self.sendButton.enabled = NO;
-    self.time = 60;
-    [self timeDidChange];
+    NSString * mobile = self.telField.text;
+    if (isEmptyString(mobile)) {
+        [MBProgressHUD showTextHUDWithText:@"请输入手机号码"];
+        return;
+    }
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在获取验证码" inView:self.view];
+    FRTelLogInRequest * send = [[FRTelLogInRequest alloc] initWithSendCode:mobile];
+    [send sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        self.sendButton.enabled = NO;
+        self.time = 60;
+        [self timeDidChange];
+        [hud hideAnimated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        [hud hideAnimated:YES];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        [hud hideAnimated:YES];
+        
+    }];
 }
 
 - (void)timeDidChange
@@ -113,7 +280,7 @@
 
 - (void)loginWithWeChat
 {
-    
+    [[UserManager shareManager] loginWithWeChat];
 }
 
 - (void)requestUserInfo
@@ -154,12 +321,12 @@
     [telImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(-10 * scale);
         make.left.mas_equalTo(30 * scale);
-        make.width.height.mas_equalTo(15 * scale);
+        make.width.height.mas_equalTo(20 * scale);
     }];
     
     self.telField = [[UITextField alloc] initWithFrame:CGRectZero];
     self.telField.placeholder = @"请输入手机号";
-    self.telField.textColor = UIColorFromRGB(0x999999);
+    self.telField.textColor = UIColorFromRGB(0x333333);
     self.telField.font = kPingFangRegular(13 * scale);
     [telView addSubview:self.telField];
     [self.telField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -192,12 +359,12 @@
     [codeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(-10 * scale);
         make.left.mas_equalTo(30 * scale);
-        make.width.height.mas_equalTo(15 * scale);
+        make.width.height.mas_equalTo(20 * scale);
     }];
     
     self.codeField = [[UITextField alloc] initWithFrame:CGRectZero];
     self.codeField.placeholder = @"请输入验证码";
-    self.codeField.textColor = UIColorFromRGB(0x999999);
+    self.codeField.textColor = UIColorFromRGB(0x333333);
     self.codeField.font = kPingFangRegular(13 * scale);
     [codeView addSubview:self.codeField];
     [self.codeField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -207,13 +374,13 @@
         make.right.mas_equalTo(-125 * scale);
     }];
     
-    self.sendButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(11 * scale) titleColor:UIColorFromRGB(0x999999) title:@"获取验证码"];
+    self.sendButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(13 * scale) titleColor:UIColorFromRGB(0x999999) title:@"获取验证码"];
     [codeView addSubview:self.sendButton];
     [self.sendButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(-5 * scale);
         make.left.mas_equalTo(self.codeField.mas_right).offset(15 * scale);
-        make.height.mas_equalTo(20 * scale);
-        make.width.mas_equalTo(80 * scale);
+        make.height.mas_equalTo(25 * scale);
+        make.width.mas_equalTo(100 * scale);
     }];
     [FRCreateViewTool cornerView:self.sendButton radius:4.f * scale];
     self.sendButton.layer.borderColor = UIColorFromRGB(0xCCCCCC).CGColor;
@@ -242,11 +409,18 @@
     [FRCreateViewTool cornerView:self.loginButton radius:15 * scale];
     [self.loginButton addTarget:self action:@selector(loginWithTel) forControlEvents:UIControlEventTouchUpInside];
     
+    self.bottomView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:self.bottomView];
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.right.mas_equalTo(0);
+        make.height.mas_equalTo(kMainBoundsHeight / 2.f);
+    }];
+    
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
     lineView.backgroundColor = UIColorFromRGB(0xCCCCCC);
-    [self.view addSubview:lineView];
+    [self.bottomView addSubview:lineView];
     [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(40 * scale);
+        make.top.mas_equalTo(40 * scale);
         make.left.mas_equalTo(15 * scale);
         make.right.mas_equalTo(-15 * scale);
         make.height.mas_equalTo(1);
@@ -255,7 +429,7 @@
     UILabel * loginTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentCenter];
     loginTipLabel.backgroundColor = self.view.backgroundColor;
     loginTipLabel.text = @"一键快捷登录";
-    [self.view addSubview:loginTipLabel];
+    [self.bottomView addSubview:loginTipLabel];
     [loginTipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(0);
         make.centerY.mas_equalTo(lineView);
@@ -263,25 +437,39 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
-    UIButton * QQButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(12) titleColor:UIColorFromRGB(0xffffff) title:@""];
-    [QQButton setImage:[UIImage imageNamed:@"QQ"] forState:UIControlStateNormal];
-    [self.view addSubview:QQButton];
-    [QQButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(lineView.mas_bottom).offset(50 * scale);
-        make.centerX.mas_equalTo(-50);
-        make.width.height.mas_equalTo(42 * scale);
-    }];
-    [QQButton addTarget:self action:@selector(loginWithQQ) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton * QQButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(12) titleColor:UIColorFromRGB(0xffffff) title:@""];
+//    [QQButton setImage:[UIImage imageNamed:@"QQ"] forState:UIControlStateNormal];
+//    [self.bottomView addSubview:QQButton];
+//    [QQButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.mas_equalTo(lineView.mas_bottom).offset(50 * scale);
+//        make.centerX.mas_equalTo(-50);
+//        make.width.height.mas_equalTo(42 * scale);
+//    }];
+//    [QQButton addTarget:self action:@selector(loginWithQQ) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton * wxButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(12) titleColor:UIColorFromRGB(0xffffff) title:@""];
     [wxButton setImage:[UIImage imageNamed:@"weChat"] forState:UIControlStateNormal];
-    [self.view addSubview:wxButton];
+    [self.bottomView addSubview:wxButton];
     [wxButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(lineView.mas_bottom).offset(50 * scale);
-        make.centerX.mas_equalTo(50);
+        make.centerX.mas_equalTo(0);
         make.width.height.mas_equalTo(42 * scale);
     }];
-    [QQButton addTarget:self action:@selector(loginWithWeChat) forControlEvents:UIControlEventTouchUpInside];
+    [wxButton addTarget:self action:@selector(loginWithWeChat) forControlEvents:UIControlEventTouchUpInside];
+    if (![WXApi isWXAppInstalled]) {
+        wxButton.hidden = YES;
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:DDUserDidGetWeChatCodeNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning {

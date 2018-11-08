@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 购物车页面
+ */
 @interface FRStoreCartViewController : FRBaseViewController
 
 @end

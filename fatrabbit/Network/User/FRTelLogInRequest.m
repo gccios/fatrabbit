@@ -22,4 +22,51 @@
     return self;
 }
 
+- (instancetype)initWithSendCode:(NSString *)mobile
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"sms";
+        
+        [self setValue:mobile forParamKey:@"mobile"];
+        [self setIntegerValue:2 forParamKey:@"type"];
+    }
+    return self;
+}
+
+- (instancetype)initWithSendBindCode:(NSString *)mobile
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"sms";
+        
+        [self setValue:mobile forParamKey:@"mobile"];
+        [self setIntegerValue:1 forParamKey:@"type"];
+    }
+    return self;
+}
+
+- (instancetype)initWithWeChatCode:(NSString *)code
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"wxlogin";
+        
+        [self setValue:code forParamKey:@"code"];
+    }
+    return self;
+}
+
+- (instancetype)initWithBindMobile:(NSString *)mobile code:(NSString *)code
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"bindmobile";
+        
+        [self setValue:mobile forParamKey:@"mobile"];
+        [self setValue:code forParamKey:@"code"];
+    }
+    return self;
+}
+
 @end

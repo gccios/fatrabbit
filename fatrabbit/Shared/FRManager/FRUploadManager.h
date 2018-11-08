@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <AliyunOSSiOS/OSSService.h>
+#import "FRAliyunSTSRequest.h"
 
+/**
+ 阿里云上传图片类
+ */
 @interface FRUploadManager : NSObject
 
-//上传图片
 @property (nonatomic, copy) NSString * bucket;
 @property (nonatomic, assign) NSInteger countdown;
 @property (nonatomic, copy) NSString * cdndomain;
@@ -22,7 +25,9 @@
 
 + (instancetype)shareManager;
 
-- (void)updateUploadAccessInfo;
+- (void)updateUploadAccessInfoWithSuccess:(BGSuccessCompletionBlock _Nullable)successCompletionBlock
+                          businessFailure:(BGBusinessFailureBlock _Nullable)businessFailureBlock
+                           networkFailure:(BGNetworkFailureBlock _Nullable)networkFailureBlock;
 
 - (void)uploadImageArray:(NSArray<UIImage *> *)images progress:(OSSNetworkingUploadProgressBlock)progress success:(void (^)(NSString *path , NSInteger index))successBlock failure:(void (^)(NSError *error, NSInteger index))failureBlock;
 

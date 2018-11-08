@@ -10,6 +10,9 @@
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
 
+/**
+ 基类VC控制器
+ */
 @interface FRBaseViewController : UIViewController
 
 - (void)createViews;

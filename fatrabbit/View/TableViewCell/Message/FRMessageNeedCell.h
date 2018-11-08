@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRMessageModel.h"
 
 @interface FRMessageNeedCell : UITableViewCell
+
+- (void)configWithModel:(FRMessageModel *)model;
 
 @end

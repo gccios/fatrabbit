@@ -10,10 +10,15 @@
 #import "FRCateModel.h"
 #import "FRCityModel.h"
 
+/**
+ 应用全局信息类，如城市列表，分类列表
+ */
 @interface FRManager : NSObject
 
 @property (nonatomic, strong) NSMutableArray * cateList;
 @property (nonatomic, strong) NSMutableArray * cityList;
+
+@property (nonatomic, copy) NSString * kf_phone;
 
 + (instancetype)shareManager;
 

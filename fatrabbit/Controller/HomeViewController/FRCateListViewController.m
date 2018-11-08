@@ -11,6 +11,8 @@
 #import <Masonry.h>
 #import "FRCateListCell.h"
 #import "FRCateChildCell.h"
+#import "UserManager.h"
+#import "MBProgressHUD+FRHUD.h"
 
 @interface FRCateListViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -21,6 +23,8 @@
 @property (nonatomic, strong) UITableView * childTableView;
 
 @property (nonatomic, strong) NSMutableArray * dataSource;
+
+@property (nonatomic, strong) FRCateModel * currentModel;
 @property (nonatomic, strong) NSArray * childSource;
 @property (nonatomic, assign) BOOL isShowChild;
 
@@ -68,6 +72,7 @@
         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionTop];
         FRCateModel * model = [self.dataSource objectAtIndex:0];
         self.childSource = model.child;
+        self.currentModel = model;
     }
     
     self.childTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -101,7 +106,16 @@
         FRCateListCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRCateListCell" forIndexPath:indexPath];
         
         FRCateModel * model = [self.dataSource objectAtIndex:indexPath.row];
+        
         [cell configWithModel:model];
+        
+        if (self.currentModel == model) {
+            [cell configWithTextColor:KThemeColor];
+            cell.contentView.backgroundColor = UIColorFromRGB(0xffffff);
+        }else{
+            [cell configWithTextColor:UIColorFromRGB(0x333333)];
+            cell.contentView.backgroundColor = UIColorFromRGB(0xf5f5f5);
+        }
         
         return cell;
     }else{
@@ -118,7 +132,9 @@
 {
     if (tableView == self.tableView) {
         FRCateModel * model = [self.dataSource objectAtIndex:indexPath.row];
+        self.currentModel = model;
         self.childSource = model.child;
+        [self.tableView reloadData];
         [self.childTableView reloadData];
         if (!self.isShowChild) {
             
@@ -131,6 +147,16 @@
             self.isShowChild = YES;
         }
     }else{
+        
+        if (self.isPublishService) {
+            if (self.currentModel) {
+                if (self.currentModel.cid != [UserManager shareManager].first_cate_id) {
+                    [MBProgressHUD showTextHUDWithText:@"请选择您所支持的服务类型"];
+                    return;
+                }
+            }
+        }
+        
         if (self.delegate && [self.delegate respondsToSelector:@selector(FRcateListViewCongtrollerDidChoose:type:)]) {
             FRCateModel * model = [self.childSource objectAtIndex:indexPath.row];
             

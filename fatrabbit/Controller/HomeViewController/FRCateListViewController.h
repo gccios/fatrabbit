@@ -21,10 +21,15 @@ typedef enum : NSUInteger {
 
 @end
 
+/**
+ 分类展示页面，展示和选择当前应用的一级分类及二级分类
+ */
 @interface FRCateListViewController : UIViewController
 
 @property (nonatomic, weak) id<FRCateListViewControllerDelegate> delegate;
 
 - (instancetype)initWithType:(FRCateListType)type;
+
+@property (nonatomic, assign) BOOL isPublishService;
 
 @end

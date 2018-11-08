@@ -7,7 +7,27 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRMyStoreOrderModel.h"
+#import "FRMyServiceOrderModel.h"
 
+@protocol FROrderDetailViewControllerDelegate <NSObject>
+
+- (void)orderDidNeedUpdate;
+
+@end
+
+/**
+ 订单详情页面
+ */
 @interface FROrderDetailViewController : FRBaseViewController
+
+@property (nonatomic, assign) BOOL needPopSecond;
+@property (nonatomic, weak) id<FROrderDetailViewControllerDelegate> delegate;
+
+- (instancetype)initWithStoreModel:(FRMyStoreOrderModel *)model;
+
+- (instancetype)initWithServiceModel:(FRMyServiceOrderModel *)model;
+
+@property (nonatomic, assign) BOOL isMyGet;
 
 @end

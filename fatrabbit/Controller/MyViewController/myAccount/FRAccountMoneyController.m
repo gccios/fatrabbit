@@ -9,6 +9,7 @@
 #import "FRAccountMoneyController.h"
 #import "FRMyAccountMoneyCell.h"
 #import "FRUserAccountRequest.h"
+#import "UserManager.h"
 #import "MBProgressHUD+FRHUD.h"
 
 @interface FRAccountMoneyController ()<UITableViewDelegate, UITableViewDataSource>
@@ -40,6 +41,9 @@
             self.balance = [[data objectForKey:@"balance"] floatValue];
             NSArray * logs = [data objectForKey:@"logs"];
             self.dataSource = [FRMyAccountMoneyModel mj_objectArrayWithKeyValuesArray:logs];
+            
+            [UserManager shareManager].balance = self.balance;
+            
             [self createViews];
         }
         
@@ -142,16 +146,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-//    return self.dataSource.count;
-    return 10;
+    return self.dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FRMyAccountMoneyCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRMyAccountMoneyCell" forIndexPath:indexPath];
     
-//    FRMyAccountMoneyModel * model = [self.dataSource objectAtIndex:indexPath.row];
-//    [cell configWithMoneyModel:model];
+    FRMyAccountMoneyModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    [cell configWithMoneyModel:model];
     
     return cell;
 }

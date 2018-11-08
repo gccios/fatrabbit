@@ -21,6 +21,7 @@
 
 @property (nonatomic, strong) UIView * infoView;
 @property (nonatomic, strong) UILabel * nameLabel;
+@property (nonatomic, strong) UIImageView * provideImageView;
 @property (nonatomic, strong) UILabel * levelLabel;
 @property (nonatomic, strong) UIProgressView * levelProgressView;
 @property (nonatomic, strong) UILabel * vipLabel;
@@ -54,10 +55,22 @@
         
         self.nameLabel.text = [UserManager shareManager].nickname;
         self.vipLabel.text = [UserManager shareManager].vip_name;
-        self.levelLabel.text = [NSString stringWithFormat:@"%ld", [UserManager shareManager].points];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.2lf", [UserManager shareManager].points];
         [self.logoImageView sd_setImageWithURL:[NSURL URLWithString:[UserManager shareManager].avatar]];
+        if (isEmptyString([UserManager shareManager].avatar)) {
+            [self.logoImageView setImage:[UIImage imageNamed:@"defalutLogo"]];
+        }
+        
+        if ([UserManager shareManager].is_provider == 1) {
+            self.provideImageView.hidden = NO;
+        }else{
+            self.provideImageView.hidden = YES;
+        }
+        self.levelProgressView.progress = [UserManager shareManager].next_vip_percent;
+        
     }else{
         self.infoView.hidden = YES;
+        [self.logoImageView setImage:[UIImage imageNamed:@"defalutLogo"]];
     }
 }
 
@@ -111,6 +124,15 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
+    self.provideImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFit image:[UIImage imageNamed:@"userProvide"]];
+    [self.infoView addSubview:self.provideImageView];
+    [self.provideImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.nameLabel);
+        make.left.mas_equalTo(self.nameLabel.mas_right).offset(5 * scale);
+        make.width.mas_equalTo(30 * scale);
+        make.height.mas_equalTo(13 * scale);
+    }];
+    
     UILabel * levelTip = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
     levelTip.text = @"积分：";
     [self.infoView addSubview:levelTip];
@@ -131,7 +153,7 @@
     self.levelProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
     self.levelProgressView.progressTintColor = UIColorFromRGB(0xf1e632);
     self.levelProgressView.tintColor = UIColorFromRGB(0xeeeeee);
-    self.levelProgressView.progress = .5f;
+    self.levelProgressView.progress = [UserManager shareManager].next_vip_percent;
     [self.infoView addSubview:self.levelProgressView];
     [self.levelProgressView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(levelTip.mas_bottom).offset(5 * scale);

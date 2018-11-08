@@ -23,12 +23,18 @@
 #import "FRStoreDetailRequest.h"
 #import "MBProgressHUD+FRHUD.h"
 #import "UserManager.h"
+#import "FRWebViewController.h"
+#import "LookImageViewController.h"
+#import "UIButton+Badge.h"
+#import <MJRefresh.h>
+#import "FRLoginViewController.h"
 
-@interface FRStorePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface FRStorePageViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SDCycleScrollViewDelegate>
 
 @property (nonatomic, strong) UICollectionView * collectionView;
 
 @property (nonatomic, strong) SDCycleScrollView * bannerView;
+@property (nonatomic, strong) UIButton * storeCartButton;
 
 @property (nonatomic, strong) NSMutableArray * advs;
 @property (nonatomic, strong) NSMutableArray * cateList;
@@ -38,11 +44,16 @@
 
 @implementation FRStorePageViewController
 
+- (instancetype)init{
+    if (self = [super init]) {
+        [self requestStoreInfo];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    [self requestStoreInfo];
 }
 
 - (void)reloadPage
@@ -92,18 +103,24 @@
 
 - (void)searchButtonDidClicked
 {
-    FRStoreSearchViewController * storeSearch = [[FRStoreSearchViewController alloc] init];
-    [self.navigationController pushViewController:storeSearch animated:YES];
+    FRStoreSearchViewController * search = [[FRStoreSearchViewController alloc] initWithCateModel:nil cateList:self.cateList];
+    [self.navigationController pushViewController:search animated:YES];
 }
 
 - (void)searchWithModel:(FRCateModel *)model
 {
-    FRStoreSearchViewController * search = [[FRStoreSearchViewController alloc] initWithCateModel:model];
+    FRStoreSearchViewController * search = [[FRStoreSearchViewController alloc] initWithCateModel:model cateList:self.cateList];
     [self.navigationController pushViewController:search animated:YES];
 }
 
 - (void)storeCartButtonDidClicked
 {
+    if (![UserManager shareManager].isLogin) {
+        FRLoginViewController * login = [[FRLoginViewController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+        return;
+    }
+    
     FRStoreCartViewController * cart = [[FRStoreCartViewController alloc] init];
     [self.navigationController pushViewController:cart animated:YES];
 }
@@ -127,18 +144,18 @@
     [FRCreateViewTool cornerView:searchButton radius:15];
     [searchButton addTarget:self action:@selector(searchButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
-    UIButton * storeCartButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14 * scale) titleColor:UIColorFromRGB(0xFFFFFF) title:@""];
-    [storeCartButton setImage:[UIImage imageNamed:@"navStoreCart"] forState:UIControlStateNormal];
-    [navView addSubview:storeCartButton];
-    [storeCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.storeCartButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14 * scale) titleColor:UIColorFromRGB(0xFFFFFF) title:@""];
+    [self.storeCartButton setImage:[UIImage imageNamed:@"navStoreCart"] forState:UIControlStateNormal];
+    [navView addSubview:self.storeCartButton];
+    [self.storeCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.mas_equalTo(0);
         make.right.mas_equalTo(0 * scale);
         make.width.mas_equalTo(40 * scale);
     }];
-    [storeCartButton addTarget:self action:@selector(storeCartButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    [self.storeCartButton addTarget:self action:@selector(storeCartButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
-    UILabel * searchLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    searchLabel.text = @"搜索企业/服务/案例/分类等，专业团队";
+    UILabel * searchLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12) textColor:UIColorFromRGB(0xffffff) alignment:NSTextAlignmentLeft];
+    searchLabel.text = @" 搜索商品名称";
     [searchButton addSubview:searchLabel];
     [searchLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(10);
@@ -162,6 +179,7 @@
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestStoreInfo)];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -204,6 +222,12 @@
 - (void)showChooseSpecWith:(FRStoreModel *)model
 {
     if (model.spec) {
+        
+        if (model.spec.count == 1) {
+            [[UserManager shareManager] addStoreCartWithStore:model.spec.firstObject];
+            return;
+        }
+        
         FRChooseSpecView * spec = [[FRChooseSpecView alloc] initWithSpecList:model.spec chooseModel:model.spec.firstObject];
         spec.chooseDidCompletetHandle = ^(FRStoreSpecModel *model) {
             [[UserManager shareManager] addStoreCartWithStore:model];
@@ -242,12 +266,19 @@
             FRStoreBannerHeaderView * view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"FRStoreBannerHeaderView" forIndexPath:indexPath];
             [view configWithBannerSource:self.advs];
             [view configCateSource:self.cateList];
+            view.bannerView.delegate = self;
             
             __weak typeof(self) weakSelf = self;
             view.menuDidClickedHandle = ^(FRCateModel *model) {
                 if (model) {
                     [weakSelf searchWithModel:model];
                 }
+            };
+            
+            FRStoreBlockModel * block = [self.dataSource objectAtIndex:indexPath.section];
+            [view configWithTitle:block.label_title];
+            view.moreDidClickedHandle = ^{
+                [weakSelf searchWithFRStoreBlockModel:block];
             };
             
             return view;
@@ -257,6 +288,10 @@
             
             FRStoreBlockModel * block = [self.dataSource objectAtIndex:indexPath.section];
             [view configWithTitle:block.label_title];
+            __weak typeof(self) weakSelf = self;
+            view.moreDidClickedHandle = ^{
+                [weakSelf searchWithFRStoreBlockModel:block];
+            };
             
             return view;
         }
@@ -265,14 +300,32 @@
     return nil;
 }
 
+- (void)searchWithFRStoreBlockModel:(FRStoreBlockModel *)model
+{
+    FRStoreSearchViewController * search = [[FRStoreSearchViewController alloc] initWithStoreBlockModel:model cateList:self.cateList];
+    [self.navigationController pushViewController:search animated:YES];
+}
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
     if (section == 0) {
-        return CGSizeMake(kMainBoundsWidth, 310 * scale);
+        return CGSizeMake(kMainBoundsWidth, 380 * scale);
     }
     return CGSizeMake(kMainBoundsWidth, 60 * scale);
+}
+
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index
+{
+    FRBannerModel * model = [self.advs objectAtIndex:index];
+    if (model.type == 0) {
+        LookImageViewController * look = [[LookImageViewController alloc] initWithImageURL:model.img];
+        [self presentViewController:look animated:YES completion:nil];
+    }else if (model.type == 1) {
+        FRWebViewController * web = [[FRWebViewController alloc] initWithTitle:@"详情" url:model.param];
+        [self.navigationController pushViewController:web animated:YES];
+    }
 }
 
 - (NSMutableArray *)advs
@@ -305,6 +358,13 @@
     if (self.dataSource.count == 0) {
         [self requestStoreInfo];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [self.storeCartButton setBadgeValue:[NSString stringWithFormat:@"%ld", [UserManager shareManager].storeCart.count]];
 }
 
 - (void)didReceiveMemoryWarning {

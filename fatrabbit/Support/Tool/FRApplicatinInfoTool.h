@@ -16,6 +16,8 @@
 
 + (NSString *)getTimeStampMS;
 
++ (NSString *)getSecondStrTimeWithTime:(NSInteger)time;
+
 + (NSString *)getApplicationVersion;
 
 + (NSString *)getDeviceSystemVersion;

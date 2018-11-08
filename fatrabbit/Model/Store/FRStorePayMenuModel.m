@@ -28,7 +28,7 @@
             case FRStorePayMenuType_Points:
             {
                 self.title = @"使用积分";
-                self.detail = @"可使用积分进行折扣";
+                self.detail = @"使用积分进行购买";
             }
                 break;
                 

@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ 全屏查看单图页面
+ */
 @interface LookImageViewController : UIViewController
 
 - (instancetype)initWithImageURL:(NSString *)imageURL;

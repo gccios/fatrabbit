@@ -13,8 +13,13 @@
 
 - (void)FRAddressDidChoose:(FRAddressModel *)address;
 
+- (void)FRAddressDidChange;
+
 @end
 
+/**
+ 我的地址页面
+ */
 @interface FRAddressViewController : FRBaseViewController
 
 @property (nonatomic, weak) id<FRAddressViewControllerDelegate> delegate;

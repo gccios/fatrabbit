@@ -15,6 +15,9 @@
 
 NSString * const FRUserLoginStatusDidChange = @"FRUserLoginStatusDidChange";
 NSString * const FRUserStoreCartStatusDidChange = @"FRUserStoreCartStatusDidChange";
+NSString * const DDUserDidGetWeChatCodeNotification = @"DDUserDidGetWeChatCodeNotification";
+NSString * const DDUserWeChatPayNotification = @"DDUserWeChatPayNotification";
+NSString * const DDUserAlipayPayNotification = @"DDUserAlipayPayNotification";
 
 @implementation UserManager
 
@@ -26,6 +29,40 @@ NSString * const FRUserStoreCartStatusDidChange = @"FRUserStoreCartStatusDidChan
         instance = [[self alloc] init];
     });
     return instance;
+}
+
+- (void)loginWithWeChat
+{
+    //构造SendAuthReq结构体
+    SendAuthReq* req =[[SendAuthReq alloc]init];
+    req.scope = @"snsapi_userinfo";
+    req.state = @"com.fatrabbit.appstore";
+    //第三方向微信终端发送一个SendAuthReq消息结构
+    [WXApi sendReq:req];
+}
+
+- (void)onResp:(BaseResp *)resp
+{
+    if ([resp isKindOfClass:[SendAuthResp class]]) {
+        if ([resp isKindOfClass:[SendAuthResp class]]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:DDUserDidGetWeChatCodeNotification object:resp];
+        }else {
+            
+        }
+    }else if ([resp isKindOfClass:[PayResp class]]){
+        PayResp*response=(PayResp*) resp;
+        switch(response.errCode){
+            case WXSuccess:
+                //服务器端查询支付通知或查询API返回的结果再提示成功
+                NSLog(@"支付成功");
+                [[NSNotificationCenter defaultCenter] postNotificationName:DDUserWeChatPayNotification object:response];
+                break;
+            default:
+                NSLog(@"支付失败，retcode=%d",resp.errCode);
+                [[NSNotificationCenter defaultCenter] postNotificationName:DDUserWeChatPayNotification object:response];
+                break;
+        }
+    }
 }
 
 - (void)loginSuccesWithCache:(NSDictionary *)data
@@ -51,6 +88,16 @@ NSString * const FRUserStoreCartStatusDidChange = @"FRUserStoreCartStatusDidChan
     self.isLogin = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:FRUserLoginStatusDidChange object:nil];
     [self configUserStoreInfo];
+}
+
+- (void)logOut
+{
+    self.isLogin = NO;
+    self.uid = 0;
+    self.token = @"";
+    
+    [[NSFileManager defaultManager] removeItemAtPath:FRUserInfoPath error:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FRUserLoginStatusDidChange object:nil];
 }
 
 - (void)needUpdateLocalUserInfo
@@ -186,10 +233,13 @@ NSString * const FRUserStoreCartStatusDidChange = @"FRUserStoreCartStatusDidChan
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
-            if (KIsArray(data)) {
-                self.storeCart = [FRStoreCartModel mj_objectArrayWithKeyValuesArray:data];
-                [[NSNotificationCenter defaultCenter] postNotificationName:FRUserStoreCartStatusDidChange object:nil];
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                NSArray * list = [data objectForKey:@"list"];
+                if (KIsArray(list)) {
+                    self.storeCart = [FRStoreCartModel mj_objectArrayWithKeyValuesArray:list];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:FRUserStoreCartStatusDidChange object:nil];
+                }
             }
         }
         

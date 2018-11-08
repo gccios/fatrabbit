@@ -18,6 +18,9 @@ typedef enum : NSUInteger {
     FRStorePayMenuType_Remark
 } FRStorePayMenuType;
 
+/**
+ 商品确认订单的菜单选项model
+ */
 @interface FRStorePayMenuModel : NSObject
 
 - (instancetype)initWithType:(FRStorePayMenuType)type;

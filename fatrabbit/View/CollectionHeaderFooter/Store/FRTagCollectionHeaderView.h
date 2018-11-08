@@ -10,6 +10,8 @@
 
 @interface FRTagCollectionHeaderView : UICollectionReusableView
 
+@property (nonatomic, copy) void (^moreDidClickedHandle)(void);
+
 - (void)configWithTitle:(NSString *)title;
 
 @end

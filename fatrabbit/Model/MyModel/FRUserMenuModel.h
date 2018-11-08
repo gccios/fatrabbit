@@ -15,6 +15,9 @@ typedef enum : NSUInteger {
     FRUserMenuType_Mobile,
 } FRUserMenuType;
 
+/**
+ 用户菜单model
+ */
 @interface FRUserMenuModel : NSObject
 
 - (instancetype)initWithType:(FRUserMenuType)type;

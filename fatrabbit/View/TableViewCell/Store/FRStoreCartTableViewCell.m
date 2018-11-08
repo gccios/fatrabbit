@@ -39,15 +39,15 @@
     return self;
 }
 
+- (void)numberButtonDidClicked
+{
+    if (self.numberCartHandle) {
+        self.numberCartHandle(self.model);
+    }
+}
+
 - (void)addButtonDidClicked
 {
-    if (self.model.num == self.model.stock) {
-        [MBProgressHUD showTextHUDWithText:@"商品库存不足"];
-        return;
-    }
-    
-    self.model.num++;
-    [self reloadGoodsModel];
     if (self.addButton) {
         self.addCartHandle(self.model);
     }
@@ -55,17 +55,29 @@
 
 - (void)deleteButtonDidClicked
 {
-    if (self.model.num == self.model.min_buy_num) {
-        [MBProgressHUD showTextHUDWithText:[NSString stringWithFormat:@"该商品最少购买%ld件", self.model.min_buy_num]];
-        return;
-    }
-    
     if (self.model.num > 1) {
-        self.model.num--;
-        [self reloadGoodsModel];
         if (self.deleteCartHandle) {
             self.deleteCartHandle(self.model);
         }
+    }else{
+        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"移除商品" message:@"确认从购物车中移除改商品吗？" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action1 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        UIAlertAction * action2 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            self.model.num--;
+            [self reloadGoodsModel];
+            if (self.deleteCartHandle) {
+                self.deleteCartHandle(self.model);
+            }
+            
+        }];
+        
+        [alert addAction:action1];
+        [alert addAction:action2];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -81,14 +93,19 @@
 - (void)reloadGoodsModel
 {
     self.model.amount = self.model.num * self.model.price;
+    self.model.discount_amount = self.model.num * self.model.discount_price;
+    self.model.points = self.model.single * self.model.num;
     
     NSString * numberStr = [NSString stringWithFormat:@"%ld", self.model.num];
-    NSString * priceStr = [NSString stringWithFormat:@"%.2lf", self.model.amount];
+//    NSString * priceStr = [NSString stringWithFormat:@"%.2lf", self.model.amount];
     [self.numberButton setTitle:numberStr forState:UIControlStateNormal];
-    self.priceLabel.text = priceStr;
+//    self.priceLabel.text = priceStr;
     [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:self.model.cover]];
     self.nameLabel.text = self.model.pname;
-    self.priceLabel.text = [NSString stringWithFormat:@"%.2lf", self.model.price];
+    self.priceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.model.price];
+    if (self.model.is_points > 0) {
+        self.priceLabel.text = [NSString stringWithFormat:@"%.2lf 积分", self.model.single];
+    }
     if (self.model.isSelected) {
         [self.selectButton setImage:[UIImage imageNamed:@"choose"] forState:UIControlStateNormal];
     }else{
@@ -138,36 +155,28 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
-    UILabel * price = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:KPriceColor alignment:NSTextAlignmentLeft];
-    price.text = @"￥";
-    [self.contentView addSubview:price];
-    [price mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.coverImageView).mas_equalTo(-10 * scale);
-        make.left.mas_equalTo(self.coverImageView.mas_right).offset(15 * scale);
-        make.height.mas_equalTo(20 * scale);
-    }];
-    
     self.priceLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:KPriceColor alignment:NSTextAlignmentLeft];
     [self.contentView addSubview:self.priceLabel];
     [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(price);
-        make.left.mas_equalTo(price.mas_right);
+        make.bottom.mas_equalTo(self.coverImageView).mas_equalTo(-10 * scale);
+        make.left.mas_equalTo(self.coverImageView.mas_right).offset(15 * scale);
         make.height.mas_equalTo(20 * scale);
     }];
     
     self.numberButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15) titleColor:UIColorFromRGB(0x333333) title:@"1"];
     [self.contentView addSubview:self.numberButton];
     [self.numberButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(price);
+        make.centerY.mas_equalTo(self.priceLabel);
         make.right.mas_equalTo(-50);
         make.height.mas_equalTo(20 * scale);
     }];
+    [self.numberButton addTarget:self action:@selector(numberButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     self.deleteButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14 * scale) titleColor:[UIColor whiteColor] title:@""];
     [self.deleteButton setImage:[UIImage imageNamed:@"cartDelete"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.deleteButton];
     [self.deleteButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.numberButton.mas_right);
+        make.right.mas_equalTo(self.numberButton.mas_left);
         make.centerY.mas_equalTo(self.numberButton);
         make.width.height.mas_equalTo(20 * scale);
     }];
@@ -177,7 +186,7 @@
     [self.addButton setImage:[UIImage imageNamed:@"cartAdd"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.addButton];
     [self.addButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self.numberButton.mas_left);
+        make.left.mas_equalTo(self.numberButton.mas_right);
         make.centerY.mas_equalTo(self.numberButton);
         make.width.height.mas_equalTo(20 * scale);
     }];

@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 首页搜索页面
+ */
 @interface FRSearchViewController : FRBaseViewController
 
 @end

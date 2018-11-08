@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 添加商品备注页面
+ */
 @interface FRStoreReamrkViewController : FRBaseViewController
 
 @property (nonatomic, copy) void (^remarkDidCompletetHandle)(NSString *remark);

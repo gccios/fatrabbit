@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ 基类导航控制器
+ */
 @interface FRNavigationController : UINavigationController
 
 @end

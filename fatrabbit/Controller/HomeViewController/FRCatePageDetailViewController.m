@@ -7,10 +7,13 @@
 //
 
 #import "FRCatePageDetailViewController.h"
+#import "FRNeedTableViewCell.h"
 #import "FRServiceTableViewCell.h"
 #import "FRTableTabView.h"
-#import "FRNeedListRequest.h"
+#import "FRHomeIndexRequest.h"
+#import "FRNeedDetailViewController.h"
 #import "FRServiceDetailViewController.h"
+#import "FRBannerModel.h"
 #import <SDCycleScrollView.h>
 #import <MJRefresh.h>
 
@@ -18,13 +21,21 @@
 
 @property (nonatomic, strong) FRCateModel * model;
 
+@property (nonatomic, strong) NSMutableArray * bannerSource;
+
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, strong) NSMutableArray * needSource;
+@property (nonatomic, strong) NSMutableArray * serviceSource;
 
 @property (nonatomic, strong) SDCycleScrollView * bannerView;
 @property (nonatomic, strong) FRTableTabView * tableTabView;
 
+@property (nonatomic, assign) NSInteger tabType;
+
 @property (nonatomic, assign) NSInteger page;
+@property (nonatomic, assign) NSInteger servicePage;
+
+@property (nonatomic, strong) UILabel * nodataLabel;
 
 @end
 
@@ -41,24 +52,48 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.page = 1;
+    self.servicePage = 1;
+    self.tabType = 1;
     [self createViews];
     [self requestNeedSource];
+    [self requestAdv];
+}
+
+- (void)requestAdv
+{
+    FRHomeIndexRequest * advRequest = [[FRHomeIndexRequest alloc] initCateAdvWithCateID:self.model.cid];
+    [advRequest sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSArray * data = [response objectForKey:@"data"];
+            if (KIsArray(data)) {
+                [self.bannerSource removeAllObjects];
+                [self.bannerSource addObjectsFromArray:[FRBannerModel mj_objectArrayWithKeyValuesArray:data]];
+            }
+            [self createTableHeaderView];
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+    }];
 }
 
 //获取需求列表
 - (void)requestNeedSource
 {
-    FRNeedListRequest * request = [[FRNeedListRequest alloc] initWithCateID:self.model.cid page:1];
+    FRHomeIndexRequest * request = [[FRHomeIndexRequest alloc] initCateNeedWithCateID:self.model.cid page:1];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
-        if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
+        NSArray * data = [response objectForKey:@"data"];
+        if (KIsArray(data)) {
             [self.needSource removeAllObjects];
             [self.needSource addObjectsFromArray:[FRNeedModel mj_objectArrayWithKeyValuesArray:data]];
-            [self.tableView reloadData];
-            self.page = 1;
         }
+        [self.tableView reloadData];
+        self.page = 2;
         [self.tableView.mj_header endRefreshing];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
@@ -74,17 +109,68 @@
 
 - (void)loadMoreNeed
 {
-    FRNeedListRequest * request = [[FRNeedListRequest alloc] initWithCateID:self.model.cid page:self.page];
+    FRHomeIndexRequest * request = [[FRHomeIndexRequest alloc] initCateNeedWithCateID:self.model.cid page:self.page];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+
+        NSArray * data = [response objectForKey:@"data"];
+        if (KIsArray(data)) {
+            [self.needSource addObjectsFromArray:[FRNeedModel mj_objectArrayWithKeyValuesArray:data]];
+            
+            if (data.count > 0) {
+                [self.tableView reloadData];
+                self.page += 1;
+            }
+        }
+        [self.tableView.mj_footer endRefreshing];
+
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+
+        [self.tableView.mj_footer endRefreshing];
+
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+
+        [self.tableView.mj_footer endRefreshing];
+
+    }];
+}
+
+//获取服务列表
+- (void)requestServiceSource
+{
+    FRHomeIndexRequest * request = [[FRHomeIndexRequest alloc] initCateServiceWithCateID:self.model.cid page:1];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
-        if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
-            if (KIsArray(data) && data.count > 0) {
-                [self.needSource addObjectsFromArray:[FRNeedModel mj_objectArrayWithKeyValuesArray:data]];
-                [self.tableView reloadData];
-                
-                self.page++;
-            }
+        NSArray * data = [response objectForKey:@"data"];
+        if (KIsArray(data)) {
+            [self.serviceSource removeAllObjects];
+            [self.serviceSource addObjectsFromArray:[FRMySeriviceModel mj_objectArrayWithKeyValuesArray:data]];
+        }
+        [self.tableView reloadData];
+        self.servicePage = 2;
+        [self.tableView.mj_header endRefreshing];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self.tableView.mj_header endRefreshing];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [self.tableView.mj_header endRefreshing];
+        
+    }];
+}
+
+- (void)loadMoreService
+{
+    FRHomeIndexRequest * request = [[FRHomeIndexRequest alloc] initCateServiceWithCateID:self.model.cid page:self.servicePage];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSArray * data = [response objectForKey:@"data"];
+        if (KIsArray(data) && data.count > 0) {
+            [self.serviceSource addObjectsFromArray:[FRMySeriviceModel mj_objectArrayWithKeyValuesArray:data]];
+            
+            [self.tableView reloadData];
+            self.servicePage += 1;
         }
         [self.tableView.mj_footer endRefreshing];
         
@@ -101,18 +187,31 @@
 
 - (void)createViews
 {
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    self.nodataLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14) textColor:[UIColor grayColor] alignment:NSTextAlignmentCenter];
+    self.nodataLabel.backgroundColor = self.view.backgroundColor;
+    self.nodataLabel.text = @"未找到您想要的东西";
+    [self.view addSubview:self.nodataLabel];
+    [self.nodataLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(300 * scale);
+        make.left.right.mas_equalTo(0);
+        make.bottom.mas_equalTo(-80 * scale);
+    }];
+    self.nodataLabel.hidden = YES;
+    
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
+    self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    [self.tableView registerClass:[FRNeedTableViewCell class] forCellReuseIdentifier:@"FRNeedTableViewCell"];
     [self.tableView registerClass:[FRServiceTableViewCell class] forCellReuseIdentifier:@"FRServiceTableViewCell"];
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestNeedSource)];
-    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreNeed)];
+    self.tableView.mj_footer = [MJRefreshAutoFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreNeed)];
     
     [self createTableHeaderView];
 }
@@ -121,40 +220,111 @@
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
-    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 210 * scale)];
+    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 200 * scale)];
     
-    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:@[@"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg", @"http://a.hiphotos.baidu.com/zhidao/pic/item/cf1b9d16fdfaaf51b3fef0a6805494eef01f7a8d.jpg"]];
-    self.bannerView.autoScrollTimeInterval = 3.f;
-    [headerView addSubview:self.bannerView];
-    [self.bannerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.mas_equalTo(0);
-        make.height.mas_equalTo(160 * scale);
-    }];
+    if (self.bannerSource.count == 0) {
+        self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageNamesGroup:@[@"defaultBanner.jpg"]];
+        [headerView addSubview:self.bannerView];
+        [self.bannerView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.right.mas_equalTo(0);
+            make.height.mas_equalTo(150 * scale);
+        }];
+    }else{
+        NSMutableArray * imageSource = [[NSMutableArray alloc] init];
+        for (FRBannerModel * model in self.bannerSource) {
+            [imageSource addObject:model.img];
+        }
+        
+        self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, kMainBoundsWidth / 7.f * 3) imageURLStringsGroup:imageSource];
+        [headerView addSubview:self.bannerView];
+        [self.bannerView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.right.mas_equalTo(0);
+            make.height.mas_equalTo(150 * scale);
+        }];
+    }
     
     self.tableTabView = [[FRTableTabView alloc] initWithFrame:CGRectZero];
     [headerView addSubview:self.tableTabView];
     [self.tableTabView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
         make.bottom.mas_equalTo(-10 * scale);
-        make.top.mas_equalTo(self.bannerView.mas_bottom).offset(10 * scale);
+        make.height.mas_equalTo(40 * scale);
     }];
+    __weak typeof(self) weakSelf = self;
+    self.tableTabView.leftButtonClickedHandle = ^{
+        [weakSelf changeToNeed];
+    };
+    self.tableTabView.rightButtonClickedHandle = ^{
+        [weakSelf changeToSerivice];
+    };
     
     self.tableView.tableHeaderView = headerView;
 }
 
+- (void)changeToNeed
+{
+    if (self.tabType == 1) {
+        return;
+    }
+    self.tabType = 1;
+    [self.tableView reloadData];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestNeedSource)];
+    self.tableView.mj_footer = [MJRefreshAutoFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreNeed)];
+    [self requestNeedSource];
+}
+
+- (void)changeToSerivice
+{
+    if (self.tabType == 2) {
+        return;
+    }
+    self.tabType = 2;
+    [self.tableView reloadData];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestServiceSource)];
+    self.tableView.mj_footer = [MJRefreshAutoFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreService)];
+    [self requestServiceSource];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.needSource.count;
+    if (self.tabType == 1) {
+        
+        if (self.needSource.count == 0) {
+            self.nodataLabel.hidden = NO;
+        }else{
+            self.nodataLabel.hidden = YES;
+        }
+        
+        return self.needSource.count;
+    }else{
+        
+        if (self.serviceSource.count == 0) {
+            self.nodataLabel.hidden = NO;
+        }else{
+            self.nodataLabel.hidden = YES;
+        }
+        
+        return self.serviceSource.count;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FRServiceTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRServiceTableViewCell" forIndexPath:indexPath];
-    
-    FRNeedModel * model = [self.needSource objectAtIndex:indexPath.row];
-    [cell configWithModel:model];
-    
-    return cell;
+    if (self.tabType == 1) {
+        FRNeedTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRNeedTableViewCell" forIndexPath:indexPath];
+        
+        FRNeedModel * model = [self.needSource objectAtIndex:indexPath.row];
+        [cell configWithModel:model];
+        
+        return cell;
+    }else{
+        FRServiceTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRServiceTableViewCell" forIndexPath:indexPath];
+        
+        FRMySeriviceModel * model = [self.serviceSource objectAtIndex:indexPath.row];
+        [cell configWithModel:model];
+        
+        return cell;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -164,8 +334,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FRServiceDetailViewController * detail = [[FRServiceDetailViewController alloc] init];
-    [self.navigationController pushViewController:detail animated:YES];
+    if (self.tabType == 1) {
+        FRNeedModel * model = [self.needSource objectAtIndex:indexPath.row];
+        FRNeedDetailViewController * need = [[FRNeedDetailViewController alloc] initWithNeedModel:model];
+        [self.navigationController pushViewController:need animated:YES];
+    }else{
+        FRMySeriviceModel * model = [self.serviceSource objectAtIndex:indexPath.row];
+        FRServiceDetailViewController * service = [[FRServiceDetailViewController alloc] initWithSeriviceModel:model];
+        [self.navigationController pushViewController:service animated:YES];
+    }
 }
 
 - (NSMutableArray *)needSource
@@ -174,6 +351,22 @@
         _needSource = [[NSMutableArray alloc] init];
     }
     return _needSource;
+}
+
+- (NSMutableArray *)serviceSource
+{
+    if (!_serviceSource) {
+        _serviceSource = [[NSMutableArray alloc] init];
+    }
+    return _serviceSource;
+}
+
+- (NSMutableArray *)bannerSource
+{
+    if (!_bannerSource) {
+        _bannerSource = [[NSMutableArray alloc] init];
+    }
+    return _bannerSource;
 }
 
 - (void)didReceiveMemoryWarning {

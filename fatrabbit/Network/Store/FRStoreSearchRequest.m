@@ -21,12 +21,38 @@
 
 - (void)configWithCateID:(NSInteger)cateID
 {
-    [self setIntegerValue:cateID forParamKey:@"cate_id"];
+    if (cateID != 0) {
+        [self setIntegerValue:cateID forParamKey:@"cate_id"];
+    }
 }
 
 - (void)configWithKeyWord:(NSString *)keyWord
 {
     [self setValue:keyWord forParamKey:@"keyword"];
+}
+
+- (void)configWithBlockID:(NSInteger)blockID
+{
+    if (blockID != 0) {
+        [self setIntegerValue:blockID forParamKey:@"label_id"];
+    }
+}
+
+- (void)configPriceUp
+{
+    [self setValue:@"price" forParamKey:@"order"];
+    [self setValue:@"asc" forParamKey:@"order_type"];
+}
+
+- (void)configPriceDown
+{
+    [self setValue:@"price" forParamKey:@"order"];
+    [self setValue:@"desc" forParamKey:@"order_type"];
+}
+
+- (void)configDealNumber
+{
+    [self setValue:@"order_num" forParamKey:@"order"];
 }
 
 @end

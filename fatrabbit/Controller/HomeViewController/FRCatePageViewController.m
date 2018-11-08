@@ -35,19 +35,19 @@
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
-    self.titleSizeNormal = 13.f * scale;
-    self.titleSizeSelected = 15.f * scale;
-    self.titleColorNormal = UIColorFromRGB(0x333333);
-    self.titleColorSelected = KThemeColor;
-    self.progressColor = KThemeColor;
-    self.progressHeight = 1.5f;
-    self.menuViewStyle = WMMenuViewStyleLine;
-    self.menuView.scrollView.backgroundColor = UIColorFromRGB(0xf5f5f5);
-    self.progressViewBottomSpace = 1;
-    self.preloadPolicy = WMPageControllerPreloadPolicyNeighbour;
-//    self.menuItemWidth = kMainBoundsWidth / 6.f;
-//    self.progressViewWidths = @[@(kMainBoundsWidth / 12.f),@(kMainBoundsWidth / 8.f),@(kMainBoundsWidth / 8.f),@(kMainBoundsWidth / 8.f),@(kMainBoundsWidth / 8.f),@(kMainBoundsWidth / 8.f)];
-    self.pageAnimatable = YES;
+    self.titleSizeNormal = 13.f * scale;//标题大小
+    self.titleSizeSelected = 15.f * scale;//选中的标题大小
+    self.itemMargin = 16 * scale;//各个标题的间距
+    self.titleColorNormal = UIColorFromRGB(0x333333);//标题的颜色
+    self.titleColorSelected = KThemeColor;//选中的标题的颜色
+    self.progressColor = KThemeColor;//标题下面的线的颜色
+    self.progressHeight = 1.5f;//标题下面的线的高度
+    self.menuViewStyle = WMMenuViewStyleLine;//标题的样式，这里设置为下划线，可以点进去看一下库里的文档，共6种效果
+    self.menuView.scrollView.backgroundColor = UIColorFromRGB(0xf5f5f5);//页面背景颜色
+    self.progressViewBottomSpace = 1;//下划线距离标题栏底部的距离
+    self.preloadPolicy = WMPageControllerPreloadPolicyNeighbour;//预加载机制，这里设置为预加载邻近的控制器
+    self.automaticallyCalculatesItemWidths = YES;//根据标题自动计算标题宽度
+    self.pageAnimatable = YES;//是否需要分页
 }
 
 - (void)viewDidLoad {
@@ -101,33 +101,33 @@
     self.navigationItem.leftBarButtonItem = backItem;
 }
 
-- (NSInteger)numbersOfTitlesInMenuView:(WMMenuView *)menu
-{
-    return self.model.child.count;
-}
-
-- (NSString *)menuView:(WMMenuView *)menu titleAtIndex:(NSInteger)index
+//返回对应下标的菜单标题
+- (NSString *)pageController:(WMPageController *)pageController titleAtIndex:(NSInteger)index
 {
     FRCateModel * model = [self.model.child objectAtIndex:index];
     return model.name;
 }
 
+//返回页面的总数量
 - (NSInteger)numbersOfChildControllersInPageController:(WMPageController *)pageController
 {
     return self.model.child.count;
 }
 
+//返回对应下标的页面
 - (UIViewController *)pageController:(WMPageController *)pageController viewControllerAtIndex:(NSInteger)index
 {
     FRCateModel * model = [self.model.child objectAtIndex:index];
     return [[FRCatePageDetailViewController alloc] initWithCateModel:model];
 }
 
+//返回菜单的尺寸
 - (CGRect)pageController:(WMPageController *)pageController preferredFrameForMenuView:(WMMenuView *)menuView
 {
     return CGRectMake(0, 0, kMainBoundsWidth, 40);
 }
 
+//返回各个页面的d尺寸
 - (CGRect)pageController:(WMPageController *)pageController preferredFrameForContentView:(WMScrollView *)contentView
 {
     return CGRectMake(0, 40, kMainBoundsWidth, kMainBoundsHeight - kNaviBarHeight - kStatusBarHeight - 40);

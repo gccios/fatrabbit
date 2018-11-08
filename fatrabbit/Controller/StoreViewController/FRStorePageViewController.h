@@ -8,6 +8,9 @@
 
 #import "FRHomeBaseViewController.h"
 
+/**
+ 商城首页VC控制器
+ */
 @interface FRStorePageViewController : FRHomeBaseViewController
 
 @end

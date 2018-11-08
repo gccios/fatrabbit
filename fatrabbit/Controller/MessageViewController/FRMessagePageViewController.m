@@ -9,10 +9,18 @@
 #import "FRMessagePageViewController.h"
 #import "FRMessageNeedCell.h"
 #import "FRMessageSystemCell.h"
+#import "FRMessageRequest.h"
+#import "FROrderRequest.h"
+#import "FRNeedDetailViewController.h"
+#import "FROrderDetailViewController.h"
+#import "MBProgressHUD+FRHUD.h"
+#import <MJRefresh.h>
 
 @interface FRMessagePageViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView * tableView;
+@property (nonatomic, strong) NSMutableArray * dataSource;
+@property (nonatomic, assign) NSInteger page;
 
 @end
 
@@ -21,8 +29,71 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.dataSource = [[NSMutableArray alloc] init];
     
     [self createViews];
+    [self requestMessage];
+}
+
+- (void)requestMessage
+{
+    FRMessageRequest * request = [[FRMessageRequest alloc] initWithMessageListPage:1];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSArray * data = [response objectForKey:@"data"];
+        [self.dataSource removeAllObjects];
+        [self.dataSource addObjectsFromArray:[FRMessageModel mj_objectArrayWithKeyValuesArray:data]];
+        [self.tableView reloadData];
+        self.page = 2;
+        [self.tableView.mj_header endRefreshing];
+        
+        if (self.dataSource.count == 0) {
+            [MBProgressHUD showTextHUDWithText:@"暂无消息"];
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        [self.tableView.mj_header endRefreshing];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        [self.tableView.mj_header endRefreshing];
+        
+    }];
+}
+
+- (void)loadMoreMessage
+{
+    FRMessageRequest * request = [[FRMessageRequest alloc] initWithMessageListPage:self.page];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSArray * data = [response objectForKey:@"data"];
+        if (data.count > 0) {
+            [self.dataSource addObjectsFromArray:[FRMessageModel mj_objectArrayWithKeyValuesArray:data]];
+            [self.tableView reloadData];
+            self.page++;
+        }
+        [self.tableView.mj_footer endRefreshing];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        [self.tableView.mj_footer endRefreshing];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        [self.tableView.mj_footer endRefreshing];
+        
+    }];
 }
 
 - (void)createViews
@@ -40,23 +111,21 @@
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(requestMessage)];
+    self.tableView.mj_footer = [MJRefreshAutoFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMessage)];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 20;
+    return self.dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger temp = indexPath.row % 2;
-    if (temp == 1) {
-        FRMessageSystemCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRMessageSystemCell" forIndexPath:indexPath];
-        
-        return cell;
-    }
+    FRMessageModel * model = [self.dataSource objectAtIndex:indexPath.row];
     
     FRMessageNeedCell * cell = [tableView dequeueReusableCellWithIdentifier:@"FRMessageNeedCell" forIndexPath:indexPath];
+    [cell configWithModel:model];
     
     return cell;
 }
@@ -69,6 +138,75 @@
         return 60 * scale;
     }
     return 100 * scale;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    FRMessageModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    if (model.type == 1) {
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在加载" inView:self.view];
+        FROrderRequest * request = [[FROrderRequest alloc] initStoreDetailWithID:model.target_id];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            NSDictionary * data = [response objectForKey:@"data"];
+            FRMyStoreOrderModel * storeModel = [FRMyStoreOrderModel mj_objectWithKeyValues:data];
+            storeModel.cid = model.target_id;
+            FROrderDetailViewController * detail = [[FROrderDetailViewController alloc] initWithStoreModel:storeModel];
+            [self.navigationController pushViewController:detail animated:YES];
+            
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            NSString * msg = [response objectForKey:@"msg"];
+            if (!isEmptyString(msg)) {
+                [MBProgressHUD showTextHUDWithText:msg];
+            }
+            
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+            
+        }];
+    }else if (model.type == 2) {
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在加载" inView:self.view];
+        FROrderRequest * request = [[FROrderRequest alloc] initServiceDetailWithID:model.target_id];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            NSDictionary * data = [response objectForKey:@"data"];
+            FRMyServiceOrderModel * serviceModel = [FRMyServiceOrderModel mj_objectWithKeyValues:data];
+            serviceModel.cid = model.target_id;
+            FROrderDetailViewController * detail = [[FROrderDetailViewController alloc] initWithServiceModel:serviceModel];
+            [self.navigationController pushViewController:detail animated:YES];
+            
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            [hud hideAnimated:YES];
+            NSString * msg = [response objectForKey:@"msg"];
+            if (!isEmptyString(msg)) {
+                [MBProgressHUD showTextHUDWithText:msg];
+            }
+            
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+            
+        }];
+    }else if (model.type == 3) {
+        FRNeedModel * needModel = [[FRNeedModel alloc] init];
+        needModel.cid = model.target_id;
+        FRNeedDetailViewController * detail = [[FRNeedDetailViewController alloc] initWithNeedModel:needModel];
+        [self.navigationController pushViewController:detail animated:YES];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

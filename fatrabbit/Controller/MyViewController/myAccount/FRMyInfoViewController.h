@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 我的信息页面
+ */
 @interface FRMyInfoViewController : FRBaseViewController
 
 @end

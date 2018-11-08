@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ 地址model
+ */
 @interface FRAddressModel : NSObject
 
 @property (nonatomic, assign) NSInteger cid;

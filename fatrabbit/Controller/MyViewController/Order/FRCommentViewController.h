@@ -7,7 +7,24 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRMyStoreOrderModel.h"
+#import "FRMyServiceOrderModel.h"
 
+@protocol FRCommentViewControllerDelegate <NSObject>
+
+- (void)conmentDidCompelete;
+
+@end
+
+/**
+ 评论页面
+ */
 @interface FRCommentViewController : FRBaseViewController
+
+@property (nonatomic, weak) id<FRCommentViewControllerDelegate> delegate;
+
+- (instancetype)initWithStoreModel:(FRMyStoreOrderModel *)model;
+
+- (instancetype)initWithSeriviceModel:(FRMyServiceOrderModel *)model;
 
 @end

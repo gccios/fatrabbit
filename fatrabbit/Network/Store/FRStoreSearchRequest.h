@@ -14,4 +14,10 @@
 
 - (void)configWithKeyWord:(NSString *)keyWord;
 
+- (void)configWithBlockID:(NSInteger)blockID;
+
+- (void)configPriceUp;
+- (void)configPriceDown;
+- (void)configDealNumber;
+
 @end

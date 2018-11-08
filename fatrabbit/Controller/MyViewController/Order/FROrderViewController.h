@@ -8,6 +8,11 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 我的商品订单页面
+ */
 @interface FROrderViewController : FRBaseViewController
+
+- (instancetype)initWithType:(NSInteger)type;
 
 @end

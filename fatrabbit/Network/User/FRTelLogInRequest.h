@@ -12,4 +12,12 @@
 
 - (instancetype)initWithTel:(NSString *)mobile code:(NSString *)code;
 
+- (instancetype)initWithSendCode:(NSString *)mobile;
+
+- (instancetype)initWithWeChatCode:(NSString *)code;
+
+- (instancetype)initWithBindMobile:(NSString *)mobile code:(NSString *)code;
+
+- (instancetype)initWithSendBindCode:(NSString *)mobile;
+
 @end

@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <MJExtension.h>
 
+/**
+ 城市Model
+ */
 @interface FRCityModel : NSObject
 
 @property (nonatomic, assign) NSInteger cid;

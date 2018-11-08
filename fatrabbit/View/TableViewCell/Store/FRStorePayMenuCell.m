@@ -9,6 +9,7 @@
 #import "FRStorePayMenuCell.h"
 #import "FRCreateViewTool.h"
 #import <Masonry.h>
+#import "UserManager.h"
 
 @interface FRStorePayMenuCell ()
 
@@ -37,16 +38,25 @@
     self.nameLabel.text = model.title;
     self.infoLabel.text = model.detail;
     
+    CGFloat scale = kMainBoundsWidth / 375.f;
+    
     if (model.type == FRStorePayMenuType_Points || model.type == FRStorePayMenuType_Discount) {
         self.moreImageView.hidden = YES;
-        self.chooseImageView.hidden = NO;
+//        self.chooseImageView.hidden = NO;
         
-        if (model.isChoose) {
-            [self.chooseImageView setImage:[UIImage imageNamed:@"choose"]];
-        }else{
-            [self.chooseImageView setImage:[UIImage imageNamed:@"chooseno"]];
-        }
+//        if (model.isChoose) {
+//            [self.chooseImageView setImage:[UIImage imageNamed:@"choose"]];
+//        }else{
+//            [self.chooseImageView setImage:[UIImage imageNamed:@"chooseno"]];
+//        }
         self.infoLabel.textColor = KThemeColor;
+        [self.infoLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.right.mas_equalTo(-15 * scale);
+        }];
+        
+        if (model.type == FRStorePayMenuType_Discount) {
+            self.infoLabel.text = [NSString stringWithFormat:@"VIP折扣：%@", [UserManager shareManager].vip_discount_tip];
+        }
         
     }else{
         self.moreImageView.hidden = NO;

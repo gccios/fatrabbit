@@ -19,6 +19,18 @@
     return timeString;
 }
 
++ (NSString *)getSecondStrTimeWithTime:(NSInteger)time
+{
+    if (time == 0) {
+        return @"无";
+    }
+    
+    NSDate * date = [NSDate dateWithTimeIntervalSince1970:time];
+    NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    return [formatter stringFromDate:date];
+}
+
 + (NSString *)getApplicationVersion
 {
     return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];

@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 意见反馈页面
+ */
 @interface FRUserAdviceViewController : FRBaseViewController
 
 @end

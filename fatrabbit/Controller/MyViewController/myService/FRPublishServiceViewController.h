@@ -7,10 +7,24 @@
 //
 
 #import "FRBaseViewController.h"
+#import "FRMySeriviceModel.h"
 #import "FRCateModel.h"
 
+@protocol FRPublishServiceViewControllerDelegate <NSObject>
+
+- (void)FRPublishServiceDidUpdate;
+
+@end
+
+/**
+ 发布服务页面
+ */
 @interface FRPublishServiceViewController : FRBaseViewController
 
+@property (nonatomic, weak) id<FRPublishServiceViewControllerDelegate> delegate;
+
 - (instancetype)initWithFRCateModel:(FRCateModel *)model;
+
+- (instancetype)initEditWithServiceModel:(FRMySeriviceModel *)seriviceModel imageSource:(NSArray *)imageSource cateModel:(FRCateModel *)model;
 
 @end

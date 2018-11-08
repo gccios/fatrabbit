@@ -22,7 +22,7 @@
             self.detail = [NSString stringWithFormat:@"%.2lf", [UserManager shareManager].balance];
         }else if (type == FRMyAccountType_Point) {
             self.title = @"积分";
-            self.detail = [NSString stringWithFormat:@"%ld", [UserManager shareManager].points];
+            self.detail = [NSString stringWithFormat:@"%.2lf", [UserManager shareManager].points];
         }else if (type == FRMyAccountType_Invoice) {
             self.title = @"发票";
         }

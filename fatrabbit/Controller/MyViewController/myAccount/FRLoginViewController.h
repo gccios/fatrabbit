@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 登录页面
+ */
 @interface FRLoginViewController : FRBaseViewController
 
 @end

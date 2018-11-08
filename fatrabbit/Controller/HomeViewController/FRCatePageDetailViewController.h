@@ -9,6 +9,9 @@
 #import "FRBaseViewController.h"
 #import "FRCateModel.h"
 
+/**
+ 分类页，展示某一分类下的需求和服务信息
+ */
 @interface FRCatePageDetailViewController : FRBaseViewController
 
 - (instancetype)initWithCateModel:(FRCateModel *)model;

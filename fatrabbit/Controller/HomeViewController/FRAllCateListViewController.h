@@ -15,6 +15,9 @@
 
 @end
 
+/**
+ 分类展示页面，展示和选择当前应用的一级分类及二级分类
+ */
 @interface FRAllCateListViewController : FRBaseViewController
 
 @property (nonatomic, weak) id<FRAllCateListViewControllerDelegate> delegate;

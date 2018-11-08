@@ -7,7 +7,6 @@
 //
 
 #import "FRUploadManager.h"
-#import "FRAliyunSTSRequest.h"
 #import "FRApplicatinInfoTool.h"
 #import "UserManager.h"
 
@@ -29,7 +28,7 @@
     return instance;
 }
 
-- (void)updateUploadAccessInfo
+- (void)updateUploadAccessInfoWithSuccess:(BGSuccessCompletionBlock)successCompletionBlock businessFailure:(BGBusinessFailureBlock)businessFailureBlock networkFailure:(BGNetworkFailureBlock)networkFailureBlock
 {
     FRAliyunSTSRequest * request = [[FRAliyunSTSRequest alloc] init];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
@@ -46,10 +45,6 @@
                 self.endpoint = [data objectForKey:@"endpoint"];
                 self.securityToken = [data objectForKey:@"securityToken"];
                 
-                //提前过期时间10秒进行上传权限认证更新
-                NSInteger updateTime = self.countdown - 10;
-                [self performSelector:@selector(updateUploadAccessInfo) withObject:nil afterDelay:updateTime];
-                
                 // 由阿里云颁发的AccessKeyId/AccessKeySecret构造一个CredentialProvider。
                 id<OSSCredentialProvider> credential =  [[OSSStsTokenCredentialProvider alloc] initWithAccessKeyId:self.accessKeyId secretKeyId:self.accessKeySecret securityToken:self.securityToken];
                 OSSClientConfiguration * conf = [OSSClientConfiguration new];
@@ -62,19 +57,35 @@
                 }
                 
                 self.client = [[OSSClient alloc] initWithEndpoint:endpoint credentialProvider:credential clientConfiguration:conf];
+                
+                successCompletionBlock(request, response);
             }
         }
         
-    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
-        
-    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
-        
-    }];
+    } businessFailure:businessFailureBlock networkFailure:networkFailureBlock];
 }
 
 - (void)uploadImageArray:(NSArray<UIImage *> *)images progress:(OSSNetworkingUploadProgressBlock)progress success:(void (^)(NSString *, NSInteger))successBlock failure:(void (^)(NSError *, NSInteger))failureBlock
 {
     
+    [self updateUploadAccessInfoWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self uploadWithImages:images progress:progress success:successBlock failure:failureBlock];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [self uploadWithImages:images progress:progress success:successBlock failure:failureBlock];
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [self uploadWithImages:images progress:progress success:successBlock failure:failureBlock];
+        
+    }];
+    
+}
+
+- (void)uploadWithImages:(NSArray<UIImage *> *)images progress:(OSSNetworkingUploadProgressBlock)progress success:(void (^)(NSString *, NSInteger))successBlock failure:(void (^)(NSError *, NSInteger))failureBlock
+{
     for (NSInteger i = 0; i < images.count; i++) {
         UIImage * image = [images objectAtIndex:i];
         NSString * path =[NSString stringWithFormat:@"user/resource/photo/%ld/%@%@.jpg", [UserManager shareManager].uid, [FRApplicatinInfoTool getTimeStampMS], [self randomLetterAndNumber]];
@@ -92,7 +103,6 @@
             
         }];
     }
-    
 }
 
 - (void)uploadImage:(UIImage *)image withPath:(NSString *)path progress:(OSSNetworkingUploadProgressBlock)progress success:(void (^)(NSString *path))successBlock failure:(void (^)(NSError *error))failureBlock
@@ -100,7 +110,20 @@
     OSSPutObjectRequest * put = [OSSPutObjectRequest new];
     put.bucketName = self.bucket;
     put.objectKey = path;
-    put.uploadingData = UIImageJPEGRepresentation(image, .5);
+    
+    NSData*  data = UIImageJPEGRepresentation(image, 1);
+    float tempX = 0.9;
+    NSInteger length = data.length;
+    while (data.length > 500*1024) {
+        data = UIImageJPEGRepresentation(image, tempX);
+        tempX -= 0.1;
+        if (data.length == length) {
+            break;
+        }
+        length = data.length;
+    }
+    
+    put.uploadingData = data;
     put.uploadProgress = progress;
     OSSTask * putTask = [self.client putObject:put];
     [putTask continueWithBlock:^id _Nullable(OSSTask * _Nonnull task) {

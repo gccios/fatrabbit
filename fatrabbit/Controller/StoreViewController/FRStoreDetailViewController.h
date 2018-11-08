@@ -9,6 +9,9 @@
 #import "FRBaseViewController.h"
 #import "FRStoreModel.h"
 
+/**
+ 商品详情
+ */
 @interface FRStoreDetailViewController : FRBaseViewController
 
 - (instancetype)initWithModel:(FRStoreModel *)model;

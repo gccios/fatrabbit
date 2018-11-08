@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FRCollectModel.h"
 
 @interface FRMyCollectTableViewCell : UITableViewCell
+
+- (void)configWithModel:(FRCollectModel *)model;
 
 @end

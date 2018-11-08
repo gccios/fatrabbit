@@ -16,6 +16,11 @@
 #import "FRStoreReamrkViewController.h"
 #import "FRStoreOrderRequest.h"
 #import "MBProgressHUD+FRHUD.h"
+#import "FRStoreCartOrderDetailController.h"
+#import "FROrderPayRequest.h"
+#import "FROrderRequest.h"
+#import "FROrderDetailViewController.h"
+#import <AlipaySDK/AlipaySDK.h>
 
 @interface FRStoreOrderViewController () <UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, FRAddressViewControllerDelegate>
 
@@ -32,11 +37,18 @@
 @property (nonatomic, strong) UILabel * orderNumberLabel;
 
 @property (nonatomic, strong) FRAddressModel * addressModel;
+
+@property (nonatomic, strong) FRStorePayMenuModel * pointsModel;
 @property (nonatomic, strong) FRStorePayMenuModel * invoiceModel;
 @property (nonatomic, strong) FRStorePayMenuModel * payWayModel;
 @property (nonatomic, strong) FRStorePayMenuModel * remarkModel;
+@property (nonatomic, strong) FRStorePayMenuModel * discountModel;
+
 @property (nonatomic, strong) UILabel * totalLabel;
 @property (nonatomic, strong) UILabel * pointsLabel;
+@property (nonatomic, strong) UILabel * givePointsLabel;
+
+@property (nonatomic, assign) NSInteger orderID;
 
 @end
 
@@ -56,16 +68,110 @@
     
     self.menuSource = [[NSMutableArray alloc] init];
     
+    self.pointsModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Points];
     self.invoiceModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_InvoiceInfo];
     self.payWayModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_PayWay];
     self.remarkModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Remark];
+    self.discountModel = [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Discount];
     
-    [self.menuSource addObject:@[self.payWayModel,
-                                 [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Points],
-                                 [[FRStorePayMenuModel alloc] initWithType:FRStorePayMenuType_Discount]]];
-    [self.menuSource addObject:@[self.invoiceModel, self.remarkModel]];
+    self.pointsModel.isChoose = YES;
+    self.discountModel.isChoose = YES;
+    
+    NSMutableArray * paySource = [[NSMutableArray alloc] initWithArray:@[self.payWayModel,
+                                                                         self.pointsModel,
+                                                                         self.discountModel]];
+    NSMutableArray * infoSource = [[NSMutableArray alloc] initWithArray:@[self.invoiceModel, self.remarkModel]];
+    [self.menuSource addObject:paySource];
+    [self.menuSource addObject:infoSource];
+    
+    if (self.totalPoints > 0) {
+        [paySource removeObject:self.discountModel];
+    }else{
+        [paySource removeObject:self.pointsModel];
+    }
     
     [self createViews];
+    
+    [self.tableView reloadData];
+    
+    self.totalLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.payTotalPrice];
+    self.pointsLabel.text = [NSString stringWithFormat:@"%.2lf", self.totalPoints];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wechatDidPayStatusChange:) name:DDUserWeChatPayNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayDidPayStatusChange:) name:DDUserAlipayPayNotification object:nil];
+}
+
+- (void)wechatDidPayStatusChange:(NSNotification *)notification
+{
+    PayResp * resp = notification.object;
+    
+    if (resp.errCode == WXSuccess) {
+        
+        [self showDetailWithOrderID:self.orderID];
+        
+    }else{
+        [MBProgressHUD showTextHUDWithText:@"支付失败"];
+        [self showDetailWithOrderID:self.orderID];
+    }
+}
+
+- (void)alipayDidPayStatusChange:(NSNotification *)notification
+{
+    NSDictionary * result = notification.object;
+    
+    NSString * status = [result objectForKey:@"resultStatus"];
+    if ([status isEqualToString:@"9000"]) {
+        [self showDetailWithOrderID:self.orderID];
+    }else if ([status isEqualToString:@"8000"]) {
+        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"未知的错误" message:@"请联系服务商以确定是否支付成功" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+            [self showDetailWithOrderID:self.orderID];
+            
+        }];
+        [alert addAction:action];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else{
+        [MBProgressHUD showTextHUDWithText:@"支付失败"];
+        [self showDetailWithOrderID:self.orderID];
+    }
+}
+
+- (void)showDetailWithOrderID:(NSInteger)orderID
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(storeOrderHandleWithOrderID:)]) {
+        [self.delegate storeOrderHandleWithOrderID:self.orderID];
+    }
+    
+    MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在加载" inView:self.view];
+    FROrderRequest * request = [[FROrderRequest alloc] initStoreDetailWithID:orderID];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        NSDictionary * data = [response objectForKey:@"data"];
+        FRMyStoreOrderModel * storeModel = [FRMyStoreOrderModel mj_objectWithKeyValues:data];
+        storeModel.cid = orderID;
+        FROrderDetailViewController * detail = [[FROrderDetailViewController alloc] initWithStoreModel:storeModel];
+        [self.navigationController popViewControllerAnimated:NO];
+        
+        UITabBarController * tab = (UITabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+        UINavigationController * na = tab.selectedViewController;
+        [na pushViewController:detail animated:YES];
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        [hud hideAnimated:YES];
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [hud hideAnimated:YES];
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        
+    }];
 }
 
 - (void)addressButtonDidClicked
@@ -73,6 +179,20 @@
     FRAddressViewController * address = [[FRAddressViewController alloc] init];
     address.delegate = self;
     [self.navigationController pushViewController:address animated:YES];
+}
+
+- (void)FRAddressDidChange
+{
+    if (self.addressModel) {
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"cid == %ld", self.addressModel.cid];
+        NSArray * result = [[UserManager shareManager].addressList filteredArrayUsingPredicate:predicate];
+        if (result && result.count > 0) {
+            
+        }else{
+            self.addressModel = nil;
+            [self createTableHeaderView];
+        }
+    }
 }
 
 - (void)FRAddressDidChoose:(FRAddressModel *)address
@@ -85,29 +205,145 @@
 {
     NSMutableArray * cartIDs = [[NSMutableArray alloc] init];
     for (FRStoreCartModel * model in self.dataSource) {
-        if (model.isSelected) {
-            [cartIDs addObject:@(model.cid)];
-        }
+        [cartIDs addObject:@(model.cid)];
+    }
+    
+    if (nil == self.addressModel) {
+        [MBProgressHUD showTextHUDWithText:@"请先选择收货地址"];
+        return;
     }
     
     MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在提交订单" inView:self.view];
-    FRStoreOrderRequest * request = [[FRStoreOrderRequest alloc] initWithPayWithAddressID:self.addressModel.cid invoiceID:self.invoiceModel.invoice.cid payWay:self.payWayModel.type reamrk:self.remarkModel.detail cartIDs:cartIDs];
+    FRStoreOrderRequest * request = [[FRStoreOrderRequest alloc] initWithPayWithAddressID:self.addressModel.cid invoiceID:self.invoiceModel.invoice.cid payWay:self.payWayModel.payWay.type reamrk:self.remarkModel.detail cartIDs:cartIDs];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         [hud hideAnimated:YES];
-        [MBProgressHUD showTextHUDWithText:@"订单提交成功"];
+        
+        NSDictionary * dict = [response objectForKey:@"data"];
+        NSInteger orderID = [[dict objectForKey:@"id"] integerValue];
+        self.orderID = orderID;
+        [self payWithOrderID:orderID];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
         [hud hideAnimated:YES];
-        [MBProgressHUD showTextHUDWithText:@"订单提交失败"];
-        
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
         [hud hideAnimated:YES];
-        [MBProgressHUD showTextHUDWithText:@"网络连接失败"];
-        
     }];
+}
+
+- (void)payWithOrderID:(NSInteger)orderID
+{
+    if (self.totalPoints > 0) {
+        
+        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"下单成功" message:@"已扣除商品相应积分" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+            [self showDetailWithOrderID:orderID];
+            
+        }];
+        [alert addAction:action];
+        [self presentViewController:alert animated:YES completion:nil];
+        
+        return;
+    }
+    
+    if (self.payWayModel.payWay.type == FRPayWayType_Alipay) {
+        
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"发起支付中" inView:self.view];
+        FROrderPayRequest * request = [[FROrderPayRequest alloc] initWithStoreAlipayOrderID:orderID];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                NSString * order = [data objectForKey:@"order"];
+                if (!isEmptyString(order)) {
+                    [[AlipaySDK defaultService] payOrder:order fromScheme:FRURLScheme callback:^(NSDictionary *resultDic) {
+                        NSLog(@"%@", resultDic);
+                    }];
+                }else{
+                    [MBProgressHUD showTextHUDWithText:@"发起支付失败"];
+                }
+            }
+            [hud hideAnimated:YES];
+            
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            NSString * msg = [response objectForKey:@"msg"];
+            if (!isEmptyString(msg)) {
+                [MBProgressHUD showTextHUDWithText:msg];
+            }
+            [hud hideAnimated:YES];
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+            [hud hideAnimated:YES];
+        }];
+    }else if (self.payWayModel.payWay.type == FRPayWayType_Wechat) {
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"发起支付中" inView:self.view];
+        FROrderPayRequest * request = [[FROrderPayRequest alloc] initWithStoreWechatOrderID:orderID];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                
+                PayReq *payRequest = [[PayReq alloc] init];
+                
+                NSString * partnerId = [data objectForKey:@"partnerid"];
+                if ([partnerId isKindOfClass:[NSNumber class]]) {
+                    NSInteger temppartnerId = [partnerId integerValue];
+                    payRequest.partnerId= [NSString stringWithFormat:@"%ld", temppartnerId];
+                }else{
+                    payRequest.partnerId= partnerId;
+                }
+                
+                payRequest.prepayId = [data objectForKey:@"prepayid"];
+                payRequest.package = [data objectForKey:@"package"];
+                payRequest.nonceStr= [data objectForKey:@"noncestr"];
+                payRequest.timeStamp= (int)[[data objectForKey:@"timestamp"] integerValue];
+                payRequest.sign= [data objectForKey:@"sign"];
+                [WXApi sendReq:payRequest];
+                
+            }
+            [hud hideAnimated:YES];
+            
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            NSString * msg = [response objectForKey:@"msg"];
+            if (!isEmptyString(msg)) {
+                [MBProgressHUD showTextHUDWithText:msg];
+            }
+            [hud hideAnimated:YES];
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+            [hud hideAnimated:YES];
+        }];
+    }else if(self.payWayModel.payWay.type == FRPayWayType_Balance) {
+        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"下单成功" message:@"下单支付成功，已扣除商品对应余额" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+            [self showDetailWithOrderID:orderID];
+            
+        }];
+        [alert addAction:action];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else{
+        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"下单成功" message:@"您可以联系服务商进行线下费用交易" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+            [self showDetailWithOrderID:orderID];
+            
+        }];
+        [alert addAction:action];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)createViews
@@ -156,13 +392,7 @@
         make.height.mas_equalTo(15);
     }];
     
-    CGFloat totalPrice = 0;
-    for (FRStoreCartModel * model in self.dataSource) {
-        totalPrice += model.amount;
-    }
-    
     self.totalLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.totalLabel.text = [NSString stringWithFormat:@"￥%.2lf", totalPrice];
     [bottomHandleView addSubview:self.totalLabel];
     [self.totalLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(totalTipLabel);
@@ -171,7 +401,7 @@
     }];
     
     UILabel * pointTipLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    pointTipLabel.text = @"总积分：";
+    pointTipLabel.text = @"使用积分：";
     [bottomHandleView addSubview:pointTipLabel];
     [pointTipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(totalTipLabel.mas_bottom);
@@ -180,7 +410,7 @@
     }];
     
     self.pointsLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10) textColor:KThemeColor alignment:NSTextAlignmentLeft];
-    self.pointsLabel.text = @"2369";
+    self.pointsLabel.text = [NSString stringWithFormat:@"%.2lf", [UserManager shareManager].points];
     [bottomHandleView addSubview:self.pointsLabel];
     [self.pointsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(pointTipLabel);
@@ -189,6 +419,16 @@
     }];
     
     [self createTableHeaderView];
+}
+
+- (void)reloadPrice
+{
+    self.totalLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.payTotalPrice];
+    if (self.discountModel.isChoose) {
+        self.totalLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.payTotalPrice];
+    }
+    self.totalLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.payTotalPrice];
+    self.pointsLabel.text = [NSString stringWithFormat:@"%.2lf", self.totalPoints];
 }
 
 - (void)createTableHeaderView
@@ -265,6 +505,14 @@
         make.height.mas_equalTo(20 * scale);
     }];
     
+    self.givePointsLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:KPriceColor alignment:NSTextAlignmentRight];
+    [headerView addSubview:self.givePointsLabel];
+    [self.givePointsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(addressLineView.mas_bottom).offset(15 * scale);
+        make.right.mas_equalTo(-15 * scale);
+        make.height.mas_equalTo(20 * scale);
+    }];
+    
     CGFloat width = (kMainBoundsWidth - 20 * scale) / 5.f;
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize = CGSizeMake(width, width);
@@ -303,6 +551,16 @@
         make.right.mas_equalTo(moreImageView.mas_left).offset(-10 * scale);
     }];
     
+    UIButton * moreButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [moreButton addTarget:self action:@selector(moreButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:moreButton];
+    [moreButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(-10 * scale);
+        make.width.mas_equalTo(kMainBoundsWidth / 5.f);
+        make.height.mas_equalTo(50 * scale);
+        make.centerY.mas_equalTo(moreImageView);
+    }];
+    
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectZero];
     lineView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     [headerView addSubview:lineView];
@@ -313,6 +571,12 @@
     }];
     
     self.tableView.tableHeaderView = headerView;
+}
+
+- (void)moreButtonDidClicked
+{
+    FRStoreCartOrderDetailController * detail = [[FRStoreCartOrderDetailController alloc] initWithDataSource:self.dataSource];
+    [self.navigationController pushViewController:detail animated:YES];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -338,9 +602,18 @@
 {
     NSArray * data = [self.menuSource objectAtIndex:indexPath.section];
     FRStorePayMenuModel * menuModel = [data objectAtIndex:indexPath.row];
-    if (menuModel.type == FRStorePayMenuType_Points || menuModel.type == FRStorePayMenuType_Discount) {
+    if (menuModel.type == FRStorePayMenuType_Points) {
+        
+//        [MBProgressHUD showTextHUDWithText:@"订单中有使用积分的商品"];
+        return;
+        
         menuModel.isChoose = !menuModel.isChoose;
         [tableView reloadData];
+    }else if (menuModel.type == FRStorePayMenuType_Discount) {
+        return;
+        menuModel.isChoose = !menuModel.isChoose;
+        [tableView reloadData];
+        [self reloadPrice];
     }else if (menuModel.type == FRStorePayMenuType_PayWay) {
         FRChoosePayWayView * payway = [[FRChoosePayWayView alloc] initWithModel:menuModel.payWay];
         
@@ -419,6 +692,12 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 10.f;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:DDUserWeChatPayNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:DDUserAlipayPayNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning {

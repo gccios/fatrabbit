@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <MJExtension.h>
 
+/**
+ banner轮播图model
+ */
 @interface FRBannerModel : NSObject
 
 @property (nonatomic, copy) NSString * img;

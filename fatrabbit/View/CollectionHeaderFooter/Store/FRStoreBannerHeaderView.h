@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "FRCateModel.h"
+#import <SDCycleScrollView.h>
 
 @interface FRStoreBannerHeaderView : UICollectionReusableView
 
+@property (nonatomic, strong) SDCycleScrollView * bannerView;
+
+@property (nonatomic, copy) void (^moreDidClickedHandle)(void);
 @property (nonatomic, copy) void (^menuDidClickedHandle)(FRCateModel *model);
+
+- (void)configWithTitle:(NSString *)title;
 
 - (void)configWithBannerSource:(NSMutableArray *)bannerSource;
 

@@ -10,6 +10,8 @@
 
 @interface FRPulishNeedRequest : FRBaseNetworkRequest
 
-- (instancetype)initWithPrice:(float)price title:(NSString *)title remark:(NSString *)remark img:(NSArray *)images cateID:(NSInteger)cateID;
+- (instancetype)initWithPrice:(double)price title:(NSString *)title remark:(NSString *)remark img:(NSArray *)images cateID:(NSInteger)cateID;
+
+- (void)configWithNeddID:(NSInteger)needID;
 
 @end

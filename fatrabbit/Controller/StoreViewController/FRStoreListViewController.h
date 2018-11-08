@@ -9,15 +9,10 @@
 #import "FRBaseViewController.h"
 #import "FRCateModel.h"
 
-typedef enum : NSUInteger {
-    FRStoreSearchType_All,
-    FRStoreSearchType_DealNumber,
-    FRStoreSearchType_Price
-} FRStoreSearchType;
-
+/**
+ 商品列表页面
+ */
 @interface FRStoreListViewController : FRBaseViewController
-
-- (instancetype)initWithType:(FRStoreSearchType)type;
 
 - (void)configWithModel:(FRCateModel *)model;
 

@@ -16,4 +16,10 @@
 
 - (instancetype)initDeleteWithStoreID:(NSInteger)storeID;
 
+- (instancetype)initRemovetWithStoreIDs:(NSArray *)storeIDs;
+
+- (void)configWithCardIDList:(NSArray *)cardList;
+
+- (void)configWithNum:(NSInteger)num;
+
 @end

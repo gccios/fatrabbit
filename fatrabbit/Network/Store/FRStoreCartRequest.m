@@ -43,4 +43,25 @@
     return self;
 }
 
+- (instancetype)initRemovetWithStoreIDs:(NSArray *)storeIDs
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"cartdelete";
+        
+        [self setValue:storeIDs forParamKey:@"cart_ids"];
+    }
+    return self;
+}
+
+- (void)configWithCardIDList:(NSArray *)cardList
+{
+    [self setValue:cardList forParamKey:@"cart_ids"];
+}
+
+- (void)configWithNum:(NSInteger)num
+{
+    [self setIntegerValue:num forParamKey:@"num"];
+}
+
 @end

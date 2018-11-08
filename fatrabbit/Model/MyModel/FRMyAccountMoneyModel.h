@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <MJExtension.h>
 
+/**
+ 我的账户余额model
+ */
 @interface FRMyAccountMoneyModel : NSObject
 
 @property (nonatomic, copy) NSString * remark;

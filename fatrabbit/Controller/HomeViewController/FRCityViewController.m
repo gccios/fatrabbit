@@ -15,18 +15,36 @@
 
 @interface FRCityViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
 
-@property (nonatomic, strong) NSArray * cityArray;
+@property (nonatomic, strong) NSMutableArray * cityArray;
 @property (nonatomic, strong) UICollectionView * cityCollectionView;
+
+@property (nonatomic, assign) BOOL isProvideChoose;
 
 @end
 
 @implementation FRCityViewController
 
+- (instancetype)initWithProvideChoose
+{
+    if (self = [super init]) {
+        self.isProvideChoose = YES;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.cityArray = [FRManager shareManager].cityList;
+    self.cityArray = [[NSMutableArray alloc] init];
+    
+    [self.cityArray addObjectsFromArray:[FRManager shareManager].cityList];
+    if (self.isProvideChoose) {
+        FRCityModel * model = [[FRCityModel alloc] init];
+        model.cid = 0;
+        model.name = @"全国";
+        [self.cityArray insertObject:model atIndex:0];
+    }
     
     [self createViews];
     
@@ -82,24 +100,36 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(FRCityViewControllerDidChoose:)]) {
         FRCityModel * model = [self.cityArray objectAtIndex:indexPath.row];
+        if (self.isProvideChoose) {
+            [self.delegate FRCityViewControllerDidChoose:model];
+            [self.navigationController popViewControllerAnimated:YES];
+            return;
+        }
         
-        [MBProgressHUD showLoadingHUDWithText:@"正在切换当前城市" inView:self.view];
+        MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在切换当前城市" inView:self.view];
         FRUserReportCityRequest * request = [[FRUserReportCityRequest alloc] initWithCityID:model.cid];
         
         [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
             
+            [hud hideAnimated:YES];
             [self.delegate FRCityViewControllerDidChoose:model];
             [self.navigationController popViewControllerAnimated:YES];
             
         } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
             
-            [MBProgressHUD showTextHUDWithText:@"切换城市失败"];
+            [hud hideAnimated:YES];
+            NSString * msg = [response objectForKey:@"msg"];
+            if (!isEmptyString(msg)) {
+                [MBProgressHUD showTextHUDWithText:msg];
+            }
             
         } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
             
-            [MBProgressHUD showTextHUDWithText:@"网络连接失败"];
+            [hud hideAnimated:YES];
+            [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
             
         }];
     }

@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <MJExtension.h>
 
+/**
+ 发票model
+ */
 @interface FRMyInvoiceModel : NSObject
 
 @property (nonatomic, assign) NSInteger cid;

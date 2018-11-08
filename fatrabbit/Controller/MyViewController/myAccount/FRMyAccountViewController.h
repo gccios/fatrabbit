@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 我的账户页面
+ */
 @interface FRMyAccountViewController : FRBaseViewController
 
 @end

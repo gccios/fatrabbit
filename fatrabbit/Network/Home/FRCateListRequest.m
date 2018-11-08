@@ -14,7 +14,7 @@
 {
     if (self = [super init]) {
         self.httpMethod = BGNetworkRequestHTTPPost;
-        self.methodName = @"catelist";
+        self.methodName = @"indextop";
     }
     return self;
 }

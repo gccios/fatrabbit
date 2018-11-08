@@ -17,4 +17,9 @@
              };
 }
 
++ (NSDictionary *)mj_objectClassInArray
+{
+    return @{@"case_list": @"FRExampleModel"};
+}
+
 @end

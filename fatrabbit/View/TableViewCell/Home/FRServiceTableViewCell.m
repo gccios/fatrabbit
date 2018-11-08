@@ -13,7 +13,7 @@
 
 @interface FRServiceTableViewCell ()
 
-@property (nonatomic, strong) FRNeedModel * model;
+@property (nonatomic, strong) FRMySeriviceModel * model;
 
 @property (nonatomic, strong) UIImageView * coverImageView;
 @property (nonatomic, strong) UILabel * nameLabel;
@@ -33,14 +33,14 @@
     return self;
 }
 
-- (void)configWithModel:(FRNeedModel *)model
+- (void)configWithModel:(FRMySeriviceModel *)model
 {
     self.model = model;
-    [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
+    [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default"]];
     self.nameLabel.text = model.title;
     self.detailLabel.text = model.remark;
-    self.browseLabel.text = model.pvtip;
-    self.timeLabel.text = model.timetip;
+    self.browseLabel.text = model.tip;
+    self.timeLabel.text = [NSString stringWithFormat:@"%.1f", model.score];
 }
 
 - (void)createFRSeriveceCell
@@ -66,7 +66,7 @@
     baseView.layer.shadowRadius = 4 * scale;
     baseView.layer.shadowOffset = CGSizeMake(0, 2 * scale);
     
-    self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage new]];
+    self.coverImageView = [FRCreateViewTool createImageViewWithFrame:CGRectZero contentModel:UIViewContentModeScaleAspectFill image:[UIImage imageNamed:@"default"]];
     self.coverImageView.clipsToBounds = YES;
     [baseView addSubview:self.coverImageView];
     [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -83,13 +83,14 @@
         make.width.mas_equalTo(150 * scale);
     }];
     
-    self.timeLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentRight];
+    self.timeLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(11 * scale) textColor:KPriceColor alignment:NSTextAlignmentRight];
     [baseView addSubview:self.timeLabel];
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.nameLabel.mas_right);
         make.right.mas_equalTo(-10 * scale);
         make.centerY.mas_equalTo(self.nameLabel);
     }];
+    self.timeLabel.hidden = YES;
     
     self.detailLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(10 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentLeft];
     self.detailLabel.numberOfLines = 3;
@@ -106,6 +107,14 @@
         make.bottom.mas_equalTo(-10 * scale);
         make.left.mas_equalTo(self.detailLabel);
         make.right.mas_equalTo(self.detailLabel);
+    }];
+    
+    UILabel * typeLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0xEC623E) alignment:NSTextAlignmentRight];
+    typeLabel.text = @"服务";
+    [baseView addSubview:typeLabel];
+    [typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.right.mas_equalTo(-10 * scale);
+        make.height.mas_equalTo(20 * scale);
     }];
 }
 

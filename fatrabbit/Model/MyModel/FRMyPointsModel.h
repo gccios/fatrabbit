@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <MJExtension.h>
 
+/**
+ 我的账户积分model
+ */
 @interface FRMyPointsModel : NSObject
 
 @property (nonatomic, copy) NSString * remark;

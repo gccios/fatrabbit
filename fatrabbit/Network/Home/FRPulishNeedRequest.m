@@ -10,7 +10,7 @@
 
 @implementation FRPulishNeedRequest
 
-- (instancetype)initWithPrice:(float)price title:(NSString *)title remark:(NSString *)remark img:(NSArray *)images cateID:(NSInteger)cateID
+- (instancetype)initWithPrice:(double)price title:(NSString *)title remark:(NSString *)remark img:(NSArray *)images cateID:(NSInteger)cateID
 {
     if (self = [super init]) {
         self.httpMethod = BGNetworkRequestHTTPPost;
@@ -36,6 +36,14 @@
         }
     }
     return self;
+}
+
+- (void)configWithNeddID:(NSInteger)needID
+{
+    if (needID != 0) {
+        self.methodName = @"demandedit";
+        [self setIntegerValue:needID forParamKey:@"id"];
+    }
 }
 
 @end

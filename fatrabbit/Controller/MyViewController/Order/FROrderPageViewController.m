@@ -8,8 +8,18 @@
 
 #import "FROrderPageViewController.h"
 #import "FROrderViewController.h"
+#import "FRMyServiceOrderViewController.h"
 
 @interface FROrderPageViewController ()
+
+@property (nonatomic, strong) NSArray * storeTitleArray;
+@property (nonatomic, strong) NSArray * storeTypeArray;
+@property (nonatomic, strong) NSArray * serviceTitleArray;
+@property (nonatomic, strong) NSArray * serviceTypeArray;
+
+@property (nonatomic, assign) NSInteger type;//1为商品订单 2为服务订单
+
+@property (nonatomic, strong) UIButton * rightButton;
 
 @end
 
@@ -17,16 +27,14 @@
 
 - (instancetype)init
 {
-    NSArray * vcArray = @[[FROrderViewController class],
-                          [FROrderViewController class],
-                          [FROrderViewController class],
-                          [FROrderViewController class],
-                          [FROrderViewController class],
-                          [FROrderViewController class]];
-    NSArray * titleArray = @[@"全部", @"待收款", @"待收货", @"已完成", @"待评价", @"已取消"];
     
-    if (self = [super initWithViewControllerClasses:vcArray andTheirTitles:titleArray]) {
+    if (self = [super init]) {
+        self.type = 1;
         self.navigationItem.title = @"商品订单";
+        self.storeTitleArray = @[@"全部", @"待付款", @"待收货", @"待评价", @"已完成", @"已取消"];
+        self.storeTypeArray = @[@(0), @(1), @(2), @(3), @(4), @(5)];
+        self.serviceTitleArray = @[@"全部", @"待付款", @"待评价", @"已完成", @"已取消"];
+        self.serviceTypeArray = @[@(0), @(1), @(3), @(4), @(5)];
         self.hidesBottomBarWhenPushed = YES;
         [self configSelf];
     }
@@ -72,10 +80,57 @@
     UIBarButtonItem* backItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.leftBarButtonItem = backItem;
     
-    UIButton * rightButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14) titleColor:UIColorFromRGB(0xFFFFFF) title:@"服务订单"];
-    rightButton.exclusiveTouch = YES;
-    [rightButton setFrame:CGRectMake(0, 0, 60, 30)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    self.rightButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(14) titleColor:UIColorFromRGB(0xFFFFFF) title:@"服务订单"];
+    self.rightButton.exclusiveTouch = YES;
+    [self.rightButton setFrame:CGRectMake(0, 0, 60, 30)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
+    [self.rightButton addTarget:self action:@selector(rightButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)rightButtonDidClicked
+{
+    if (self.type == 1) {
+        [self.rightButton setTitle:@"商品订单" forState:UIControlStateNormal];
+        self.navigationItem.title = @"服务订单";
+        self.type = 2;
+        [self reloadData];
+    }else if (self.type == 2) {
+        [self.rightButton setTitle:@"服务订单" forState:UIControlStateNormal];
+        self.navigationItem.title = @"商品订单";
+        self.type = 1;
+        [self reloadData];
+    }
+}
+
+- (NSString *)pageController:(WMPageController *)pageController titleAtIndex:(NSInteger)index
+{
+    if (self.type == 1) {
+        NSString * title = [self.storeTitleArray objectAtIndex:index];
+        return title;
+    }else{
+        NSString * title = [self.serviceTitleArray objectAtIndex:index];
+        return title;
+    }
+}
+
+- (NSInteger)numbersOfChildControllersInPageController:(WMPageController *)pageController
+{
+    if (self.type == 1) {
+        return self.storeTitleArray.count;
+    }else{
+        return self.serviceTitleArray.count;
+    }
+}
+
+- (UIViewController *)pageController:(WMPageController *)pageController viewControllerAtIndex:(NSInteger)index
+{
+    if (self.type == 1) {
+        NSInteger type = [[self.storeTypeArray objectAtIndex:index] integerValue];
+        return [[FROrderViewController alloc] initWithType:type];
+    }else{
+        NSInteger type = [[self.serviceTypeArray objectAtIndex:index] integerValue];
+        return [[FRMyServiceOrderViewController alloc] initWithType:type];
+    }
 }
 
 - (CGRect)pageController:(WMPageController *)pageController preferredFrameForMenuView:(WMMenuView *)menuView

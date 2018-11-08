@@ -8,9 +8,17 @@
 
 #import "FRBaseViewController.h"
 #import "FRCateModel.h"
+#import "FRNeedModel.h"
 
+extern NSString * const FRNeedDidPublishNotification; //需求发布通知
+
+/**
+ 发布需求页面
+ */
 @interface FRPublishNeedController : FRBaseViewController
 
 - (instancetype)initWithFRCateModel:(FRCateModel *)model;
+
+- (instancetype)initEditWithNeedModel:(FRNeedModel *)needModel imageSource:(NSArray *)imageSource cateModel:(FRCateModel *)model;
 
 @end

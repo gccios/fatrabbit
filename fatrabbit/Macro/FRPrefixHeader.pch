@@ -18,13 +18,18 @@
 #define TEST_DEV_TYPE 1 //测试环境切换宏，1代表线上环境，0代表测试环境
 
 #if TEST_DEV_TYPE
-#define HOSTURL @"http://47.105.82.190:8090" //正式地址
+#define HOSTURL @"http://api.pangxiaotu.com" //正式地址
 //#define NSLog(...) {}
 
 #else
-#define HOSTURL @"http://47.105.82.190:8090"  //测试地址
+#define HOSTURL @"http://api.pangxiaotu.com"  //测试地址
 //#define NSLog(...) NSLog(__VA_ARGS__)
 #endif
+
+#define WeChatAPPKey @"wx4e72a1662dda36e1"
+#define WeChatAPPSecret @"254bb6eefe56f8f402cfca128ee4cfeb"
+
+#define JPushAppKey @"d52431118a28cb60105ac05c"
 
 /*
  颜色
@@ -75,5 +80,8 @@
  特殊定义
  */
 #define keychainID @"FatrabbitKeychainID"
+#define JPushIDKeychainID @"JPushIDKeychainID"
+#define HasLaunched @"HasLaunched"
+#define FRURLScheme @"fatrabbitNB"
 
 #endif /* FRPrefixHeader_pch */

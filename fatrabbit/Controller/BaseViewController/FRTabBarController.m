@@ -32,8 +32,8 @@
 {
     [self setValue:[[FRTabbar alloc] init] forKey:@"tabBar"];
     
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : KThemeColor, NSFontAttributeName: kPingFangRegular(9)} forState:UIControlStateSelected];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : UIColorFromRGB(0x333333), NSFontAttributeName: kPingFangRegular(9)} forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : KThemeColor, NSFontAttributeName: kPingFangRegular(11)} forState:UIControlStateSelected];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : UIColorFromRGB(0x333333), NSFontAttributeName: kPingFangRegular(11)} forState:UIControlStateNormal];
     
     NSMutableArray * vcArray = [[NSMutableArray alloc] init];
     

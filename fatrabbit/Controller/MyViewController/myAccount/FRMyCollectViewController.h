@@ -8,6 +8,9 @@
 
 #import "FRBaseViewController.h"
 
+/**
+ 我的收藏页面
+ */
 @interface FRMyCollectViewController : FRBaseViewController
 
 @end

@@ -56,28 +56,27 @@
     self.backgroundColor = [UIColor whiteColor];
     CGFloat scale = kMainBoundsWidth / 375.f;
     
+    self.changeLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    [self.contentView addSubview:self.changeLabel];
+    [self.changeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(0 * scale);
+        make.top.bottom.mas_equalTo(0);
+    }];
+    
     self.remarkLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(14 * scale) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    self.remarkLabel.text = @"测试";
     [self.contentView addSubview:self.remarkLabel];
     [self.remarkLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(15 * scale);
         make.top.bottom.mas_equalTo(0);
-    }];
-    
-    self.changeLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
-    self.changeLabel.text = @"+90000";
-    [self.contentView addSubview:self.changeLabel];
-    [self.changeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(130 * scale);
-        make.top.bottom.mas_equalTo(0);
+        make.right.mas_equalTo(self.changeLabel.mas_left).offset(-10 * scale);
     }];
     
     self.timeLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentRight];
-    self.timeLabel.text = @"2018-09-31 15:00";
     [self.contentView addSubview:self.timeLabel];
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-15 * scale);
         make.top.bottom.mas_equalTo(0);
+        make.left.mas_equalTo(self.changeLabel.mas_right).offset(10 * scale);
     }];
 }
 

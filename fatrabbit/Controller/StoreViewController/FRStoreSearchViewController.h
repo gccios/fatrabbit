@@ -6,11 +6,23 @@
 //  Copyright © 2018年 郭春城. All rights reserved.
 //
 
-#import <WMPageController.h>
+#import "FRBaseViewController.h"
 #import "FRCateModel.h"
+#import "FRStoreBlockModel.h"
 
-@interface FRStoreSearchViewController : WMPageController
+typedef enum : NSUInteger {
+    FRStoreSearchType_Cate,
+    FRStoreSearchType_Deal,
+    FRStoreSearchType_Price
+} FRStoreSearchType;
 
-- (instancetype)initWithCateModel:(FRCateModel *)model;
+/**
+ 商品搜索页面
+ */
+@interface FRStoreSearchViewController : FRBaseViewController
+
+- (instancetype)initWithCateModel:(FRCateModel *)model cateList:(NSArray *)cateList;
+
+- (instancetype)initWithStoreBlockModel:(FRStoreBlockModel *)model cateList:(NSArray *)cateList;
 
 @end

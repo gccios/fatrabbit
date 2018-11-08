@@ -8,6 +8,9 @@
 
 #import "FRHomeBaseViewController.h"
 
+/**
+ 信息页面
+ */
 @interface FRMessagePageViewController : FRHomeBaseViewController
 
 @end

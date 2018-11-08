@@ -12,11 +12,19 @@
 #import "FRAddressModel.h"
 #import "FRMyInvoiceModel.h"
 #import "FRStoreModel.h"
+#import <WXApi.h>
 
 extern NSString * const FRUserLoginStatusDidChange; //用户退出通知
 extern NSString * const FRUserStoreCartStatusDidChange; //用户购物车发生改变通知
+extern NSString * const DDUserDidGetWeChatCodeNotification; //获得WeChat的code
+extern NSString * const DDUserWeChatPayNotification; //微信支付通知
+extern NSString * const DDUserAlipayPayNotification; //支付宝支付通知
 
-@interface UserManager : NSObject
+
+/**
+ 用户信息管理类
+ */
+@interface UserManager : NSObject <WXApiDelegate>
 
 + (instancetype)shareManager;
 
@@ -32,10 +40,12 @@ extern NSString * const FRUserStoreCartStatusDidChange; //用户购物车发生�
 @property (nonatomic, assign) NSInteger is_provider;//是否是服务商
 @property (nonatomic, assign) NSInteger city_id;//城市ID
 @property (nonatomic, assign) CGFloat balance;//账户余额
-@property (nonatomic, assign) NSInteger points;//可用积分
+@property (nonatomic, assign) CGFloat points;//可用积分
 @property (nonatomic, copy) NSString * vip_name;//VIP等级
 @property (nonatomic, assign) CGFloat vip_discount;//VIP打折率
 @property (nonatomic, copy) NSString * vip_discount_tip;//VIP打折率语义化结果
+@property (nonatomic, assign) CGFloat next_vip_percent;//目前已消费金额占达到下个级别VIP的比例,值范围为0到1
+@property (nonatomic, assign) NSInteger first_cate_id;//服务商支持发布的服务类型
 
 @property (nonatomic, strong) FRCityModel * city;//当前城市
 
@@ -44,10 +54,14 @@ extern NSString * const FRUserStoreCartStatusDidChange; //用户购物车发生�
 
 @property (nonatomic, strong) NSMutableArray * storeCart;//购物车
 
+//调起微信登录
+- (void)loginWithWeChat;
 
 - (void)loginSuccesWithCache:(NSDictionary *)data;
 
 - (void)loginSuccessWithUid:(NSInteger)uid token:(NSString *)token mobile:(NSString *)mobile;
+
+- (void)logOut;
 
 - (void)needUpdateLocalUserInfo;
 
@@ -68,5 +82,8 @@ extern NSString * const FRUserStoreCartStatusDidChange; //用户购物车发生�
 - (void)requestStoreCartList;
 - (void)requestAddressList;
 - (void)requestInvoiceList;
+
+//用户支付调用
+
 
 @end

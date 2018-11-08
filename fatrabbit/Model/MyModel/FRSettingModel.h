@@ -13,8 +13,12 @@ typedef enum : NSUInteger {
     FRSettingType_Cache,
     FRSettingType_Version,
     FRSettingType_AboutUs,
+    FRSettingType_LogOut,
 } FRSettingType;
 
+/**
+ 我的设置的model
+ */
 @interface FRSettingModel : NSObject
 
 - (instancetype)initWithType:(FRSettingType)type;

@@ -8,10 +8,23 @@
 
 #import "FRBaseViewController.h"
 
+@protocol FRStoreOrderViewControllerDelegate <NSObject>
+
+- (void)storeOrderHandleWithOrderID:(NSInteger)orderID;
+
+@end
+
 /**
  商品确认订单页面
  */
 @interface FRStoreOrderViewController : FRBaseViewController
+
+@property (nonatomic, assign) CGFloat totalPrice;
+@property (nonatomic, assign) CGFloat payTotalPrice;
+@property (nonatomic, assign) CGFloat totalPoints;
+@property (nonatomic, assign) CGFloat discountPrice;
+
+@property (nonatomic, weak) id<FRStoreOrderViewControllerDelegate> delegate;
 
 - (instancetype)initWithSource:(NSArray *)source;
 

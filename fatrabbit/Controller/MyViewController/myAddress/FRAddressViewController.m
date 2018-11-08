@@ -45,6 +45,9 @@
                 [UserManager shareManager].addressList = [FRAddressModel mj_objectArrayWithKeyValuesArray:data];
                 self.dataSource = [UserManager shareManager].addressList;
                 [self.tableView reloadData];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(FRAddressDidChange)]) {
+                    [self.delegate FRAddressDidChange];
+                }
             }
         }
         [self.tableView.mj_header endRefreshing];

@@ -14,6 +14,9 @@
 
 @end
 
+/**
+ 编辑昵称页面
+ */
 @interface FREditNameViewController : FRBaseViewController
 
 @property (nonatomic, weak) id<FREditNameViewControllerDelegate> delegate;

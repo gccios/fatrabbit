@@ -15,6 +15,9 @@ typedef enum : NSUInteger {
     FRUserHeaderMenuType_VIP
 } FRUserHeaderMenuType;
 
+/**
+ 用户信息头部菜单横向列表model
+ */
 @interface FRUserHeaderMenuModel : NSObject
 
 - (instancetype)initWithType:(FRUserHeaderMenuType)type;

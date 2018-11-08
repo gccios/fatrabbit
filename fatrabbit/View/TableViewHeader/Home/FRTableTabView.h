@@ -13,4 +13,6 @@
 @property (nonatomic, copy) void (^leftButtonClickedHandle)(void);
 @property (nonatomic, copy) void (^rightButtonClickedHandle)(void);
 
+- (void)changeService;
+
 @end

@@ -15,7 +15,12 @@
 
 @end
 
+/**
+ 城市选择页面
+ */
 @interface FRCityViewController : FRBaseViewController
+
+- (instancetype)initWithProvideChoose;
 
 @property (nonatomic, weak) id<FRCityViewControllerDelegate> delegate;
 

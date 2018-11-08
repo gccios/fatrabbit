@@ -26,6 +26,13 @@
     return self;
 }
 
+- (void)moreButtonDidClicked
+{
+    if (self.moreDidClickedHandle) {
+        self.moreDidClickedHandle();
+    }
+}
+
 - (void)configWithTitle:(NSString *)title
 {
     self.tagLabel.text = title;
@@ -51,6 +58,15 @@
         make.centerY.mas_equalTo(lineView);
         make.left.mas_equalTo(lineView.mas_right).offset(15 * scale);
         make.height.mas_equalTo(20 * scale);
+    }];
+    
+    UIButton * moreButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(12 * scale) titleColor:KThemeColor title:@"更多>>"];
+    [moreButton addTarget:self action:@selector(moreButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:moreButton];
+    [moreButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.mas_equalTo(self.tagLabel);
+        make.right.mas_equalTo(-20 * scale);
+        make.height.mas_equalTo(15 * scale);
     }];
 }
 

@@ -21,6 +21,8 @@
 @property (nonatomic, strong) FRPayWayModel * model;
 @property (nonatomic, assign) FRPayWayType payType;
 
+@property (nonatomic, assign) BOOL isServiceChoose;
+
 @end
 
 @implementation FRChoosePayWayView
@@ -29,6 +31,16 @@
 {
     if (self = [super initWithFrame:[UIScreen mainScreen].bounds]) {
         self.payType = model.type;
+        [self createChooseView];
+    }
+    return self;
+}
+
+- (instancetype)initServiceChooseWithModel:(FRPayWayModel *)model
+{
+    if (self = [super initWithFrame:[UIScreen mainScreen].bounds]) {
+        self.payType = model.type;
+        self.isServiceChoose = YES;
         [self createChooseView];
     }
     return self;
@@ -66,7 +78,14 @@
     self.dataSource = @[[[FRPayWayModel alloc] initWithType:FRPayWayType_Wechat],
                         [[FRPayWayModel alloc] initWithType:FRPayWayType_Alipay],
                         [[FRPayWayModel alloc] initWithType:FRPayWayType_Balance],
-                        [[FRPayWayModel alloc] initWithType:FRPayWayType_UnderLine]];
+                        [[FRPayWayModel alloc] initWithType:FRPayWayType_UnderLine],
+                        [[FRPayWayModel alloc] initWithType:FRPayWayType_FenQi]];
+    
+    if (self.isServiceChoose) {
+        self.dataSource = @[[[FRPayWayModel alloc] initWithType:FRPayWayType_Wechat],
+                            [[FRPayWayModel alloc] initWithType:FRPayWayType_Alipay]];
+    }
+    
     for (FRPayWayModel * model in self.dataSource) {
         if (model.type == self.payType) {
             self.model = model;
@@ -146,6 +165,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FRPayWayModel * model = [self.dataSource objectAtIndex:indexPath.row];
+    if (model.type == FRPayWayType_FenQi) {
+        return;
+    }
     self.model = model;
     [self.tableView reloadData];
 }

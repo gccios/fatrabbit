@@ -15,6 +15,9 @@
 
 @end
 
+/**
+ 添加新的地址页面
+ */
 @interface FRAddNewAddressViewController : FRBaseViewController
 
 @property (nonatomic, weak) id<FRAddNewAddressViewControllerDelegate> delegate;

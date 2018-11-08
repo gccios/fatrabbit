@@ -15,6 +15,8 @@
 
 - (instancetype)initWithModel:(FRPayWayModel *)model;
 
+- (instancetype)initServiceChooseWithModel:(FRPayWayModel *)model;
+
 - (void)show;
 
 @end

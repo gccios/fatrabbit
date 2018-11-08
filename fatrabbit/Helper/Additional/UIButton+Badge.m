@@ -8,6 +8,7 @@
 
 #import "UIButton+Badge.h"
 #import <objc/runtime.h>
+#import "FRStorePageViewController.h"
 
 NSString const *badgeKey                 = @"badgeKey";
 
@@ -26,9 +27,20 @@ NSString const *badgeValueKey            = @"badgeValueKey";
 
 - (void)badgeInit
 {
-    // 初始化，设定默认值
     self.badgeBGColor   = [UIColor redColor];
     self.badgeTextColor = [UIColor whiteColor];
+    
+    // 初始化，设定默认值
+    UITabBarController * root = (UITabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    UINavigationController * na = root.selectedViewController;
+    if ([na isKindOfClass:[UINavigationController class]]) {
+        UIViewController * vc = na.topViewController;
+        if ([vc isKindOfClass:[FRStorePageViewController class]]) {
+            self.badgeBGColor   = [UIColor whiteColor];
+            self.badgeTextColor = [UIColor redColor];
+        }
+    }
+    
     self.badgeFont      = [UIFont systemFontOfSize:10.0];
     self.badgePadding   = 6;
     self.badgeMinSize   = 8;

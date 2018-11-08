@@ -20,6 +20,9 @@ typedef enum : NSUInteger {
     MyMenuType_Setting
 } MyMenuType;
 
+/**
+ 我的页面菜单model
+ */
 @interface MyMenuModel : NSObject
 
 - (instancetype)initWithType:(MyMenuType)type;

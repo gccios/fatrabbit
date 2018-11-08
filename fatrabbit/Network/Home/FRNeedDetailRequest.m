@@ -22,4 +22,15 @@
     return self;
 }
 
+- (instancetype)initContactWithNeedID:(NSInteger)needID
+{
+    if (self = [super init]) {
+        self.httpMethod = BGNetworkRequestHTTPPost;
+        self.methodName = @"demandcontact";
+        
+        [self setIntegerValue:needID forParamKey:@"id"];
+    }
+    return self;
+}
+
 @end

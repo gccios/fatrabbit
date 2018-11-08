@@ -12,14 +12,18 @@
 #import "FRStoreCartRequest.h"
 #import "FRStoreOrderViewController.h"
 #import "MBProgressHUD+FRHUD.h"
+#import "FROrderRequest.h"
+#import "FRMyStoreOrderModel.h"
+#import "FROrderDetailViewController.h"
 
-@interface FRStoreCartViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface FRStoreCartViewController () <UITableViewDelegate, UITableViewDataSource, FRStoreOrderViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView * tableView;
 
-@property (nonatomic, weak) NSMutableArray * dataSource;
+@property (nonatomic, strong) NSMutableArray * dataSource;
 
 @property (nonatomic, strong) UIView * bottomPayView;
+@property (nonatomic, strong) UIButton * selectImageButton;
 @property (nonatomic, strong) UIButton * allSelectButton;
 @property (nonatomic, strong) UIButton * payButton;
 @property (nonatomic, strong) UILabel * totalPriceLabel;
@@ -28,6 +32,9 @@
 
 @property (nonatomic, assign) BOOL isAllChoose;
 @property (nonatomic, assign) CGFloat totalPrice;
+@property (nonatomic, assign) CGFloat payTotalPrice;
+@property (nonatomic, assign) CGFloat totalPoints;
+@property (nonatomic, assign) CGFloat discountPrice;
 
 @end
 
@@ -38,14 +45,47 @@
     // Do any additional setup after loading the view.
     
     self.navigationItem.title = @"购物车";
-    [self requestStoreCartList];
     
     [self createViews];
+    [self requestStoreCartList];
 }
 
 - (void)requestStoreCartList
 {
-    self.dataSource = [UserManager shareManager].storeCart;
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initWithStoreList];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        if (KIsDictionary(response)) {
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                NSArray * list = [data objectForKey:@"list"];
+                if (KIsArray(list)) {
+                    self.dataSource = [FRStoreCartModel mj_objectArrayWithKeyValuesArray:list];
+                    [self.tableView reloadData];
+                    
+                    [self.allSelectButton setTitle:@"全选" forState:UIControlStateNormal];
+                    [self.selectImageButton setImage:[UIImage imageNamed:@"chooseno"] forState:UIControlStateNormal];
+                    self.totalPoints = 0;
+                    self.totalPrice = 0;
+                    self.payTotalPrice = 0;
+                    self.discountPrice = 0;
+                    [self updatePriceInfo];
+                }
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+        
+    }];
 }
 
 - (void)allSelectButtonDidClicked
@@ -55,28 +95,58 @@
         [self.dataSource makeObjectsPerformSelector:@selector(changeToSelect)];
         [self.tableView reloadData];
         [self.allSelectButton setTitle:@"取消全选" forState:UIControlStateNormal];
+        [self.selectImageButton setImage:[UIImage imageNamed:@"choose"] forState:UIControlStateNormal];
+        [self updateStoreCart];
     }else{
         [self.dataSource makeObjectsPerformSelector:@selector(changeToNoSelect)];
         [self.tableView reloadData];
         [self.allSelectButton setTitle:@"全选" forState:UIControlStateNormal];
+        [self.selectImageButton setImage:[UIImage imageNamed:@"chooseno"] forState:UIControlStateNormal];
+        self.totalPoints = 0;
+        self.totalPrice = 0;
+        self.payTotalPrice = 0;
+        self.discountPrice = 0;
+        [self updatePriceInfo];
     }
 }
 
 - (void)payButtonDidClicked
 {
     NSMutableArray * paySource = [[NSMutableArray alloc] init];
+    BOOL hasPoint = NO;
+    BOOL hasPrice = NO;
     for (FRStoreCartModel * model in self.dataSource) {
         if (model.isSelected == YES) {
             [paySource addObject:model];
+            if (model.is_points) {
+                hasPoint = YES;
+            }else{
+                hasPrice = YES;
+            }
         }
+    }
+    
+    if (hasPoint == YES && hasPrice == YES) {
+        [MBProgressHUD showTextHUDWithText:@"积分商品需要单独结算，请重试"];
+        return;
     }
     
     if (paySource.count == 0) {
         [MBProgressHUD showTextHUDWithText:@"请先选择要结算的商品"];
     }else{
         FRStoreOrderViewController * order = [[FRStoreOrderViewController alloc] initWithSource:paySource];
+        order.totalPoints = self.totalPoints;
+        order.totalPrice = self.totalPrice;
+        order.payTotalPrice = self.payTotalPrice;
+        order.discountPrice = self.discountPrice;
+        order.delegate = self;
         [self.navigationController pushViewController:order animated:YES];
     }
+}
+
+- (void)storeOrderHandleWithOrderID:(NSInteger)orderID
+{
+    [self requestStoreCartList];
 }
 
 - (void)createViews
@@ -112,11 +182,21 @@
         make.height.mas_equalTo(55 * scale);
     }];
     
+    self.selectImageButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(12) titleColor:UIColorFromRGB(0xffffff) title:@""];
+    [self.selectImageButton setImage:[UIImage imageNamed:@"chooseno"] forState:UIControlStateNormal];
+    [self.bottomPayView addSubview:self.selectImageButton];
+    [self.selectImageButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(0);
+        make.left.mas_equalTo(20);
+        make.width.height.mas_equalTo(20 * scale);
+    }];
+    [self.selectImageButton addTarget:self action:@selector(allSelectButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    
     self.allSelectButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15) titleColor:UIColorFromRGB(0x333333) title:@"全选"];
     [self.bottomPayView addSubview:self.allSelectButton];
     [self.allSelectButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(10 * scale);
-        make.left.mas_equalTo(20 * scale);
+        make.left.mas_equalTo(40 * scale);
         make.bottom.mas_equalTo(-10 * scale);
     }];
     [self.allSelectButton addTarget:self action:@selector(allSelectButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
@@ -131,11 +211,11 @@
     [self.payButton addTarget:self action:@selector(payButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UILabel * totalLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    totalLabel.text = @"合计：";
+    totalLabel.text = @"合计:";
     [self.bottomPayView addSubview:totalLabel];
     [totalLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(10 * scale);
-        make.centerX.mas_equalTo(-40 * scale);
+        make.left.mas_equalTo(110 * scale);
         make.height.mas_equalTo(15 * scale);
     }];
     
@@ -149,11 +229,11 @@
     }];
     
     UILabel * saleLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12) textColor:UIColorFromRGB(0x333333) alignment:NSTextAlignmentLeft];
-    saleLabel.text = @"优惠：";
+    saleLabel.text = @"优惠:";
     [self.bottomPayView addSubview:saleLabel];
     [saleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(totalLabel.mas_bottom).offset(5 * scale);
-        make.centerX.mas_equalTo(-40 * scale);
+        make.left.mas_equalTo(110 * scale);
         make.height.mas_equalTo(15 * scale);
     }];
     
@@ -166,8 +246,10 @@
         make.left.mas_equalTo(saleLabel.mas_right);
     }];
     
-    self.saleRemarkLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x666666) alignment:NSTextAlignmentLeft];
-    self.saleRemarkLabel.text = @"(VIP真的叼)";
+    self.saleRemarkLabel = [FRCreateViewTool createLabelWithFrame:CGRectZero font:kPingFangRegular(12 * scale) textColor:UIColorFromRGB(0x999999) alignment:NSTextAlignmentLeft];
+    if (!isEmptyString([UserManager shareManager].vip_name)) {
+        self.saleRemarkLabel.text = [NSString stringWithFormat:@"(%@ %@)", [UserManager shareManager].vip_name, [UserManager shareManager].vip_discount_tip];
+    }
     [self.bottomPayView addSubview:self.saleRemarkLabel];
     [self.saleRemarkLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.salePriceLabel);
@@ -194,11 +276,25 @@
     };
     
     cell.deleteCartHandle = ^(FRStoreCartModel *cartModel) {
-        [weakSelf deleteWithModel:cartModel];
+        
+        if (cartModel.num == 0) {
+            if ([weakSelf.dataSource containsObject:cartModel]) {
+                [weakSelf.dataSource removeObject:cartModel];
+                [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                [weakSelf deleteWithModel:cartModel];
+            }
+        }else{
+            [weakSelf deleteWithModel:cartModel];
+        }
+        
     };
     
     cell.chooseCartHandle = ^(FRStoreCartModel *cartModel) {
         [weakSelf chooseWithModel:cartModel];
+    };
+    
+    cell.numberCartHandle = ^(FRStoreCartModel *cartModel) {
+        [weakSelf changeNumberWithModel:cartModel];
     };
     
     return cell;
@@ -212,53 +308,273 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        FRStoreCartModel * model = [self.dataSource objectAtIndex:indexPath.row];
-        [self.dataSource removeObject:model];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-        [self deleteWithModel:model];
+        
+        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"移除商品" message:@"确认从购物车中移除改商品吗？" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action1 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        UIAlertAction * action2 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            FRStoreCartModel * model = [self.dataSource objectAtIndex:indexPath.row];
+            [self.dataSource removeObject:model];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+            
+            FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initRemovetWithStoreIDs:@[@(model.cid)]];
+            [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+                [[UserManager shareManager] requestStoreCartList];
+            } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+                
+            } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+                
+            }];
+            
+        }];
+        
+        [alert addAction:action1];
+        [alert addAction:action2];
+        [self presentViewController:alert animated:YES completion:nil];
     }
+}
+
+- (void)changeNumberWithModel:(FRStoreCartModel *)model
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请输入您要购买的商品数量" preferredStyle:UIAlertControllerStyleAlert];
+    
+    //添加一个取消按钮
+    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil]];
+    
+    //以下方法就可以实现在提示框中输入文本；
+    
+    //在AlertView中添加一个输入框
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+    }];
+    
+    //添加一个确定按钮 并获取AlertView中的第一个输入框 将其文本赋值给BUTTON的title
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        UITextField *textField = alertController.textFields.firstObject;
+        NSInteger number = [textField.text integerValue];
+        if (number != 0) {
+            
+            FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initAddWithStoreID:model.sid];
+            
+            if (model.isSelected) {
+                NSPredicate* predicate = [NSPredicate predicateWithFormat:@"isSelected == YES"];
+                NSArray * chooseSource = [self.dataSource filteredArrayUsingPredicate:predicate];
+                
+                NSMutableArray * cardList = [[NSMutableArray alloc] init];
+                for (FRStoreCartModel * model in chooseSource) {
+                    [cardList addObject:@(model.cid)];
+                }
+                [request configWithCardIDList:cardList];
+            }
+            
+            [request configWithNum:number];
+            
+            [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+                
+                model.num = number;
+                [self.tableView reloadData];
+                
+                NSDictionary * data = [response objectForKey:@"data"];
+                if (KIsDictionary(data)) {
+                    CGFloat points = [[data objectForKey:@"mypoints"] floatValue];
+                    [UserManager shareManager].points = points;
+                    
+                    if (model.isSelected) {
+                        self.totalPoints = [[data objectForKey:@"points"] floatValue];
+                        self.totalPrice = [[data objectForKey:@"totalamount"] floatValue];
+                        self.payTotalPrice = [[data objectForKey:@"payamount"] floatValue];
+                        self.discountPrice = [[data objectForKey:@"discounts"] floatValue];
+                        
+                        [self updateStoreCart];
+                    }
+                }
+                
+            } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+                
+                NSString * msg = [response objectForKey:@"msg"];
+                if (!isEmptyString(msg)) {
+                    [MBProgressHUD showTextHUDWithText:msg];
+                }
+                
+            } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+                
+                [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
+                
+            }];
+            
+        }
+        
+    }]];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)addWithModel:(FRStoreCartModel *)model
 {
     FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initAddWithStoreID:model.sid];
+    
+    if (model.isSelected) {
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"isSelected == YES"];
+        NSArray * chooseSource = [self.dataSource filteredArrayUsingPredicate:predicate];
+        
+        NSMutableArray * cardList = [[NSMutableArray alloc] init];
+        for (FRStoreCartModel * model in chooseSource) {
+            [cardList addObject:@(model.cid)];
+        }
+        [request configWithCardIDList:cardList];
+    }
+    
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        model.num++;
+        [self.tableView reloadData];
+        
+        NSDictionary * data = [response objectForKey:@"data"];
+        if (KIsDictionary(data)) {
+            CGFloat points = [[data objectForKey:@"mypoints"] floatValue];
+            [UserManager shareManager].points = points;
+            
+            if (model.isSelected) {
+                self.totalPoints = [[data objectForKey:@"points"] floatValue];
+                self.totalPrice = [[data objectForKey:@"totalamount"] floatValue];
+                self.payTotalPrice = [[data objectForKey:@"payamount"] floatValue];
+                self.discountPrice = [[data objectForKey:@"discounts"] floatValue];
+                
+                [self updateStoreCart];
+            }
+        }
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
+        
+        
     }];
-    if (model.isSelected) {
-        self.totalPrice += model.price;
-        self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.totalPrice];
-    }
 }
 
 - (void)deleteWithModel:(FRStoreCartModel *)model
 {
     FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initDeleteWithStoreID:model.sid];
+    if (model.isSelected) {
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"isSelected == YES"];
+        NSArray * chooseSource = [self.dataSource filteredArrayUsingPredicate:predicate];
+        
+        NSMutableArray * cardList = [[NSMutableArray alloc] init];
+        for (FRStoreCartModel * model in chooseSource) {
+            [cardList addObject:@(model.cid)];
+        }
+        [request configWithCardIDList:cardList];
+    }
+    
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        model.num--;
+        [self.tableView reloadData];
+        
+        NSDictionary * data = [response objectForKey:@"data"];
+        if (KIsDictionary(data)) {
+            CGFloat points = [[data objectForKey:@"mypoints"] floatValue];
+            [UserManager shareManager].points = points;
+            
+            if (model.isSelected) {
+                self.totalPoints = [[data objectForKey:@"points"] floatValue];
+                self.totalPrice = [[data objectForKey:@"totalamount"] floatValue];
+                self.payTotalPrice = [[data objectForKey:@"payamount"] floatValue];
+                self.discountPrice = [[data objectForKey:@"discounts"] floatValue];
+                
+                [self updateStoreCart];
+            }
+        }
+        
+    } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
+    } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        
+        
+    }];
+}
+
+- (void)chooseWithModel:(FRStoreCartModel *)model
+{
+    [self updateStoreCart];
+}
+
+- (void)updateStoreCart
+{
+    [FRStoreCartRequest cancelRequest];
+    
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"isSelected == YES"];
+    NSArray * chooseSource = [self.dataSource filteredArrayUsingPredicate:predicate];
+    
+    if (chooseSource.count == 0) {
+        self.totalPoints = 0;
+        self.totalPrice = 0;
+        self.payTotalPrice = 0;
+        self.discountPrice = 0;
+        [self updatePriceInfo];
+        return;
+    }
+    
+    NSMutableArray * cardList = [[NSMutableArray alloc] init];
+    for (FRStoreCartModel * model in chooseSource) {
+        [cardList addObject:@(model.cid)];
+    }
+    
+    FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initWithStoreList];
+    [request configWithCardIDList:cardList];
+    [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+        
+        
+        NSDictionary * data = [response objectForKey:@"data"];
+        if (KIsDictionary(data)) {
+            CGFloat points = [[data objectForKey:@"mypoints"] floatValue];
+            [UserManager shareManager].points = points;
+            
+            self.totalPoints = [[data objectForKey:@"points"] floatValue];
+            self.totalPrice = [[data objectForKey:@"totalamount"] floatValue];
+            self.payTotalPrice = [[data objectForKey:@"payamount"] floatValue];
+            self.discountPrice = [[data objectForKey:@"discounts"] floatValue];
+        }
+        
+        [self updatePriceInfo];
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
         
     }];
-    if (model.isSelected) {
-        self.totalPrice -= model.price;
-        self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.totalPrice];
-    }
 }
 
-- (void)chooseWithModel:(FRStoreCartModel *)model
+- (void)updatePriceInfo
 {
-    if (model.isSelected) {
-        self.totalPrice += model.amount;
+    if (self.totalPrice > 0) {
+        if (self.totalPoints > 0) {
+            self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf+%.2lf 积分", self.payTotalPrice, self.totalPoints];
+        }else{
+            self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.payTotalPrice];
+        }
+    }else if (self.totalPoints > 0){
+        self.totalPriceLabel.text = [NSString stringWithFormat:@"%.2lf 积分", self.totalPoints];
     }else{
-        self.totalPrice -= model.amount;
+        self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.payTotalPrice];
     }
-    self.totalPriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.totalPrice];
+    self.salePriceLabel.text = [NSString stringWithFormat:@"￥%.2lf", self.discountPrice];
 }
 
 - (void)didReceiveMemoryWarning {

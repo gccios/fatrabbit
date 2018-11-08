@@ -10,6 +10,10 @@
 
 @interface FRNeedListRequest : FRBaseNetworkRequest
 
+- (instancetype)initWithMyNeedList;
+
+- (instancetype)initWithDeleteNeedID:(NSInteger)needID;
+
 - (instancetype)initWithCateID:(NSInteger)cateID page:(NSInteger)page;
 
 @end

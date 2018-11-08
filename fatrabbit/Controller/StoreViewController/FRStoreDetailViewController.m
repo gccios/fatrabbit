@@ -21,6 +21,8 @@
 #import "FRStoreCartModel.h"
 #import "FRStoreCartRequest.h"
 #import "MBProgressHUD+FRHUD.h"
+#import "FRCollectRequest.h"
+#import "FRLoginViewController.h"
 
 @interface FRStoreDetailViewController () <WKNavigationDelegate, SDCycleScrollViewDelegate>
 
@@ -32,14 +34,16 @@
 @property (nonatomic, strong) UIView * headerContentView;
 @property (nonatomic, strong) FRStorePriceView * priceView;
 @property (nonatomic, strong) WKWebView * webView;
+@property (nonatomic, assign) BOOL hasFinishedLoad;
 
-@property (nonatomic, strong) UIButton * collectButton;
 @property (nonatomic, strong) UILabel * specLabel;
 
 @property (nonatomic, strong) FRStoreModel * model;
 @property (nonatomic, strong) FRStoreSpecModel * specModel;
 
 @property (nonatomic, strong) UIButton * storeCartButton;
+
+@property (nonatomic, strong) UIButton * collectButton;
 
 @end
 
@@ -83,7 +87,14 @@
         
     } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
+        NSString * msg = [response objectForKey:@"msg"];
+        if (!isEmptyString(msg)) {
+            [MBProgressHUD showTextHUDWithText:msg];
+        }
+        
     } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+        
+        [MBProgressHUD showTextHUDWithText:@"网络失去连接"];
         
     }];
 }
@@ -97,7 +108,7 @@
     
     __weak typeof(self) weakSelf = self;
     choose.chooseDidCompletetHandle = ^(FRStoreSpecModel *model) {
-        self.specModel = model;
+        weakSelf.specModel = model;
         [weakSelf refreshSpec];
     };
     
@@ -109,6 +120,11 @@
  */
 - (void)addStoreCartButtonDidClicked
 {
+    if (![UserManager shareManager].isLogin) {
+        FRLoginViewController * login = [[FRLoginViewController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+        return;
+    }
     [[UserManager shareManager] addStoreCartWithStore:self.specModel];
 }
 
@@ -117,6 +133,12 @@
  */
 - (void)buyButtonDidClicked
 {
+    if (![UserManager shareManager].isLogin) {
+        FRLoginViewController * login = [[FRLoginViewController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+        return;
+    }
+    
     MBProgressHUD * hud = [MBProgressHUD showLoadingHUDWithText:@"正在添加商品" inView:self.view];
     FRStoreCartRequest * request = [[FRStoreCartRequest alloc] initAddWithStoreID:self.specModel.cid];
     [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
@@ -145,9 +167,10 @@
     [updateRequest sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
         
         if (KIsDictionary(response)) {
-            NSArray * data = [response objectForKey:@"data"];
-            if (KIsArray(data)) {
-                [UserManager shareManager].storeCart = [FRStoreCartModel mj_objectArrayWithKeyValuesArray:data];
+            NSDictionary * data = [response objectForKey:@"data"];
+            if (KIsDictionary(data)) {
+                NSArray * list = [data objectForKey:@"list"];
+                [UserManager shareManager].storeCart = [FRStoreCartModel mj_objectArrayWithKeyValuesArray:list];
                 [[NSNotificationCenter defaultCenter] postNotificationName:FRUserStoreCartStatusDidChange object:nil];
             }
         }
@@ -172,6 +195,12 @@
 
 - (void)storeCartButtonDidClicked
 {
+    if (![UserManager shareManager].isLogin) {
+        FRLoginViewController * login = [[FRLoginViewController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+        return;
+    }
+    
     FRStoreCartViewController * cart = [[FRStoreCartViewController alloc] init];
     [self.navigationController pushViewController:cart animated:YES];
 }
@@ -190,28 +219,119 @@
 
 - (void)refreshSpec
 {
+    [self resetHeaderHeight];
     self.specLabel.text = self.specModel.name;
     [self.priceView configWithSpecModel:self.specModel];
+}
+
+- (void)resetHeaderHeight
+{
+    [self.webView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        
+        if (nil == error) {
+            CGFloat scale = kMainBoundsWidth / 375.f;
+            CGFloat webHeight = [result floatValue];
+            
+            CGFloat titleHeight = [self.model.name boundingRectWithSize:CGSizeMake(kMainBoundsWidth - 80 * scale, 1000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:kPingFangRegular(15 * scale)} context:nil].size.height;
+            
+            self.headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 490 * scale + webHeight + titleHeight);
+            if (!isEmptyString(self.model.subtitle)) {
+                CGFloat height = [self.model.subtitle boundingRectWithSize:CGSizeMake(kMainBoundsWidth - 30 * scale, 50 * scale) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:kPingFangRegular(10 * scale)} context:nil].size.height;
+                if (self.specModel.price_range && self.specModel.price_range.count > 0) {
+                    self.headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 490 * scale + 50 * scale + height + webHeight + titleHeight);
+                    [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(420 * scale + 50 * scale + height + titleHeight);
+                    }];
+                    [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(140 * scale + 50 * scale + height + titleHeight);
+                    }];
+                }else{
+                    self.headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 490 * scale + height + webHeight + titleHeight);
+                    [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(420 * scale + height + titleHeight);
+                    }];
+                    [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(140 * scale + height + titleHeight);
+                    }];
+                }
+            }else{
+                if (self.specModel.price_range && self.specModel.price_range.count > 0) {
+                    self.headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 490 * scale + 50 * scale + webHeight + titleHeight);
+                    [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(420 * scale + 50 * scale + titleHeight);
+                    }];
+                    [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(140 * scale + 50 * scale + titleHeight);
+                    }];
+                }else{
+                    self.headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 490 * scale + webHeight + titleHeight);
+                    [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(420 * scale + titleHeight);
+                    }];
+                    [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.height.mas_equalTo(140 * scale + titleHeight);
+                    }];
+                }
+            }
+            [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(webHeight);
+            }];
+            [self.tableView reloadData];
+        }
+    }];
+}
+
+//收藏
+- (void)collectButtonDidClicked
+{
+    [FRCollectRequest cancelRequest];
+    if (self.model.collect_id == 0) {
+        FRCollectRequest * request = [[FRCollectRequest alloc] initWithAddStoreID:self.model.pid];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            if (KIsDictionary(response)) {
+                NSDictionary * data = [response objectForKey:@"data"];
+                if (KIsDictionary(data)) {
+                    self.model.collect_id = [[data objectForKey:@"collect_id"] integerValue];
+                }
+            }
+            [self reloadCollectStatus];
+            [MBProgressHUD showTextHUDWithText:@"收藏成功"];
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            [MBProgressHUD showTextHUDWithText:@"操作失败"];
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+        }];
+    }else{
+        FRCollectRequest * request = [[FRCollectRequest alloc] initWithRemoveID:self.model.collect_id];
+        [request sendRequestWithSuccess:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            
+            self.model.collect_id = 0;
+            [self reloadCollectStatus];
+            [MBProgressHUD showTextHUDWithText:@"取消收藏"];
+        } businessFailure:^(BGNetworkRequest * _Nonnull request, id  _Nullable response) {
+            [MBProgressHUD showTextHUDWithText:@"操作失败"];
+        } networkFailure:^(BGNetworkRequest * _Nonnull request, NSError * _Nullable error) {
+            
+        }];
+    }
+}
+
+- (void)reloadCollectStatus
+{
+    if (self.model.collect_id != 0) {
+        [self.collectButton setImage:[UIImage imageNamed:@"xinxinyes"] forState:UIControlStateNormal];
+    }else{
+        [self.collectButton setImage:[UIImage imageNamed:@"xinxinno"] forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark - WKNavigationDelegate
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     //获取网页正文全文高，刷新tableView，以展示最新头视图
-    [webView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-
-        if (nil == error) {
-            CGFloat scale = kMainBoundsWidth / 375.f;
-            CGFloat webHeight = [result floatValue];
-            self.headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 405 * scale + webHeight);
-            [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.height.mas_equalTo(webHeight);
-            }];
-            [self.tableView reloadData];
-        }
-
-    }];
-    
+    [self resetHeaderHeight];
+    self.hasFinishedLoad = YES;
     [self addImageClickedHandler];
 }
 
@@ -244,9 +364,7 @@
     var imgUrlStr='';\
     for(var i=0;i<objs.length;i++){\
     objs[i].onclick=function(){\
-    if(this.alt==''){\
     document.location=\"myweb:imageClick:\"+this.src;\
-    }\
     };\
     };\
     return imgUrlStr;\
@@ -277,7 +395,7 @@
     [self.view addSubview:bottomHandleView];
     [bottomHandleView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.mas_equalTo(0);
-        make.height.mas_equalTo(40);
+        make.height.mas_equalTo(50);
     }];
     
     UIButton * buyButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(15) titleColor:UIColorFromRGB(0xffffff) title:@"立即购买"];
@@ -307,7 +425,7 @@
         make.width.mas_equalTo(kMainBoundsWidth / 4.f);
     }];
     
-    self.self.storeCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.storeCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [storeCartView addSubview:self.storeCartButton];
     [self.storeCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.mas_equalTo(0);
@@ -335,15 +453,14 @@
 {
     CGFloat scale = kMainBoundsWidth / 375.f;
     
-    self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 405 * scale)];
+    self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 425 * scale)];
     self.headerView.backgroundColor = [UIColor whiteColor];
-    
-    self.headerContentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 405 * scale)];
+    self.headerContentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 420 * scale)];
     self.headerContentView.backgroundColor = UIColorFromRGB(0xffffff);
     [self.headerView addSubview:self.headerContentView];
     [self.headerContentView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.mas_equalTo(0);
-        make.height.mas_equalTo(405 * scale);
+        make.height.mas_equalTo(420 * scale);
     }];
     
     UIView * contentLineView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -354,14 +471,15 @@
         make.height.mas_equalTo(10 * scale);
     }];
     
-    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 200 * scale) imageURLStringsGroup:self.model.photo];
+    self.bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kMainBoundsWidth, 225 * scale) imageURLStringsGroup:self.model.photo];
     self.bannerView.bannerImageViewContentMode = UIViewContentModeScaleAspectFill;
+    self.bannerView.placeholderImage = [UIImage imageNamed:@"defaultTopBanner"];
     self.bannerView.autoScrollTimeInterval = 3.f;
     self.bannerView.delegate = self;
     [self.headerContentView addSubview:self.bannerView];
     [self.bannerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.mas_equalTo(0);
-        make.height.mas_equalTo(200 * scale);
+        make.height.mas_equalTo(225 * scale);
     }];
     
     self.priceView = [[FRStorePriceView alloc] initWithModel:self.model];
@@ -369,9 +487,57 @@
     [self.headerContentView addSubview:self.priceView];
     [self.priceView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.bannerView.mas_bottom);
-        make.height.mas_equalTo(150 * scale);
+        make.height.mas_equalTo(140 * scale);
         make.left.right.mas_equalTo(0);
     }];
+    
+    CGFloat titleHeight = [self.model.name boundingRectWithSize:CGSizeMake(kMainBoundsWidth - 80 * scale, 1000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:kPingFangRegular(15 * scale)} context:nil].size.height;
+    
+    if (!isEmptyString(self.model.subtitle)) {
+        CGFloat height = [self.model.subtitle boundingRectWithSize:CGSizeMake(kMainBoundsWidth - 30 * scale, 50*scale) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:kPingFangRegular(10 * scale)} context:nil].size.height;
+        self.headerView.frame = CGRectMake(0, 0, kMainBoundsWidth, 490 * scale + height + titleHeight);
+        if (self.specModel.price_range && self.specModel.price_range.count > 0) {
+            [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(420 * scale + height + 50 * scale + titleHeight);
+            }];
+            [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(140 * scale + height + 50 * scale + titleHeight);
+            }];
+        }else{
+            [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(420 * scale + height + titleHeight);
+            }];
+            [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(140 * scale + height + titleHeight);
+            }];
+        }
+    }else{
+        if (self.specModel.price_range && self.specModel.price_range.count > 0) {
+            [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(420 * scale + 50 * scale + titleHeight);
+            }];
+            [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(140 * scale + 50 * scale + titleHeight);
+            }];
+        }else{
+            [self.headerContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(420 * scale + titleHeight);
+            }];
+            [self.priceView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(140 * scale + titleHeight);
+            }];
+        }
+    }
+    
+    self.collectButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(10) titleColor:UIColorFromRGB(0xffffff) title:@""];
+    [self.headerContentView addSubview:self.collectButton];
+    [self.collectButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.bannerView.mas_bottom).offset(15 * scale);
+        make.right.mas_equalTo(-25 * scale);
+        make.width.height.mas_equalTo(20 * scale);
+    }];
+    [self reloadCollectStatus];
+    [self.collectButton addTarget:self action:@selector(collectButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton * stockButton = [FRCreateViewTool createButtonWithFrame:CGRectZero font:kPingFangRegular(12 * scale) titleColor:UIColorFromRGB(0x333333) title:@""];
     [self.headerContentView addSubview:stockButton];
